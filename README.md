@@ -1,2 +1,5 @@
 # flux-client
-Client side of Flux for World of Nuclear. A great way to exchange ideas about nuclear energy.
+
+Web client to Flux for World of Nuclear. A great way to exchange ideas about nuclear energy.
+
+Build on Nuxt 3.
