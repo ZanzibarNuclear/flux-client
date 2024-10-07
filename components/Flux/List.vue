@@ -32,7 +32,7 @@ async function fetchFluxes() {
 
   loading.value = true
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000))
+  // await new Promise(resolve => setTimeout(resolve, 1000))
 
   // Generate mock data
   const mockFluxes = Array.from({ length: 10 }, (_, i) => ({

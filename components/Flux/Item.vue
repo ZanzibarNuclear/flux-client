@@ -3,13 +3,18 @@
     <img :src="flux.authorAvatar" :alt="flux.author" class="author-avatar">
     <div class="flux-content">
       <div class="flux-header">
-        <span class="author-name">{{ flux.author }}</span>
-        <span class="author-username">@{{ flux.authorUsername }}</span>
-        <span class="flux-time">· {{ formatTime(flux.timestamp) }}</span>
+        <div class="flux-header-left">
+          <span class="author-name">{{ flux.author }}</span>
+          <span class="author-username">@{{ flux.authorUsername }}</span>
+          <span class="flux-time">· {{ formatTime(flux.timestamp) }}</span>
+        </div>
+        <div class="flux-options">
+          <Icon name="ph:arrow-bend-up-left-bold" size="large" class="options-icon" @click="handleReply" />
+        </div>
       </div>
       <p class="flux-text">{{ flux.content }}</p>
       <div class="flux-actions">
-        <button @click="handleReply" title="Reply">
+        <button @click="handleSeeThread" title="Reply">
           💬 {{ flux.replyCount }}
         </button>
         <button @click="handleAmplify" :class="{ 'amplified': flux.amplified }" title="Amplify">
@@ -42,6 +47,11 @@ function handleReply() {
   console.log('Reply to:', props.flux.id)
 }
 
+function handleSeeThread() {
+  // Implement see thread functionality
+  console.log('See thread:', props.flux.id)
+}
+
 function handleAmplify() {
   // Implement amplify functionality
   console.log('Amplify:', props.flux.id)
@@ -72,7 +82,21 @@ function handleBoost() {
 }
 
 .flux-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 5px;
+}
+
+.flux-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.flux-options {
+  margin-left: auto;
+  cursor: pointer;
+  color: #657786;
 }
 
 .author-name {
