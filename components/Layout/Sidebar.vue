@@ -22,7 +22,6 @@
         <span class="label">Profile</span>
       </NuxtLink>
     </nav>
-    <button @click="openFluxComposer" class="flux-button">Flux It</button>
     <div class="user-info">
       <img :src="currentUser.avatar" :alt="currentUser.name" class="user-avatar">
       <div class="user-details">
@@ -40,16 +39,11 @@ const currentUser = ref({
   username: 'johndoe',
   avatar: 'https://api.dicebear.com/6.x/initials/svg?seed=JD'
 })
-
-function openFluxComposer() {
-  // Implement logic to open Flux composer
-  console.log('Open Flux composer')
-}
 </script>
 
 <style scoped>
 .sidebar {
-  width: 250px;
+  width: 200px;
   padding: 20px;
   border-right: 1px solid #e1e8ed;
   height: 100vh;

@@ -7,12 +7,14 @@
 
 <script setup>
 const fluxContent = ref('')
+const boostCount = ref(0)
 
 function postFlux() {
-  // Here you would typically send the flux to your backend
+  // TODO: Call API to emit flux to the backend
   console.log('Posting flux:', fluxContent.value)
   fluxContent.value = '' // Clear the input after posting
 }
+
 </script>
 
 <style scoped>

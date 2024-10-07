@@ -15,8 +15,8 @@
         <button @click="handleAmplify" :class="{ 'amplified': flux.amplified }" title="Amplify">
           🔊 {{ flux.amplifyCount }}
         </button>
-        <button @click="handleEnergize" :class="{ 'energized': flux.energized }" title="Energize">
-          ⚡ {{ flux.energizeCount }}
+        <button @click="handleBoost" :class="{ 'boosted': flux.boosted }" title="Boost">
+          ⚡ {{ flux.boostCount }}
         </button>
       </div>
     </div>
@@ -47,9 +47,9 @@ function handleAmplify() {
   console.log('Amplify:', props.flux.id)
 }
 
-function handleEnergize() {
+function handleBoost() {
   // Implement energize functionality
-  console.log('Energize:', props.flux.id)
+  console.log('Boost:', props.flux.id)
 }
 </script>
 
@@ -109,7 +109,7 @@ function handleEnergize() {
   color: #17bf63 !important;
 }
 
-.energized {
+.boosted {
   color: #e0245e !important;
 }
 </style>

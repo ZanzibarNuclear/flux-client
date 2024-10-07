@@ -44,9 +44,9 @@ async function fetchFluxes() {
     timestamp: new Date(Date.now() - i * 60000).toISOString(),
     replyCount: Math.floor(Math.random() * 10),
     amplifyCount: Math.floor(Math.random() * 50),
-    energizeCount: Math.floor(Math.random() * 100),
+    boostCount: Math.floor(Math.random() * 100),
     amplified: Math.random() > 0.5,
-    energized: Math.random() > 0.5
+    boosted: Math.random() > 0.5
   }))
 
   fluxes.value = mockFluxes
