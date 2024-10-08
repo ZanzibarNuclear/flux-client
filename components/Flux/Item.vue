@@ -1,83 +1,75 @@
 <template>
   <div class="flux-item">
-    <img :src="flux.authorAvatar" :alt="flux.author" class="author-avatar">
+    <UAvatar :src="flux.authorAvatar" :alt="flux.author" @click="handleShowProfile" />
     <div class="flux-content">
       <div class="flux-header">
         <div class="flux-header-left">
-          <span class="author-name">{{ flux.author }}</span>
+          <span class="author-name" @click="handleShowProfile">{{ flux.author }}</span>
           <span class="author-username">@{{ flux.authorUsername }}</span>
-          <span class="flux-time">· {{ formatTime(flux.timestamp) }}</span>
+          <span class="flux-time"> - {{ formatTimeAgo(flux.timestamp) }}</span>
         </div>
-        <div class="flux-options">
-          <Icon name="ph:arrow-bend-up-left-bold" size="large" class="options-icon" @click="handleReply" />
-        </div>
+        <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="Reply" color="blue"
+          variant="ghost" />
       </div>
-      <p class="flux-text">{{ flux.content }}</p>
+      <div @click="handleSeeThread">
+        <p class="flux-text">{{ flux.content }}</p>
+      </div>
       <div class="flux-actions">
-        <button @click="handleSeeThread" title="Reply">
-          💬 {{ flux.replyCount }}
-        </button>
-        <button @click="handleAmplify" :class="{ 'amplified': flux.amplified }" title="Amplify">
-          🔊 {{ flux.amplifyCount }}
-        </button>
-        <button @click="handleBoost" :class="{ 'boosted': flux.boosted }" title="Boost">
-          ⚡ {{ flux.boostCount }}
-        </button>
+        <UButton icon="i-ph-eye" label="View" color="gray" variant="ghost">
+          {{ flux.viewCount }} Views
+        </UButton>
+        <UButton icon="i-ph-chat-circle-text" color="gray" variant="ghost">
+          {{ flux.replyCount }} Replies
+        </UButton>
+        <UButton icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'" @click="handleBoost">
+          {{ flux.boostCount }} Boosts
+        </UButton>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { formatTimeAgo } from '@/utils/dateUtils';
+
 const props = defineProps({
   flux: {
     type: Object,
     required: true
   }
 })
-
-function formatTime(timestamp) {
-  // Implement a function to format the timestamp (e.g., "2h ago", "1d ago")
-  // For now, we'll just return the timestamp
-  return new Date(timestamp).toLocaleString()
-}
+const emit = defineEmits(['reply', 'seeThread', 'boost', 'profile'])
 
 function handleReply() {
-  // Implement reply functionality
-  console.log('Reply to:', props.flux.id)
+  console.log('reply', props.flux.id)
+  emit('reply', props.flux.id)
+}
+
+function handleShowProfile() {
+  console.log('show profile')
+  emit('profile', props.flux.id)
 }
 
 function handleSeeThread() {
-  // Implement see thread functionality
-  console.log('See thread:', props.flux.id)
-}
-
-function handleAmplify() {
-  // Implement amplify functionality
-  console.log('Amplify:', props.flux.id)
+  console.log('seeThread', props.flux.id)
+  emit('seeThread', props.flux.id)
 }
 
 function handleBoost() {
-  // Implement energize functionality
-  console.log('Boost:', props.flux.id)
+  console.log('boost', props.flux.id)
+  emit('boost', props.flux.id)
 }
 </script>
 
 <style scoped>
 .flux-item {
   display: flex;
-  padding: 15px;
-  border-bottom: 1px solid #e1e8ed;
-}
-
-.author-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 10px;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .flux-content {
+  margin-left: 1rem;
   flex: 1;
 }
 
@@ -85,55 +77,24 @@ function handleBoost() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
-}
-
-.flux-header-left {
-  display: flex;
-  align-items: center;
-}
-
-.flux-options {
-  margin-left: auto;
-  cursor: pointer;
-  color: #657786;
+  margin-bottom: 0.5rem;
 }
 
 .author-name {
   font-weight: bold;
-  margin-right: 5px;
 }
 
 .author-username,
 .flux-time {
-  color: #657786;
+  color: #6b7280;
 }
 
 .flux-text {
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
 }
 
 .flux-actions {
   display: flex;
-  justify-content: space-between;
-}
-
-.flux-actions button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #657786;
-}
-
-.flux-actions button:hover {
-  color: #1da1f2;
-}
-
-.amplified {
-  color: #17bf63 !important;
-}
-
-.boosted {
-  color: #e0245e !important;
+  gap: 1rem;
 }
 </style>

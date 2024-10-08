@@ -18,7 +18,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import Composer from './Composer.vue'
 
 const props = defineProps({

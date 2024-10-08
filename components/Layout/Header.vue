@@ -4,8 +4,8 @@
     <nav>
       <NuxtLink to="/">Home</NuxtLink>
       <NuxtLink to="/explore">Explore</NuxtLink>
-      <NuxtLink to="/notifications">Notifications</NuxtLink>
-      <NuxtLink to="/messages">Messages</NuxtLink>
+      <!-- <NuxtLink to="/notifications">Notifications</NuxtLink>
+      <NuxtLink to="/messages">Messages</NuxtLink> -->
     </nav>
   </header>
 </template>

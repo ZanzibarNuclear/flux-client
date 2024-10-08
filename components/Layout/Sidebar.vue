@@ -9,14 +9,14 @@
         <span class="icon">🔍</span>
         <span class="label">Explore</span>
       </NuxtLink>
-      <NuxtLink to="/notifications" class="nav-item">
+      <!-- <NuxtLink to="/notifications" class="nav-item">
         <span class="icon">🔔</span>
         <span class="label">Notifications</span>
       </NuxtLink>
       <NuxtLink to="/messages" class="nav-item">
         <span class="icon">✉️</span>
         <span class="label">Messages</span>
-      </NuxtLink>
+      </NuxtLink> -->
       <NuxtLink :to="`/profile/${currentUser.username}`" class="nav-item">
         <span class="icon">👤</span>
         <span class="label">Profile</span>

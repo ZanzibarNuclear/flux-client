@@ -8,7 +8,7 @@
     </div>
     <template v-else>
       <h2>{{ searchPerformed ? 'Search Results' : 'Trending Fluxes' }}</h2>
-      <FluxList :fluxes="fluxes" />
+      <FluxTimeline :fluxes="fluxes" />
     </template>
   </div>
 </template>

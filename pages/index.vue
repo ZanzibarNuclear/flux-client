@@ -1,7 +1,7 @@
 <template>
   <div class="home-timeline">
     <FluxComposer />
-    <FluxList />
+    <FluxTimeline />
   </div>
 </template>
 
