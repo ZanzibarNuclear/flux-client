@@ -1,11 +1,15 @@
 <template>
-  <header>
-    <h1>Nuclear Flux - World of Nuclear</h1>
-    <nav>
-      <NuxtLink to="/">Home</NuxtLink>
+  <header class="p-4 w-full rounded-xl col-span-6">
+    <NuxtLink to="/">
+      <NuxtImg src="/images/logo-sq-smooth.jpg" alt="Logo" width="70" class="top-left" />
+    </NuxtLink>
+    <div class="title-bar text-center font-bold text-3xl text-slate-400 border-t-2 border-b-2">
+      Zanzibar's World of Nuclear Energy
+    </div>
+    <nav class="top-right">
       <NuxtLink to="/explore">Explore</NuxtLink>
-      <NuxtLink to="/notifications">Notifications</NuxtLink>
-      <NuxtLink to="/messages">Messages</NuxtLink>
+      <!-- <NuxtLink to="/notifications">Notifications</NuxtLink>
+      <NuxtLink to="/messages">Messages</NuxtLink> -->
     </nav>
   </header>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <div class="user-profile-page">
     <UserProfile :username="username" />
-    <FluxList :username="username" />
+    <FluxTimeline :username="username" />
   </div>
 </template>
 

@@ -11,8 +11,6 @@
 </template>
 
 <script setup>
-import { ref, onUpdated, defineProps } from 'vue'
-
 const props = defineProps({
   messages: {
     type: Array,
