@@ -3,7 +3,7 @@
     <nav>
       <NuxtLink to="/" class="nav-item">
         <span class="icon">🏠</span>
-        <span class="label">Home</span>
+        <span class="label">Overview</span>
       </NuxtLink>
       <NuxtLink to="/explore" class="nav-item">
         <span class="icon">🔍</span>
@@ -21,14 +21,11 @@
         <span class="icon">👤</span>
         <span class="label">Profile</span>
       </NuxtLink>
+      <NuxtLink to="https://worldofnuclear.com" class="nav-item">
+        <span class="icon">🌐</span>
+        <span>World of Nuclear</span>
+      </NuxtLink>
     </nav>
-    <div class="user-info">
-      <img :src="currentUser.avatar" :alt="currentUser.name" class="user-avatar">
-      <div class="user-details">
-        <span class="user-name">{{ currentUser.name }}</span>
-        <span class="user-username">@{{ currentUser.username }}</span>
-      </div>
-    </div>
   </aside>
 </template>
 
