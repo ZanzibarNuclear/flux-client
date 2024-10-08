@@ -17,6 +17,10 @@ const props = defineProps({
   username: {
     type: String,
     default: null
+  },
+  trendy: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -24,7 +28,16 @@ const { fluxes, loading, error, fetchFluxes } = useFluxes()
 const listTitle = ref('Flux Timeline')
 
 onMounted(() => {
-  fetchFluxes()
+  const options = {}
+  if (props.username) {
+    options.author = props.username
+  }
+  if (props.trendy) {
+    options.filter = 'trendy'
+  } else {
+    options.filter = 'recent'
+  }
+  fetchFluxes(options)
 })
 
 watch(() => props.username, (newUsername) => {

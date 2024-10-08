@@ -3,7 +3,7 @@
     <div v-if="replyingTo" class="replying-to">
       Replying to: {{ replyingTo.content }}
     </div>
-    <textarea v-model="fluxContent" :placeholder="placeholder"></textarea>
+    <textarea v-model="fluxContent" :placeholder="placeholder" id="flux-content"></textarea>
     <button @click="postFlux">{{ replyingTo ? 'Reply' : 'Flux it' }}</button>
     <button v-if="replyingTo" @click="cancelReply" class="cancel-reply">Cancel Reply</button>
   </div>
