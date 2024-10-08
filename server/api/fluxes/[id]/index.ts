@@ -1,20 +1,5 @@
 import { defineEventHandler, readBody } from 'h3'
-
-// This should be imported from a shared file in a real application
-let fluxes = [
-  {
-    id: 1,
-    author: "John Doe",
-    authorUsername: "johndoe",
-    authorAvatar: "https://api.dicebear.com/6.x/initials/svg?seed=JD",
-    content: "This is a sample flux. #FirstFlux",
-    timestamp: new Date().toISOString(),
-    replyCount: 0,
-    boostCount: 0,
-    viewCount: 0,
-    boosted: false
-  }
-]
+import { fluxes } from '../../../data/fluxes'
 
 export default defineEventHandler(async (event) => {
   const id = parseInt(event.context.params.id)

@@ -1,31 +1,5 @@
 import { defineEventHandler, readBody } from 'h3'
-
-let fluxes = [
-  {
-    id: 201,
-    author: "Jane Doe",
-    authorUsername: "janedoe",
-    authorAvatar: "https://api.dicebear.com/6.x/initials/svg?seed=JD",
-    content: "This is a sample reply. #Fluxback",
-    timestamp: new Date().toISOString(),
-    replyCount: 0,
-    boostCount: 0,
-    viewCount: 0,
-    boosted: false
-  },
-  {
-    id: 202,
-    author: "Bubba Gump",
-    authorUsername: "bubbagump",
-    authorAvatar: "https://api.dicebear.com/6.x/initials/svg?seed=JD",
-    content: "This is another sample reply. #Fluxback",
-    timestamp: new Date().toISOString(),
-    replyCount: 0,
-    boostCount: 200,
-    viewCount: 0,
-    boosted: true
-  },
-]
+import { fluxes } from '../../../../data/fluxes'
 
 export default defineEventHandler(async (event) => {
   const method = event.node.req.method
