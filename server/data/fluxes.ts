@@ -41,6 +41,7 @@ export let fluxes = [
     authorUsername: "janedoe",
     authorAvatar: "https://api.dicebear.com/6.x/initials/svg?seed=JD",
     content: "Sometime inspiration arrives just when you need it most.",
+    parentId: 1,
     timestamp: new Date().toISOString(),
     replyCount: 2,
     boostCount: 550,

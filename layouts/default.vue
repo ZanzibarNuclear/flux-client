@@ -1,13 +1,15 @@
 <template>
-  <div class="app-container">
-    <Header />
-    <div class="main-content">
-      <Sidebar />
-      <main class="page-content">
-        <slot />
-      </main>
+  <UContainer>
+    <div class="app-container">
+      <Header />
+      <div class="main-content">
+        <Sidebar />
+        <main class="page-content">
+          <slot />
+        </main>
+      </div>
     </div>
-  </div>
+  </UContainer>
 </template>
 
 <script setup>
@@ -19,6 +21,7 @@ import Sidebar from '~/components/Layout/Sidebar.vue'
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
+  background-color: #f6f2eb;
 }
 
 .main-content {

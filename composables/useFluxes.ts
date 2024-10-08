@@ -4,8 +4,8 @@ export function useFluxes() {
   const error = ref(null)
 
   interface FetchFluxOptions {
-    filter?: string;
-    author?: string | null;
+    filter?: string
+    author?: string | null
   }
 
   const fetchFluxes = async (options: FetchFluxOptions = {}) => {
@@ -27,10 +27,24 @@ export function useFluxes() {
     }
   }
 
+  const fetchReactions = async (fluxId: string) => {
+    loading.value = true
+    error.value = null
+    try {
+      const data = await $fetch(`/api/fluxes/${fluxId}/replies`)
+      fluxes.value = data
+    } catch (err) {
+      console.error('Error fetching reactions:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     fluxes,
     loading,
     error,
-    fetchFluxes
+    fetchFluxes,
+    fetchReactions
   }
 }

@@ -1,26 +1,21 @@
 <template>
   <div>
-    <div v-if="!showThread">
-      <FluxTimeline :fluxes="fluxes" @see-thread="openThread" />
+    <div v-if="!fluxStore.showThread">
+      <FluxTimeline :fluxes="fluxStore.fluxes" />
     </div>
-    <FluxThread v-else :thread-id="currentThreadId" @close="closeThread" />
+    <FluxThread v-else :thread-id="fluxStore.currentThreadId" />
   </div>
 </template>
 
 <script setup>
-const showThread = ref(false)
-const currentThreadId = ref(null)
+import { useFluxStore } from '~/stores/fluxStore'
 
-function openThread(fluxId) {
-  currentThreadId.value = fluxId
-  showThread.value = true
-}
+const fluxStore = useFluxStore()
+const { fluxes, loading, error, fetchFluxes } = useFluxes()
 
-function closeThread() {
-  showThread.value = false
-  currentThreadId.value = null
-}
-
-// Your existing code to fetch and manage fluxes
-const fluxes = ref([/* ... */])
+onMounted(async () => {
+  // Fetch fluxes from the API and update the store
+  const result = await fetchFluxes()
+  fluxStore.setFluxes(result.fluxes)
+})
 </script>

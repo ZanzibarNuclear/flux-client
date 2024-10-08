@@ -3,11 +3,11 @@ import { fluxes } from '../../../../data/fluxes'
 
 export default defineEventHandler(async (event) => {
   const method = event.node.req.method
-  const parent_id = parseInt(event.context.params?.id || '0')
+  const parentId = parseInt(event.context.params?.id || '0')
 
   // GET /api/fluxes
   if (method === 'GET') {
-    return fluxes
+    return [...fluxes].filter(flux => flux.parentId === parentId)
   }
 
   // POST /api/fluxes/:id/replies
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     const newFlux = {
       id: fluxes.length + 1,
       ...body,
-      parentId: parent_id,
+      parentId: parentId,
       timestamp: new Date().toISOString(),
       replyCount: 0,
       boostCount: 0,

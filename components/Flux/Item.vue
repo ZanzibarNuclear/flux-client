@@ -41,22 +41,18 @@ const props = defineProps({
 const emit = defineEmits(['reply', 'seeThread', 'boost', 'profile'])
 
 function handleReply() {
-  console.log('reply', props.flux.id)
   emit('reply', props.flux.id)
 }
 
 function handleShowProfile() {
-  console.log('show profile')
   emit('profile', props.flux.id)
 }
 
 function handleSeeThread() {
-  console.log('seeThread', props.flux.id)
-  emit('seeThread', props.flux.id)
+  emit('seeThread', props.flux)
 }
 
 function handleBoost() {
-  console.log('boost', props.flux.id)
   emit('boost', props.flux.id)
 }
 </script>
