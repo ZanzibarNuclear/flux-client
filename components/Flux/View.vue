@@ -1,16 +1,7 @@
 <template>
   <div class="flux-view">
-    <div class="flux-details">
-      <UAvatar :src="flux.authorAvatar" :alt="flux.author" />
-      <div class="flux-info">
-        <span class="author-name">{{ flux.author }}</span>
-        <span class="author-username">@{{ flux.authorUsername }}</span>
-        <span class="flux-time"> - {{ formatTimeAgo(flux.timestamp) }}</span>
-      </div>
-    </div>
-    <div class="flux-content">
-      <p>{{ flux.content }}</p>
-    </div>
+    <UButton icon="i-ph-arrow-left" label="Return to timeline" color="blue" variant="ghost" @click="returnToTimeline" />
+    <FluxItem :flux="flux" />
     <div class="flux-reactions">
       <h3>(Chain) Reactions</h3>
       <div v-if="loading">Loading...</div>
@@ -23,8 +14,10 @@
 </template>
 
 <script setup>
-import { formatTimeAgo } from '@/utils/dateUtils'
 import { useFluxes } from '@/composables/useFluxes'
+import { useFluxStore } from '@/stores/flux'
+
+const fluxStore = useFluxStore()
 
 const { fluxes, loading, error, fetchReactions } = useFluxes()
 
@@ -54,6 +47,10 @@ watch(fluxes, async (newFluxes) => {
   console.log('fluxes', newFluxes)
   reactions.value = newFluxes
 })
+
+const returnToTimeline = () => {
+  fluxStore.clearActiveFlux()
+}
 </script>
 
 <style scoped>

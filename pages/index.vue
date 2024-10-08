@@ -1,19 +1,21 @@
 <template>
   <div class="home-timeline">
-    <FluxComposer />
-    <FluxView v-if="selectedFlux" :flux="selectedFlux" />
-    <FluxTimeline v-else @select-flux="handleFluxSelect" />
+    <FluxView v-if="fluxStore.activeFlux" :flux="fluxStore.activeFlux" />
+    <template v-else>
+      <FluxComposer />
+      <FluxTimeline @select-flux="handleSelectFlux" />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Flux } from '@/utils/types'
+import { useFluxStore } from '@/stores/flux'
+const fluxStore = useFluxStore()
 
-const selectedFlux = ref<Flux | null>(null)
-
-const handleFluxSelect = (flux: Flux) => {
+const handleSelectFlux = (flux: Flux) => {
   console.log('show selected flux', flux)
-  selectedFlux.value = flux
+  fluxStore.setActiveFlux(flux)
 }
 </script>
 
