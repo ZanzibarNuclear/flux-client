@@ -3,12 +3,12 @@ export function useFluxes() {
   const loading = ref(false)
   const error = ref(null)
 
-  interface FetchOptions {
+  interface FetchFluxOptions {
     filter?: string;
     author?: string | null;
   }
 
-  const fetchFluxes = async (options: FetchOptions = {}) => {
+  const fetchFluxes = async (options: FetchFluxOptions = {}) => {
     const { filter = 'recent', author = null } = options
     loading.value = true
     error.value = null
