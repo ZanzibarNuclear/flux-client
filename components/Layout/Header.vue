@@ -6,13 +6,16 @@
     <div class="title-bar text-center font-bold text-3xl text-slate-400 border-t-2 border-b-2">
       Zanzibar's World of Nuclear Energy
     </div>
-    <nav class="top-right">
-      <NuxtLink to="/explore">Explore</NuxtLink>
-      <!-- <NuxtLink to="/notifications">Notifications</NuxtLink>
-      <NuxtLink to="/messages">Messages</NuxtLink> -->
-    </nav>
+    <div class="top-right">
+      <UButton v-if="!user" to="/join" icon="i-ph-user-plus-bold" label="Sign In" />
+      <UButton v-else to="/profile" icon="i-ph-user" label="Profile" />
+    </div>
   </header>
 </template>
+
+<script lang="ts" setup>
+const user = useSupabaseUser()
+</script>
 
 <style scoped>
 header {
