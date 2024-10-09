@@ -16,7 +16,6 @@ const props = defineProps({
     default: null
   }
 })
-
 const fluxContent = ref('')
 
 const placeholder = computed(() =>
@@ -26,7 +25,8 @@ const placeholder = computed(() =>
 function postFlux() {
   const fluxData = {
     content: fluxContent.value,
-    parent_id: props.replyingTo?.id
+    parent_id: props.replyingTo?.id,
+    author: "zanzibar",
   }
   // Send fluxData to your API
   console.log('Posting flux:', fluxData)
@@ -40,21 +40,23 @@ function postFlux() {
     .then(response => response.json())
     .then(data => {
       console.log('Flux posted successfully:', data)
+      if (props.replyingTo) {
+        emit('reply-posted', data)
+      } else {
+        emit('posted', data)
+      }
     })
     .catch(error => {
       console.error('Error posting flux:', error)
     })
   fluxContent.value = '' // Clear the input after posting
-  if (props.replyingTo) {
-    emit('reply-posted')
-  }
 }
 
 function cancelReply() {
   emit('cancel-reply')
 }
 
-const emit = defineEmits(['reply-posted', 'cancel-reply'])
+const emit = defineEmits(['posted', 'reply-posted', 'cancel-reply'])
 </script>
 
 <style scoped>

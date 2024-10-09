@@ -44,15 +44,26 @@ export default defineEventHandler(async (event) => {
   // POST /api/fluxes
   if (method === 'POST') {
     const body = await readBody(event)
+    console.log(body)
     const newFlux = {
       id: fluxes.length + 1,
-      ...body,
+      author: {
+        handle: body.author,
+        displayName: "Zanzibar Nuhero",
+        avatar: "https://api.dicebear.com/6.x/initials/svg?seed=ZN",
+      },
+      content: body.content,
+      parentId: body.parent_id,
       timestamp: new Date().toISOString(),
       replyCount: 0,
       boostCount: 0,
       viewCount: 0,
-      boosted: false
+      userReaction: {
+        boosted: false,
+        replied: false,
+      }
     }
+    console.log(newFlux)
     fluxes.push(newFlux)
     return newFlux
   }

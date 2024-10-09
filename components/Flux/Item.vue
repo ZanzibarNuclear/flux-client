@@ -1,11 +1,11 @@
 <template>
   <div class="flux-item">
-    <UAvatar :src="flux.authorAvatar" :alt="flux.author" @click="handleShowProfile" />
+    <UAvatar :src="flux.author.avatar" :alt="flux.author.displayName" @click="handleShowProfile" />
     <div class="flux-content">
       <div class="flux-header">
         <div class="flux-header-left">
-          <span class="author-name" @click="handleShowProfile">{{ flux.author }}</span>
-          <span class="author-username">@{{ flux.authorUsername }}</span>
+          <span class="author-name" @click="handleShowProfile">{{ flux.author.displayName }}</span>
+          <span class="author-username">@{{ flux.author.handle }}</span>
           <span class="flux-time"> - {{ formatTimeAgo(flux.timestamp) }}</span>
         </div>
         <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="Reply" color="blue"
@@ -20,8 +20,10 @@
         </UButton>
         <UButton icon="i-ph-chat-circle-text" color="gray" variant="ghost">
           {{ flux.replyCount }} Replies
+          <Icon v-if="flux.userReaction.replied" name="i-ph-star" />
         </UButton>
-        <UButton icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'" @click="handleBoost">
+        <UButton icon="i-ph-lightning" color="blue" :variant="flux.userReaction.boosted ? 'solid' : 'ghost'"
+          @click="handleBoost">
           {{ flux.boostCount }} Boosts
         </UButton>
       </div>
