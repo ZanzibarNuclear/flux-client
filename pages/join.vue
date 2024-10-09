@@ -62,7 +62,7 @@
           <NuxtLink to="/">Absorb some flux (read what others have shared)</NuxtLink>
         </li>
         <li>
-          <NuxtLink :to="`/profile/${handle}`">Complete your profile</NuxtLink>
+          <NuxtLink :to="`/profile/${fluxStore.activeAuthor?.handle}`">Complete your profile</NuxtLink>
         </li>
         <li>Start a conversation</li>
       </ul>
@@ -79,14 +79,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router'
 import type { Provider } from '@supabase/supabase-js'
 import type { FluxAuthor } from '@/utils/types'
+import { useFluxStore } from '@/stores/flux'
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
-
-const route = useRoute()
+const fluxStore = useFluxStore()
 const router = useRouter()
 
 const handle = ref('')
@@ -95,18 +94,51 @@ const currentStep = ref(1)
 const errorMsg = ref('')
 const author = ref<FluxAuthor | null>(null)
 
-// Update this part
-const step = computed(() => {
-  const routeStep = route.query.step
-  return routeStep ? parseInt(routeStep as string, 10) : 1
-})
-
 const loggedIn = computed(() => user.value !== null)
 const hasError = computed(() => errorMsg.value !== '')
 
-watchEffect(() => {
-  currentStep.value = step.value
-})
+// Function to fetch user profile
+const fetchUserProfile = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('flux_authors')
+    .select('*')
+    .eq('user_id', userId)
+    .single()
+
+  if (error) {
+    console.error('Error fetching user profile:', error)
+    return null
+  }
+  return data
+}
+
+// Initialize the page
+const initializePage = async () => {
+  if (loggedIn.value) {
+    // Check if profile exists in the store
+    if (fluxStore.activeAuthor) {
+      author.value = fluxStore.activeAuthor
+      currentStep.value = 3
+    } else {
+      // Try to fetch profile from database
+      const profile = await fetchUserProfile(user.value!.id)
+      if (profile) {
+        author.value = profile
+        fluxStore.setActiveAuthor(profile)
+        currentStep.value = 3
+      } else {
+        currentStep.value = 2
+      }
+    }
+  } else {
+    currentStep.value = 1
+  }
+  // Update URL to reflect current step
+  router.push({ query: { step: currentStep.value.toString() } })
+}
+
+// Call initializePage when the component is mounted
+onMounted(initializePage)
 
 const loginWithOAuth = async (provider: Provider) => {
   const { error } = await supabase.auth.signInWithOAuth({
@@ -130,22 +162,25 @@ const submitProfileForm = async () => {
     return
   }
 
-  // TODO: Check if the user already has a profile 
   // TODO: Make sure handle has correct format (no spaces, only lowercase letters, numbers, and underscores)
-  // TODO: Make sure handle is not already taken
+  // TODO: Make sure handle is not already taken - avoid the non-unique error
 
-  const { error: updateError } = await supabase
+  const { data, error: updateError } = await supabase
     .from('flux_authors')
     .upsert({
       user_id: user.id,
       handle: handle.value,
       display_name: displayName.value
     })
+    .select()
+    .single()
 
   if (updateError) {
     console.error('Profile update error:', updateError)
-    // Handle error (e.g., show error message to user)
-  } else {
+    errorMsg.value = 'Failed to create profile. Please try again.'
+  } else if (data) {
+    author.value = data
+    fluxStore.setActiveAuthor(data)
     currentStep.value = 3
   }
 }
