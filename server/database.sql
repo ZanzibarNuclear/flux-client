@@ -1,3 +1,19 @@
+DROP TABLE IF EXISTS flux_boosts;
+DROP TABLE IF EXISTS fluxes;
+DROP TABLE IF EXISTS flux_authors;
+
+CREATE TABLE flux_authors (
+  id SERIAL PRIMARY KEY,
+  user_id UUID NOT NULL,
+  handle VARCHAR(50) UNIQUE NOT NULL,
+  display_name VARCHAR(100) NOT NULL,
+  avatar_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_flux_authors_handle ON flux_authors(handle);
+
 CREATE TABLE fluxes (
   id SERIAL PRIMARY KEY,
   content TEXT NOT NULL,
@@ -22,16 +38,6 @@ CREATE TABLE flux_boosts (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE flux_authors (
-  id UUID PRIMARY KEY,
-  handle VARCHAR(50) UNIQUE NOT NULL,
-  display_name VARCHAR(100) NOT NULL,
-  avatar_url TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
-);
-CREATE INDEX idx_flux_authors_handle ON flux_authors(handle);
 
 # Here's a SQL query that fetches the latest up to 10 fluxes, including the author's handle, and provides information for pagination:
 
