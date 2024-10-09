@@ -1,14 +1,16 @@
 <template>
-  <div class="flux-view">
+  <div>
     <UButton icon="i-ph-arrow-left" label="Return to timeline" color="blue" variant="ghost" @click="returnToTimeline" />
-    <FluxItem :flux="flux" />
-    <div class="flux-reactions">
-      <h3>(Chain) Reactions</h3>
-      <div v-if="loading">Loading...</div>
-      <div v-else class="flux-reaction-chain">
-        <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" />
+    <div class="flux-view">
+      <FluxItem :flux="flux" />
+      <div class="flux-reactions">
+        <h3>Reaction Chains</h3>
+        <div v-if="loading">Loading...</div>
+        <div v-else class="flux-reaction-chain">
+          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" />
+        </div>
+        <div v-if="error">Error: {{ error }}</div>
       </div>
-      <div v-if="error">Error: {{ error }}</div>
     </div>
   </div>
 </template>
@@ -56,7 +58,7 @@ const returnToTimeline = () => {
 <style scoped>
 .flux-view {
   padding: 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid theme('colors[nuclear-blue]300');
   border-radius: 8px;
   margin-bottom: 1rem;
 }
@@ -86,7 +88,7 @@ const returnToTimeline = () => {
 
 .flux-reactions {
   margin-top: 1rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid theme('colors[nuclear-blue]300');
   padding-top: 1rem;
 }
 </style>

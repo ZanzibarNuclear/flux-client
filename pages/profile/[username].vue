@@ -8,7 +8,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 
-const selectedFlux = ref < Flux | null > (null)
+const selectedFlux = ref(null)
 
 const route = useRoute()
 const username = route.params.username

@@ -61,7 +61,7 @@ function handleBoost() {
 .flux-item {
   display: flex;
   padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid theme('colors[nuclear-blue]300');
 }
 
 .flux-content {

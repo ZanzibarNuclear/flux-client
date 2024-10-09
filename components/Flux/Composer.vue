@@ -30,6 +30,20 @@ function postFlux() {
   }
   // Send fluxData to your API
   console.log('Posting flux:', fluxData)
+  fetch('/api/fluxes', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(fluxData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Flux posted successfully:', data)
+    })
+    .catch(error => {
+      console.error('Error posting flux:', error)
+    })
   fluxContent.value = '' // Clear the input after posting
   if (props.replyingTo) {
     emit('reply-posted')

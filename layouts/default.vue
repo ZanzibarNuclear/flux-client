@@ -5,6 +5,7 @@
       <div class="main-content">
         <Sidebar />
         <main class="page-content">
+          <h1 class="text-center">Fluxer &ndash; Let's get reactive</h1>
           <slot />
         </main>
       </div>
