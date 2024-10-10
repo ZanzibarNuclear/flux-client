@@ -1,5 +1,5 @@
 <template>
-  <div class="flux-composer">
+  <div v-if="isActive" class="flux-composer">
     <div v-if="replyingTo" class="replying-to">
       Replying to: {{ replyingTo.content }}
     </div>
@@ -7,9 +7,16 @@
     <button @click="postFlux">{{ replyingTo ? 'Reply' : 'Flux it' }}</button>
     <button v-if="replyingTo" @click="cancelReply" class="cancel-reply">Cancel Reply</button>
   </div>
+  <div v-else>
+    <p>Please log in to flux.</p>
+  </div>
 </template>
 
 <script setup>
+import { useFluxStore } from '@/stores/flux'
+
+const fluxStore = useFluxStore()
+
 const props = defineProps({
   replyingTo: {
     type: Object,
@@ -18,6 +25,8 @@ const props = defineProps({
 })
 const fluxContent = ref('')
 
+const isActive = computed(() => fluxStore.activeAuthor)
+
 const placeholder = computed(() =>
   props.replyingTo ? "Write your reply..." : "What's nu(-clear)?"
 )
@@ -25,8 +34,8 @@ const placeholder = computed(() =>
 function postFlux() {
   const fluxData = {
     content: fluxContent.value,
-    parent_id: props.replyingTo?.id,
-    author: "zanzibar",
+    parentId: props.replyingTo?.id,
+    authorId: fluxStore.activeAuthor.id
   }
   // Send fluxData to your API
   console.log('Posting flux:', fluxData)
