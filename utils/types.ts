@@ -11,3 +11,16 @@ export interface Flux {
   boostCount: number
   boosted: boolean
 }
+
+export interface FluxAuthor {
+  id: string
+  userId: string
+  handle: string
+  displayName: string
+  avatarUrl: string
+  bio: string
+  location: string
+  website: string
+  createdAt: string
+  updatedAt: string
+}

@@ -5,12 +5,17 @@
       <img :src="userAvatar" :alt="username" class="avatar">
     </div>
     <div class="profile-actions">
-      <button v-if="isCurrentUser" @click="editProfile" class="edit-profile-btn">Edit Profile</button>
+      <button v-if="isCurrentUser" @click="toggleEditMode" class="edit-profile-btn">
+        {{ isEditing ? 'Cancel' : 'Edit Profile' }}
+      </button>
       <button v-else @click="toggleTuneIn" :class="['tune-in-btn', { 'tuned-in': isTunedIn }]">
         {{ isTunedIn ? 'Tuned In' : 'Tune In' }}
       </button>
     </div>
-    <div class="profile-info">
+    <div v-if="isEditing" class="profile-edit">
+      <UserProfileEditForm :userData="userData" @save="saveProfile" @cancel="toggleEditMode" />
+    </div>
+    <div v-else class="profile-info">
       <h2 class="user-name">{{ displayName }}</h2>
       <p class="user-handle">@{{ username }}</p>
       <p class="user-bio">{{ userBio }}</p>
@@ -72,15 +77,25 @@ const joinDate = computed(() => userData.value.joinDate)
 const followingCount = computed(() => userData.value.followingCount)
 const followersCount = computed(() => userData.value.followersCount)
 
-function editProfile() {
-  // Implement edit profile functionality
-  console.log('Edit profile')
-}
-
 function toggleTuneIn() {
   isTunedIn.value = !isTunedIn.value
   // Implement tune in/out functionality
   console.log(isTunedIn.value ? 'Tuned in' : 'Tuned out')
+}
+
+const isEditing = ref(false);
+
+function toggleEditMode() {
+  isEditing.value = !isEditing.value;
+}
+
+function saveProfile(updatedData) {
+  // Update the userData with the new information
+  userData.value = { ...userData.value, ...updatedData };
+  // Close the edit form
+  isEditing.value = false;
+  // Here you would typically make an API call to save the changes
+  console.log('Profile updated:', userData.value);
 }
 </script>
 
@@ -117,6 +132,10 @@ function toggleTuneIn() {
   display: flex;
   justify-content: flex-end;
   padding: 10px 20px;
+}
+
+.profile-edit {
+  padding: 20px;
 }
 
 .edit-profile-btn,

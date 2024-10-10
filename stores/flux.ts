@@ -1,45 +1,40 @@
 import { defineStore } from 'pinia'
-import type { Flux } from '@/utils/types'
+import type { Flux, FluxAuthor } from '@/utils/types'
 
 export const useFluxStore = defineStore('flux', () => {
   // State
-  const fluxes = ref<Flux[]>([])
-  const currentThreadId = ref<number | null>(null)
+  const activeAuthor = ref<FluxAuthor | null>(null)
+  const activeFlux = ref<Flux | null>(null)
+  const timelineFluxes = ref<Flux[]>([])
 
-  // Actions
-  function setFluxes(newFluxes: Flux[]) {
-    fluxes.value = newFluxes
+  function setActiveAuthor(author: FluxAuthor) {
+    activeAuthor.value = author
   }
 
-  function addFlux(newFlux: Flux) {
-    fluxes.value.push(newFlux)
+  function clearActiveAuthor() {
+    activeAuthor.value = null
   }
 
-  function setFocus(fluxId: number) {
-    currentThreadId.value = fluxId
+  function setActiveFlux(flux: Flux) {
+    activeFlux.value = flux
   }
 
-  function clearFocus() {
-    currentThreadId.value = null
+  function clearActiveFlux() {
+    activeFlux.value = null
   }
 
-  // Getters
-  const getFluxById = computed(() => (id: number) => {
-    return fluxes.value.find(flux => flux.id === id)
-  })
-
-  const selectedFlux = computed(() => {
-    return fluxes.value.find(flux => flux.id === currentThreadId.value)
-  })
+  function setTimelineFluxes(fluxes: Flux[]) {
+    timelineFluxes.value = fluxes
+  }
 
   return {
-    fluxes,
-    currentThreadId,
-    setFluxes,
-    addFlux,
-    setFocus,
-    clearFocus,
-    getFluxById,
-    selectedFlux,
+    activeAuthor,
+    setActiveAuthor,
+    clearActiveAuthor,
+    activeFlux,
+    setActiveFlux,
+    clearActiveFlux,
+    timelineFluxes,
+    setTimelineFluxes,
   }
 })

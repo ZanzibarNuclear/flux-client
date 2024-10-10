@@ -40,11 +40,25 @@ export function useFluxes() {
     }
   }
 
+  const fetchFluxAuthor = async (userId: string) => {
+    loading.value = true
+    error.value = null
+    try {
+      const data = await $fetch(`/api/fluxes/author/${userId}`)
+      fluxes.value = data
+    } catch (err) {
+      console.error('Error fetching flux author:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     fluxes,
     loading,
     error,
     fetchFluxes,
-    fetchReactions
+    fetchReactions,
+    fetchFluxAuthor,
   }
 }
