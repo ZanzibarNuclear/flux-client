@@ -30,6 +30,7 @@ function postFlux() {
   }
   // Send fluxData to your API
   console.log('Posting flux:', fluxData)
+  console.log('replyingTo', props.replyingTo)
   fetch('/api/fluxes', {
     method: 'POST',
     headers: {

@@ -1,6 +1,10 @@
 <template>
   <div class="home-timeline">
-    <FluxView v-if="fluxStore.activeFlux" :flux="fluxStore.activeFlux" />
+    <template v-if="fluxStore.activeFlux">
+      <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @posted="handlePosted"
+        @reply-posted="handleReplyPosted" />
+      <FluxView :flux="fluxStore.activeFlux" @reply="handleReply" />
+    </template>
     <template v-else>
       <FluxComposer @posted="handlePosted" @reply-posted="handleReplyPosted" />
       <FluxTimeline @select-flux="handleSelectFlux" />
@@ -12,10 +16,16 @@
 import type { Flux } from '@/utils/types'
 import { useFluxStore } from '@/stores/flux'
 const fluxStore = useFluxStore()
+const isReply = ref(false)
 
 const handleSelectFlux = (flux: Flux) => {
   console.log('show selected flux', flux)
   fluxStore.setActiveFlux(flux)
+}
+
+const handleReply = (flux: Flux) => {
+  fluxStore.setActiveFlux(flux)
+  isReply.value = true
 }
 
 const handlePosted = (flux: Flux) => {

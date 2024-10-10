@@ -1,6 +1,6 @@
 <template>
   <div class="flux-item">
-    <UAvatar :src="flux.author.avatar" :alt="flux.author.displayName" @click="handleShowProfile" />
+    <UAvatar :src="flux.author?.avatar" :alt="flux.author?.displayName || 'User'" @click="handleShowProfile" />
     <div class="flux-content">
       <div class="flux-header">
         <div class="flux-header-left">
@@ -43,7 +43,7 @@ const props = defineProps({
 const emit = defineEmits(['reply', 'seeThread', 'boost', 'profile'])
 
 function handleReply() {
-  emit('reply', props.flux.id)
+  emit('reply', props.flux)
 }
 
 function handleShowProfile() {

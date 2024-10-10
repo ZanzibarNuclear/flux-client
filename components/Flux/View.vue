@@ -2,12 +2,12 @@
   <div>
     <UButton icon="i-ph-arrow-left" label="Return to timeline" color="blue" variant="ghost" @click="returnToTimeline" />
     <div class="flux-view">
-      <FluxItem :flux="flux" />
+      <FluxItem :flux="flux" @reply="handleReply" />
       <div class="flux-reactions">
         <h3>Reaction Chains</h3>
         <div v-if="loading">Loading...</div>
         <div v-else class="flux-reaction-chain">
-          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" />
+          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" @reply="handleReply" />
         </div>
         <div v-if="error">Error: {{ error }}</div>
       </div>
@@ -29,6 +29,7 @@ const props = defineProps({
     required: true
   },
 })
+const emit = defineEmits(['reply'])
 const reactions = ref([])
 
 onMounted(async () => {
@@ -49,6 +50,10 @@ watch(fluxes, async (newFluxes) => {
   console.log('fluxes', newFluxes)
   reactions.value = newFluxes
 })
+
+const handleReply = (flux) => {
+  emit('reply', flux)
+}
 
 const returnToTimeline = () => {
   fluxStore.clearActiveFlux()
