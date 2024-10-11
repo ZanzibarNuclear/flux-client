@@ -2,13 +2,14 @@
   <div>
     <UButton icon="i-ph-arrow-left" label="Return to timeline" color="blue" variant="ghost" @click="returnToTimeline" />
     <div class="flux-view">
-      <FluxItem :flux="flux" @reply="handleReply" />
+      <FluxItem :flux="flux" @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-flux="handleView"
+        @view-profile="handleViewProfile" />
       <div class="flux-reactions">
         <h3>Reactions</h3>
         <div v-if="loading">Loading...</div>
         <div v-else class="flux-reaction-chain">
-          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" @reply="handleReply"
-            @boost="handleBoost" @profile="handleProfile" />
+          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" @reply-to-flux="handleReply"
+            @boost-flux="handleBoost" @view-flux="handleView" @view-profile="handleViewProfile" />
         </div>
         <div v-if="error">Error: {{ error }}</div>
       </div>
@@ -21,7 +22,6 @@ import { useFluxes } from '@/composables/useFluxes'
 import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
-
 const { fluxes, loading, error, fetchReactions } = useFluxes()
 
 const props = defineProps({
@@ -30,7 +30,7 @@ const props = defineProps({
     required: true
   },
 })
-const emit = defineEmits(['reply'])
+const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 const reactions = ref([])
 
 onMounted(async () => {
@@ -52,20 +52,20 @@ watch(fluxes, async (newFluxes) => {
   reactions.value = newFluxes
 })
 
-const handleReply = (flux) => {
-  emit('reply', flux)
+function handleView(flux) {
+  emit('viewFlux', flux)
 }
 
-async function handleBoost(fluxId) {
-  const response = await $fetch(`/api/fluxes/${fluxId}/boost`, {
-    method: 'POST',
-    body: { authorId: fluxStore.activeAuthor.id },
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+function handleBoost(flux) {
+  emit('boostFlux', flux)
+}
 
-  console.log(response)
+function handleReply(flux) {
+  emit('replyToFlux', flux)
+}
+
+function handleViewProfile(handle) {
+  emit('viewProfile', handle)
 }
 
 const returnToTimeline = () => {

@@ -1,17 +1,17 @@
 <template>
   <div class="flux-item">
-    <UAvatar :src="flux.author?.avatar" :alt="flux.author?.display_name || 'User'" @click="handleShowProfile" />
+    <UAvatar :src="flux.author?.avatar" :alt="flux.author?.display_name || 'User'" @click="handleViewProfile" />
     <div class="flux-content">
       <div class="flux-header">
         <div class="flux-header-left">
-          <span class="author-name" @click="handleShowProfile">{{ flux.author.display_name }}</span>
+          <span class="author-name" @click="handleViewProfile">{{ flux.author.display_name }}</span>
           <span class="author-username">@{{ flux.author.handle }}</span>
           <span class="flux-time"> - {{ formatTimeAgo(flux.created_at) }}</span>
         </div>
         <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="Reply" color="blue"
           variant="ghost" />
       </div>
-      <div @click="handleSeeThread">
+      <div @click="handleView">
         <p class="flux-text">{{ flux.content }}</p>
       </div>
       <div class="flux-actions">
@@ -39,22 +39,22 @@ const props = defineProps({
     required: true
   }
 })
-const emit = defineEmits(['reply', 'seeThread', 'boost', 'profile'])
+const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 
-function handleReply() {
-  emit('reply', props.flux)
-}
-
-function handleShowProfile() {
-  emit('profile', props.flux.author.handle)
-}
-
-function handleSeeThread() {
-  emit('seeThread', props.flux)
+function handleView() {
+  emit('viewFlux', props.flux)
 }
 
 function handleBoost() {
-  emit('boost', props.flux.id)
+  emit('boostFlux', props.flux)
+}
+
+function handleReply() {
+  emit('replyToFlux', props.flux)
+}
+
+function handleViewProfile() {
+  emit('viewProfile', props.flux.author.handle)
 }
 </script>
 

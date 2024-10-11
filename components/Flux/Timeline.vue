@@ -4,8 +4,8 @@
     <div v-if="loading" class="loading">Loading fluxes...</div>
     <div v-else-if="error" class="error">Error loading fluxes. Please try again.</div>
     <template v-else>
-      <FluxItem v-for="flux in fluxes" :key="flux.id" :flux="flux" @seeThread="handleFluxSelect" @reply="handleReply"
-        @boost="handleBoost" @profile="handleProfile" />
+      <FluxItem v-for="flux in fluxes" :key="flux.id" :flux="flux" @view-flux="handleView" @reply-to-flux="handleReply"
+        @boost-flux="handleBoost" @view-profile="handleViewProfile" />
       <div v-if="fluxes.length === 0" class="no-fluxes">No fluxes to display.</div>
     </template>
   </div>
@@ -57,26 +57,22 @@ watch(() => props.username, (newUsername) => {
   fetchFluxes(options)
 })
 
-const handleFluxSelect = (flux) => {
-  console.log('bubble up selected flux', flux)
-  emit('select-flux', flux)
+function handleView(flux) {
+  emit('viewFlux', flux)
+}
+
+function handleBoost(flux) {
+  emit('boostFlux', flux)
 }
 
 function handleReply(flux) {
-  emit('reply', flux)
+  emit('replyToFlux', flux)
 }
 
-async function handleBoost(fluxId) {
-  const response = await $fetch(`/api/fluxes/${fluxId}/boost`, {
-    method: 'POST',
-    body: { authorId: fluxStore.activeAuthor.id },
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-
-  console.log(response)
+function handleViewProfile(handle) {
+  emit('viewProfile', handle)
 }
+
 
 function handleProfile(fluxId) {
   console.log('profile', fluxId)

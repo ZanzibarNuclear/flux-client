@@ -3,11 +3,13 @@
     <template v-if="fluxStore.activeFlux">
       <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @posted="handlePosted"
         @reply-posted="handleReplyPosted" />
-      <FluxView :flux="fluxStore.activeFlux" @reply="handleReply" />
+      <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @boost-flux="handleBoost"
+        @view-profile="handleViewProfile" @view-flux="handleViewFlux" />
     </template>
     <template v-else>
       <FluxComposer @posted="handlePosted" @reply-posted="handleReplyPosted" />
-      <FluxTimeline @select-flux="handleSelectFlux" />
+      <FluxTimeline @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile"
+        @view-flux="handleViewFlux" />
     </template>
   </div>
 </template>
@@ -54,14 +56,35 @@ watchEffect(() => {
   }
 })
 
-const handleSelectFlux = (flux: Flux) => {
+const handleViewFlux = (flux: Flux) => {
   console.log('show selected flux', flux)
   fluxStore.setActiveFlux(flux)
+}
+
+const handleViewProfile = (handle: string) => {
+  console.log('show profile', handle)
 }
 
 const handleReply = (flux: Flux) => {
   fluxStore.setActiveFlux(flux)
   isReply.value = true
+}
+
+async function handleBoost(flux: Flux) {
+  const fluxUser = fluxStore.activeAuthor
+  if (!fluxUser) {
+    console.warn('Unknown user -- not able to boost')
+    return
+  }
+  const response = await $fetch(`/api/fluxes/${flux.id}/boost`, {
+    method: 'POST',
+    body: { fluxUserId: fluxUser.id },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  console.log(response)
 }
 
 const handlePosted = (flux: Flux) => {

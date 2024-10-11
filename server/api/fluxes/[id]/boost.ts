@@ -16,21 +16,21 @@ export default defineEventHandler(async (event) => {
     return { warning: 'No flux ID provided' }
   }
   const body = await readBody(event)
-  const { authorId } = body
+  const { fluxUserId } = body
 
-  if (!authorId) {
+  if (!fluxUserId) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
-  console.log('booster is authorId', authorId)
+  console.log('booster has flux user ID:', fluxUserId)
 
   const { error } = await client
     .from('flux_boosts')
-    .insert([{ user_id: authorId, flux_id: id }])
+    .insert([{ user_id: fluxUserId, flux_id: id }])
 
   if (error) {
     if (error.code === '23505') { // unique_violation error code for PostgreSQL
-      return { warning: 'Already boosted by this author' }
+      return { warning: `Already boosted by this flux user ID=${fluxUserId}` }
     }
     console.error('Error boosting flux:', error)
     throw createError({ statusCode: 500, statusMessage: 'Failed to boost flux' })
