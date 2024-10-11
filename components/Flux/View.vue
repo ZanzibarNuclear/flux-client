@@ -7,7 +7,8 @@
         <h3>Reactions</h3>
         <div v-if="loading">Loading...</div>
         <div v-else class="flux-reaction-chain">
-          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" @reply="handleReply" />
+          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" @reply="handleReply"
+            @boost="handleBoost" @profile="handleProfile" />
         </div>
         <div v-if="error">Error: {{ error }}</div>
       </div>
@@ -53,6 +54,18 @@ watch(fluxes, async (newFluxes) => {
 
 const handleReply = (flux) => {
   emit('reply', flux)
+}
+
+async function handleBoost(fluxId) {
+  const response = await $fetch(`/api/fluxes/${fluxId}/boost`, {
+    method: 'POST',
+    body: { authorId: fluxStore.activeAuthor.id },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  console.log(response)
 }
 
 const returnToTimeline = () => {

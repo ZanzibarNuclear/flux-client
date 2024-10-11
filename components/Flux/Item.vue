@@ -46,7 +46,7 @@ function handleReply() {
 }
 
 function handleShowProfile() {
-  emit('profile', props.flux.id)
+  emit('profile', props.flux.author.handle)
 }
 
 function handleSeeThread() {

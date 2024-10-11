@@ -25,7 +25,7 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['select-flux'])
+const emit = defineEmits(['select-flux', 'boost'])
 
 const { fluxes, loading, error, fetchFluxes } = useFluxes()
 const fluxStore = useFluxStore()
@@ -62,8 +62,8 @@ const handleFluxSelect = (flux) => {
   emit('select-flux', flux)
 }
 
-function handleReply(fluxId) {
-  console.log('reply', fluxId)
+function handleReply(flux) {
+  emit('reply', flux)
 }
 
 async function handleBoost(fluxId) {
