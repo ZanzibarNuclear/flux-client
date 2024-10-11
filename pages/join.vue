@@ -92,12 +92,11 @@ const handle = ref('')
 const displayName = ref('')
 const currentStep = ref(1)
 const errorMsg = ref('')
-const author = ref<FluxUser | null>(null)
+const fluxUser = ref<FluxUser | null>(null)
 
 const loggedIn = computed(() => user.value !== null)
 const hasError = computed(() => errorMsg.value !== '')
 
-// Function to fetch user profile
 const fetchFluxUserProfile = async (userId: string) => {
   const { data, error } = await supabase
     .from('flux_authors')
@@ -112,18 +111,18 @@ const fetchFluxUserProfile = async (userId: string) => {
   return data
 }
 
-// Initialize the page
 const initializePage = async () => {
   if (loggedIn.value) {
     // Check if profile exists in the store
     if (fluxStore.fluxUser) {
-      author.value = fluxStore.fluxUser
+      fluxUser.value = fluxStore.fluxUser
       currentStep.value = 3
     } else {
       // Try to fetch profile from database
       const profile = await fetchFluxUserProfile(user.value!.id)
       if (profile) {
-        author.value = profile
+        console.log('flux user profile', profile)
+        fluxUser.value = profile
         fluxStore.setFluxUser(profile)
         currentStep.value = 3
       } else {
@@ -179,7 +178,7 @@ const submitProfileForm = async () => {
     console.error('Profile update error:', updateError)
     errorMsg.value = 'Failed to create profile. Please try again.'
   } else if (data) {
-    author.value = data
+    fluxUser.value = data
     fluxStore.setFluxUser(data)
     currentStep.value = 3
   }
