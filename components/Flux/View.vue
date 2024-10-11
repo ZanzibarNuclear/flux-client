@@ -4,7 +4,7 @@
     <div class="flux-view">
       <FluxItem :flux="flux" @reply="handleReply" />
       <div class="flux-reactions">
-        <h3>Reaction Chains</h3>
+        <h3>Reactions</h3>
         <div v-if="loading">Loading...</div>
         <div v-else class="flux-reaction-chain">
           <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" @reply="handleReply" />
