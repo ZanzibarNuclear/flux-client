@@ -34,8 +34,8 @@ const placeholder = computed(() =>
 function postFlux() {
   const fluxData = {
     content: fluxContent.value,
+    authorId: fluxStore.activeAuthor.id,
     parentId: props.replyingTo?.id,
-    authorId: fluxStore.activeAuthor.id
   }
   // Send fluxData to your API
   console.log('Posting flux:', fluxData)

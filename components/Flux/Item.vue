@@ -1,12 +1,12 @@
 <template>
   <div class="flux-item">
-    <UAvatar :src="flux.author?.avatar" :alt="flux.author?.displayName || 'User'" @click="handleShowProfile" />
+    <UAvatar :src="flux.author?.avatar" :alt="flux.author?.display_name || 'User'" @click="handleShowProfile" />
     <div class="flux-content">
       <div class="flux-header">
         <div class="flux-header-left">
-          <span class="author-name" @click="handleShowProfile">{{ flux.author.displayName }}</span>
+          <span class="author-name" @click="handleShowProfile">{{ flux.author.display_name }}</span>
           <span class="author-username">@{{ flux.author.handle }}</span>
-          <span class="flux-time"> - {{ formatTimeAgo(flux.timestamp) }}</span>
+          <span class="flux-time"> - {{ formatTimeAgo(flux.created_at) }}</span>
         </div>
         <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="Reply" color="blue"
           variant="ghost" />
@@ -16,15 +16,14 @@
       </div>
       <div class="flux-actions">
         <UButton icon="i-ph-eye" label="View" color="gray" variant="ghost">
-          {{ flux.viewCount }} Views
+          {{ flux.view_count }} Views
         </UButton>
         <UButton icon="i-ph-chat-circle-text" color="gray" variant="ghost">
-          {{ flux.replyCount }} Replies
-          <Icon v-if="flux.userReaction.replied" name="i-ph-star" />
+          {{ flux.reply_count }} Replies
+          <Icon v-if="flux.replied" name="i-ph-star" />
         </UButton>
-        <UButton icon="i-ph-lightning" color="blue" :variant="flux.userReaction.boosted ? 'solid' : 'ghost'"
-          @click="handleBoost">
-          {{ flux.boostCount }} Boosts
+        <UButton icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'" @click="handleBoost">
+          {{ flux.boost_count }} Boosts
         </UButton>
       </div>
     </div>

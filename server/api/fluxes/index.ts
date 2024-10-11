@@ -1,6 +1,5 @@
 import { defineEventHandler, getQuery, readBody } from 'h3'
 import { serverSupabaseClient } from '#supabase/server'
-import { fluxes } from '../../data/fluxes'
 
 // In-memory store for fluxes
 
@@ -13,33 +12,39 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     const { filter, author } = query
 
-    let filteredFluxes = [...fluxes]
+    let fluxQuery = client
+      .from('fluxes')
+      .select('*, author:flux_authors(*)')
 
     // Filter by author if specified
     if (author) {
-      filteredFluxes = filteredFluxes.filter(flux => flux.author.handle === author)
+      fluxQuery = fluxQuery.eq('author.handle', author)
     }
 
     // Apply sorting based on filter
     switch (filter) {
       case 'recent':
-        filteredFluxes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        fluxQuery = fluxQuery.order('updated_at', { ascending: false })
         break
       case 'trendy':
-        filteredFluxes.sort((a, b) => {
-          const timeA = new Date(a.timestamp).getTime()
-          const timeB = new Date(b.timestamp).getTime()
-          const boostA = a.boostCount
-          const boostB = b.boostCount
-          // Combine recency and boost count (you can adjust the weight as needed)
-          return (boostB - boostA) * 1000 + (timeB - timeA)
-        })
+        fluxQuery = fluxQuery.order('boost_count', { ascending: false }).order('updated_at', { ascending: false })
         break
       default:
         // Default to most recent
-        filteredFluxes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        fluxQuery = fluxQuery.order('updated_at', { ascending: false })
     }
 
+    const { data: filteredFluxes, error } = await fluxQuery
+
+    if (error) {
+      console.error('Error fetching fluxes:', error)
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Failed to fetch fluxes',
+      })
+    }
+
+    console.log('fluxes found:', filteredFluxes)
     return filteredFluxes
   }
 
@@ -47,6 +52,8 @@ export default defineEventHandler(async (event) => {
   if (method === 'POST') {
     const body = await readBody(event)
     console.log(body)
+
+    const parentFluxId = body.parentId
 
     const { data: newFlux, error } = await client
       .from('fluxes')
@@ -65,8 +72,40 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Failed to create flux',
       })
     }
-
     console.log(newFlux)
+
+    if (parentFluxId) {
+      console.log('increase reply count for', parentFluxId)
+      const { count: replyCount, error: countError } = await client
+        .from('fluxes')
+        .select('id', { count: 'exact' })
+        .eq('parent_id', parentFluxId)
+
+      if (countError) {
+        console.error('Error counting replies:', countError)
+        throw createError({
+          statusCode: 500,
+          statusMessage: 'Failed to count replies',
+        })
+      }
+
+      console.log('Number of replies:', replyCount)
+      const { error: updateError } = await client
+        .from('fluxes')
+        .update({ reply_count: replyCount })
+        .eq('id', parentFluxId)
+
+      if (updateError) {
+        console.error('Error updating reply count:', updateError)
+        throw createError({
+          statusCode: 500,
+          statusMessage: 'Failed to update reply count',
+        })
+      }
+    } else {
+      console.log('Not a reply, so no affect on reply count')
+    }
+
     return newFlux
   }
 })
