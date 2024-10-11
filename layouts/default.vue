@@ -1,21 +1,20 @@
 <template>
   <UContainer>
     <div class="app-container">
-      <Header />
+      <LayoutHeader />
       <div class="main-content">
-        <Sidebar />
+        <LayoutSidebar />
         <main class="page-content">
           <h1 class="text-center">WoN Flux &ndash; Let's get reactive</h1>
           <slot />
         </main>
       </div>
+      <LayoutFooter />
     </div>
   </UContainer>
 </template>
 
 <script setup>
-import Header from '~/components/Layout/Header.vue'
-import Sidebar from '~/components/Layout/Sidebar.vue'
 </script>
 
 <style scoped>

@@ -29,7 +29,7 @@ const emit = defineEmits(['select-flux', 'boost'])
 
 const { loading, error, fetchFluxes } = useFluxes()
 const fluxStore = useFluxStore()
-const listTitle = ref('The Latest Flux')
+const listTitle = ref('Fluxlines')
 
 onMounted(() => {
   const options = {}
