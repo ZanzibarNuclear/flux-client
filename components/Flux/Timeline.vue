@@ -4,9 +4,9 @@
     <div v-if="loading" class="loading">Loading fluxes...</div>
     <div v-else-if="error" class="error">Error loading fluxes. Please try again.</div>
     <template v-else>
-      <FluxItem v-for="flux in fluxes" :key="flux.id" :flux="flux" @view-flux="handleView" @reply-to-flux="handleReply"
-        @boost-flux="handleBoost" @view-profile="handleViewProfile" />
-      <div v-if="fluxes.length === 0" class="no-fluxes">No fluxes to display.</div>
+      <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
+        @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
+      <div v-if="fluxStore.timeline.length === 0" class="no-fluxes">No fluxes to display.</div>
     </template>
   </div>
 </template>
@@ -27,7 +27,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['select-flux', 'boost'])
 
-const { fluxes, loading, error, fetchFluxes } = useFluxes()
+const { loading, error, fetchFluxes } = useFluxes()
 const fluxStore = useFluxStore()
 const listTitle = ref('The Latest Flux')
 
@@ -84,11 +84,6 @@ function handleProfile(fluxId) {
   max-width: 600px;
   margin: 0 auto;
 }
-
-/* h2 {
-  padding: 15px;
-  border-bottom: 1px solid #e1e8ed;
-} */
 
 .loading,
 .no-fluxes {

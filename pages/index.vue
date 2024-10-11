@@ -15,17 +15,14 @@
 </template>
 
 <script setup lang="ts">
-import type { Flux, FluxAuthor } from '@/utils/types' // Add FluxAuthor type
+import type { Flux, FluxUser } from '@/utils/types' // Add FluxAuthor type
 import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
 const user = useSupabaseUser()
 const isReply = ref(false)
 
-// Add this function to fetch the author from the database
-const fetchAuthor = async (userId: string): Promise<FluxAuthor | null> => {
-  // Implement your database query here
-  // For example:
+const fetchFluxUser = async (userId: string): Promise<FluxUser | null> => {
   const { data } = await useSupabaseClient()
     .from('flux_authors')
     .select('*')
@@ -35,23 +32,23 @@ const fetchAuthor = async (userId: string): Promise<FluxAuthor | null> => {
 }
 
 // Use useAsyncData to handle the author fetching
-const { data: author, error } = await useAsyncData(
-  'author',
-  async () => user.value ? await fetchAuthor(user.value.id) : null,
+const { data: fluxUser, error } = await useAsyncData(
+  'fluxUser',
+  async () => user.value ? await fetchFluxUser(user.value.id) : null,
   { watch: [user] }
 )
 
-// Watch for changes in the author data
-watch(author, (newAuthor) => {
-  if (newAuthor) {
-    fluxStore.setActiveAuthor(newAuthor)
+// Watch for changes in the flux user data
+watch(fluxUser, (newFluxUser) => {
+  if (newFluxUser) {
+    fluxStore.setFluxUser(newFluxUser)
   }
 }, { immediate: true })
 
 // Handle error if author fetch fails
 watchEffect(() => {
   if (error.value) {
-    console.error('Error fetching author:', error.value)
+    console.error('Error fetching flux user:', error.value)
     // Handle the error appropriately (e.g., show a notification to the user)
   }
 })
@@ -71,7 +68,7 @@ const handleReply = (flux: Flux) => {
 }
 
 async function handleBoost(flux: Flux) {
-  const fluxUser = fluxStore.activeAuthor
+  const fluxUser = fluxStore.fluxUser
   if (!fluxUser) {
     console.warn('Unknown user -- not able to boost')
     return

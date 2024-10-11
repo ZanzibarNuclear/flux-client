@@ -12,18 +12,16 @@
 <script setup>
 import { useFluxStore } from '@/stores/flux'
 
-const fluxStore = useFluxStore()
-
 const props = defineProps({
   replyingTo: {
     type: Object,
     default: null
   }
 })
+
+const fluxStore = useFluxStore()
 const fluxContent = ref('')
-
 const isActive = computed(() => fluxStore.activeAuthor)
-
 const placeholder = computed(() =>
   props.replyingTo ? "Write your reply..." : "What's nu(-clear)?"
 )
@@ -47,11 +45,8 @@ function postFlux() {
     .then(response => response.json())
     .then(data => {
       console.log('Flux posted successfully:', data)
-      if (props.replyingTo) {
-        emit('reply-posted', data)
-      } else {
-        emit('posted', data)
-      }
+      console.warn('TODO: Add to reactions in store')
+      // TODO: add reply to store.reactions for active flux
     })
     .catch(error => {
       console.error('Error posting flux:', error)
@@ -62,8 +57,6 @@ function postFlux() {
 function cancelReply() {
   emit('cancel-reply')
 }
-
-const emit = defineEmits(['posted', 'reply-posted', 'cancel-reply'])
 </script>
 
 <style scoped>

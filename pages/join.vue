@@ -62,7 +62,7 @@
           <NuxtLink to="/">Absorb some flux (read what others have shared)</NuxtLink>
         </li>
         <li>
-          <NuxtLink :to="`/profile/${fluxStore.activeAuthor?.handle}`">Complete your profile</NuxtLink>
+          <NuxtLink :to="`/profile/${fluxStore.fluxUser?.handle}`">Complete your profile</NuxtLink>
         </li>
         <li>Start a conversation</li>
       </ul>
@@ -80,7 +80,7 @@
 
 <script lang="ts" setup>
 import type { Provider } from '@supabase/supabase-js'
-import type { FluxAuthor } from '@/utils/types'
+import type { FluxUser } from '@/utils/types'
 import { useFluxStore } from '@/stores/flux'
 
 const supabase = useSupabaseClient()
@@ -92,13 +92,13 @@ const handle = ref('')
 const displayName = ref('')
 const currentStep = ref(1)
 const errorMsg = ref('')
-const author = ref<FluxAuthor | null>(null)
+const author = ref<FluxUser | null>(null)
 
 const loggedIn = computed(() => user.value !== null)
 const hasError = computed(() => errorMsg.value !== '')
 
 // Function to fetch user profile
-const fetchUserProfile = async (userId: string) => {
+const fetchFluxUserProfile = async (userId: string) => {
   const { data, error } = await supabase
     .from('flux_authors')
     .select('*')
@@ -116,15 +116,15 @@ const fetchUserProfile = async (userId: string) => {
 const initializePage = async () => {
   if (loggedIn.value) {
     // Check if profile exists in the store
-    if (fluxStore.activeAuthor) {
-      author.value = fluxStore.activeAuthor
+    if (fluxStore.fluxUser) {
+      author.value = fluxStore.fluxUser
       currentStep.value = 3
     } else {
       // Try to fetch profile from database
-      const profile = await fetchUserProfile(user.value!.id)
+      const profile = await fetchFluxUserProfile(user.value!.id)
       if (profile) {
         author.value = profile
-        fluxStore.setActiveAuthor(profile)
+        fluxStore.setFluxUser(profile)
         currentStep.value = 3
       } else {
         currentStep.value = 2
@@ -180,7 +180,7 @@ const submitProfileForm = async () => {
     errorMsg.value = 'Failed to create profile. Please try again.'
   } else if (data) {
     author.value = data
-    fluxStore.setActiveAuthor(data)
+    fluxStore.setFluxUser(data)
     currentStep.value = 3
   }
 }

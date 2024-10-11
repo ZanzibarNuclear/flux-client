@@ -8,8 +8,9 @@
         <h3>Reactions</h3>
         <div v-if="loading">Loading...</div>
         <div v-else class="flux-reaction-chain">
-          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" @reply-to-flux="handleReply"
-            @boost-flux="handleBoost" @view-flux="handleView" @view-profile="handleViewProfile" />
+          <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction"
+            @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-flux="handleView"
+            @view-profile="handleViewProfile" />
         </div>
         <div v-if="error">Error: {{ error }}</div>
       </div>
@@ -22,7 +23,7 @@ import { useFluxes } from '@/composables/useFluxes'
 import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
-const { fluxes, loading, error, fetchReactions } = useFluxes()
+const { loading, error, fetchReactions } = useFluxes()
 
 const props = defineProps({
   flux: {
@@ -30,6 +31,8 @@ const props = defineProps({
     required: true
   },
 })
+// TODO: get reactions from flux store
+
 const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 const reactions = ref([])
 
@@ -45,11 +48,6 @@ watch(props.flux, async (newFlux) => {
     console.log('fetching reactions to', newFlux.id)
     fetchReactions(newFlux.id)
   }
-})
-
-watch(fluxes, async (newFluxes) => {
-  console.log('fluxes', newFluxes)
-  reactions.value = newFluxes
 })
 
 function handleView(flux) {

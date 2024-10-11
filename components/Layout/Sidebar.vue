@@ -40,7 +40,7 @@ import { useFluxStore } from '@/stores/flux'
 const fluxStore = useFluxStore()
 
 const goToTop = () => {
-  fluxStore.clearActiveAuthor()
+  fluxStore.clearActiveFlux()
   navigateTo('/')
 }
 </script>

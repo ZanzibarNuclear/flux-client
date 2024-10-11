@@ -13,7 +13,7 @@
       </button>
     </div>
     <div v-if="isEditing" class="profile-edit">
-      <UserProfileEditForm :userData="userData" @save="saveProfile" @cancel="toggleEditMode" />
+      <FluxUserProfileEditForm :userData="userData" @save="saveProfile" @cancel="toggleEditMode" />
     </div>
     <div v-else class="profile-info">
       <h2 class="user-name">{{ displayName }}</h2>

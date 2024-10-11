@@ -1,18 +1,19 @@
 import { defineStore } from 'pinia'
-import type { Flux, FluxAuthor } from '@/utils/types'
+import type { Flux, FluxUser } from '@/utils/types'
 
 export const useFluxStore = defineStore('flux', () => {
   // State
-  const activeAuthor = ref<FluxAuthor | null>(null)
+  const fluxUser = ref<FluxUser | null>(null)
+  const timeline = ref<Flux[]>([])  // shows relevant fluxes for user
   const activeFlux = ref<Flux | null>(null)
-  const timelineFluxes = ref<Flux[]>([])
+  const reactions = ref<Flux[]>([]) // shows replies to activeFlux
 
-  function setActiveAuthor(author: FluxAuthor) {
-    activeAuthor.value = author
+  function setFluxUser(author: FluxUser) {
+    fluxUser.value = author
   }
 
-  function clearActiveAuthor() {
-    activeAuthor.value = null
+  function clearFluxUser() {
+    fluxUser.value = null
   }
 
   function setActiveFlux(flux: Flux) {
@@ -23,18 +24,34 @@ export const useFluxStore = defineStore('flux', () => {
     activeFlux.value = null
   }
 
-  function setTimelineFluxes(fluxes: Flux[]) {
-    timelineFluxes.value = fluxes
+  function setTimeline(fluxes: Flux[]) {
+    timeline.value = fluxes
+  }
+
+  function clearTimeline() {
+    timeline.value = []
+  }
+
+  function setReactions(fluxes: Flux[]) {
+    reactions.value = fluxes
+  }
+
+  function clearReactions() {
+    reactions.value = []
   }
 
   return {
-    activeAuthor,
-    setActiveAuthor,
-    clearActiveAuthor,
+    fluxUser,
+    setFluxUser,
+    clearFluxUser,
+    timeline,
+    setTimeline,
+    clearTimeline,
     activeFlux,
     setActiveFlux,
     clearActiveFlux,
-    timelineFluxes,
-    setTimelineFluxes,
+    reactions,
+    setReactions,
+    clearReactions,
   }
 })

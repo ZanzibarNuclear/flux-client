@@ -1,5 +1,7 @@
+
 export function useFluxes() {
-  const fluxes = ref([])
+  const fluxStore = useFluxStore()
+  // const fluxes = ref([])
   const loading = ref(false)
   const error = ref(null)
 
@@ -17,9 +19,8 @@ export function useFluxes() {
       const query = new URLSearchParams()
       if (filter) query.append('filter', filter)
       if (author) query.append('author', author)
-
       const data = await $fetch(`/api/fluxes?${query.toString()}`)
-      fluxes.value = data
+      fluxStore.setTimeline(data)
     } catch (err) {
       console.error('Error fetching fluxes:', err)
     } finally {
@@ -32,7 +33,7 @@ export function useFluxes() {
     error.value = null
     try {
       const data = await $fetch(`/api/fluxes/${fluxId}/replies`)
-      fluxes.value = data
+      fluxStore.setReactions(data)
     } catch (err) {
       console.error('Error fetching reactions:', err)
     } finally {
@@ -40,7 +41,7 @@ export function useFluxes() {
     }
   }
 
-  const fetchFluxAuthor = async (userId: string) => {
+  const fetchFluxUser = async (userId: string) => {
     loading.value = true
     error.value = null
     try {
@@ -54,11 +55,10 @@ export function useFluxes() {
   }
 
   return {
-    fluxes,
     loading,
     error,
     fetchFluxes,
     fetchReactions,
-    fetchFluxAuthor,
+    fetchFluxUser,
   }
 }
