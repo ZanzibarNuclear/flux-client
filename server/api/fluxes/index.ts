@@ -14,11 +14,11 @@ export default defineEventHandler(async (event) => {
 
     let fluxQuery = client
       .from('fluxes')
-      .select('*, author:flux_authors(*)')
+      .select('*, author:flux_users(*)')
 
     // Filter by author if specified
     if (author) {
-      fluxQuery = fluxQuery.eq('author.handle', author)
+      fluxQuery = fluxQuery.eq('flux_users.handle', author)
     }
 
     // Apply sorting based on filter
@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
     const { data: newFlux, error } = await client
       .from('fluxes')
       .insert({
-        author_id: body.authorId,
+        flux_user_id: body.authorId,
         content: body.content,
         parent_id: body.parentId || null,
       })

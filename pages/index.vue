@@ -24,7 +24,7 @@ const isReply = ref(false)
 
 const fetchFluxUser = async (userId: string): Promise<FluxUser | null> => {
   const { data } = await useSupabaseClient()
-    .from('flux_authors')
+    .from('flux_users')
     .select('*')
     .eq('user_id', userId)
     .single()

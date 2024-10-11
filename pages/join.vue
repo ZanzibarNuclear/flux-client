@@ -99,7 +99,7 @@ const hasError = computed(() => errorMsg.value !== '')
 
 const fetchFluxUserProfile = async (userId: string) => {
   const { data, error } = await supabase
-    .from('flux_authors')
+    .from('flux_users')
     .select('*')
     .eq('user_id', userId)
     .single()
@@ -165,7 +165,7 @@ const submitProfileForm = async () => {
   // TODO: Make sure handle is not already taken - avoid the non-unique error
 
   const { data, error: updateError } = await supabase
-    .from('flux_authors')
+    .from('flux_users')
     .upsert({
       user_id: user.id,
       handle: handle.value,

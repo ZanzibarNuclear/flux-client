@@ -16,7 +16,7 @@ import { useFluxes } from '~/composables/useFluxes'
 import { useFluxStore } from '~/stores/flux'
 
 const props = defineProps({
-  username: {
+  userHandle: {
     type: String,
     default: null
   },
@@ -33,8 +33,8 @@ const listTitle = ref('Fluxlines')
 
 onMounted(() => {
   const options = {}
-  if (props.username) {
-    options.author = props.username
+  if (props.userHandle) {
+    options.author = props.userHandle
   }
   if (props.trendy) {
     options.filter = 'trendy'
@@ -44,15 +44,15 @@ onMounted(() => {
   fetchFluxes(options)
 })
 
-watch(() => props.username, (newUsername) => {
-  if (newUsername) {
-    listTitle.value = `${newUsername}'s Fluxes`
+watch(() => props.userHandle, (newUserHandle) => {
+  if (newUserHandle) {
+    listTitle.value = `${newUserHandle}'s Fluxes`
   } else {
     listTitle.value = 'The Latest Flux'
   }
   const options = {}
-  if (props.username) {
-    options.author = props.username
+  if (props.userHandle) {
+    options.author = props.userHandle
   }
   fetchFluxes(options)
 })
