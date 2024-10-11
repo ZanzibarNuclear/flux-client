@@ -1,30 +1,30 @@
 <template>
   <div class="flux-item">
-    <UAvatar :src="flux.author?.avatar" :alt="flux.author?.displayName || 'User'" @click="handleShowProfile" />
+    <UAvatar @click="handleViewProfile" class="clickable" :src="flux.author?.avatar"
+      :alt="flux.author?.display_name || '?? User'" />
     <div class="flux-content">
       <div class="flux-header">
         <div class="flux-header-left">
-          <span class="author-name" @click="handleShowProfile">{{ flux.author.displayName }}</span>
-          <span class="author-username">@{{ flux.author.handle }}</span>
-          <span class="flux-time"> - {{ formatTimeAgo(flux.timestamp) }}</span>
+          <span @click="handleViewProfile" class="author-name clickable">{{ flux.author.display_name }}</span>
+          <span @click="handleViewProfile" class="author-username clickable">@{{ flux.author.handle }}</span>
+          <span class="flux-time"> - {{ formatTimeAgo(flux.created_at) }}</span>
         </div>
         <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="Reply" color="blue"
           variant="ghost" />
       </div>
-      <div @click="handleSeeThread">
+      <div @click="handleView" class="clickable">
         <p class="flux-text">{{ flux.content }}</p>
       </div>
       <div class="flux-actions">
-        <UButton icon="i-ph-eye" label="View" color="gray" variant="ghost">
-          {{ flux.viewCount }} Views
+        <UButton @click="handleView" icon="i-ph-eye" label="View" color="gray" variant="ghost">
+          {{ flux.view_count }} Views
         </UButton>
-        <UButton icon="i-ph-chat-circle-text" color="gray" variant="ghost">
-          {{ flux.replyCount }} Replies
-          <Icon v-if="flux.userReaction.replied" name="i-ph-star" />
+        <UButton @click="handleReply" icon="i-ph-chat-circle-text" color="gray" variant="ghost">
+          {{ flux.reply_count }} Replies
+          <Icon v-if="flux.replied" name="i-ph-star" />
         </UButton>
-        <UButton icon="i-ph-lightning" color="blue" :variant="flux.userReaction.boosted ? 'solid' : 'ghost'"
-          @click="handleBoost">
-          {{ flux.boostCount }} Boosts
+        <UButton @click="handleBoost" icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'">
+          {{ flux.boost_count }} Boosts
         </UButton>
       </div>
     </div>
@@ -40,22 +40,22 @@ const props = defineProps({
     required: true
   }
 })
-const emit = defineEmits(['reply', 'seeThread', 'boost', 'profile'])
+const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 
-function handleReply() {
-  emit('reply', props.flux)
-}
-
-function handleShowProfile() {
-  emit('profile', props.flux.id)
-}
-
-function handleSeeThread() {
-  emit('seeThread', props.flux)
+function handleView() {
+  emit('viewFlux', props.flux)
 }
 
 function handleBoost() {
-  emit('boost', props.flux.id)
+  emit('boostFlux', props.flux)
+}
+
+function handleReply() {
+  emit('replyToFlux', props.flux)
+}
+
+function handleViewProfile() {
+  emit('viewProfile', props.flux.author.handle)
 }
 </script>
 
@@ -94,5 +94,9 @@ function handleBoost() {
 .flux-actions {
   display: flex;
   gap: 1rem;
+}
+
+.clickable {
+  cursor: pointer;
 }
 </style>

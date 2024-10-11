@@ -1,23 +1,26 @@
 DROP TABLE IF EXISTS flux_boosts;
 DROP TABLE IF EXISTS fluxes;
-DROP TABLE IF EXISTS flux_authors;
+DROP TABLE IF EXISTS flux_users;
 
-CREATE TABLE flux_authors (
+CREATE TABLE flux_users (
   id SERIAL PRIMARY KEY,
   user_id UUID NOT NULL,
-  handle VARCHAR(50) UNIQUE NOT NULL,
-  display_name VARCHAR(100) NOT NULL,
+  handle VARCHAR(30) UNIQUE NOT NULL,
+  display_name VARCHAR(50) NOT NULL,
   avatar_url TEXT,
+  bio TEXT,
+  location TEXT,
+  website TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-CREATE INDEX idx_flux_authors_handle ON flux_authors(handle);
+CREATE INDEX idx_flux_users_handle ON flux_users(handle);
 
 CREATE TABLE fluxes (
   id SERIAL PRIMARY KEY,
   content TEXT NOT NULL,
-  author_id INTEGER NOT NULL,
+  flux_user_id INTEGER NOT NULL,
   parent_id INTEGER,
   reply_count INTEGER DEFAULT 0,
   boost_count INTEGER DEFAULT 0,
@@ -25,17 +28,17 @@ CREATE TABLE fluxes (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (parent_id) REFERENCES fluxes(id) ON DELETE SET NULL,
-  FOREIGN KEY (author_id) REFERENCES flux_authors(id) ON DELETE CASCADE
+  FOREIGN KEY (author_id) REFERENCES flux_users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE flux_boosts (
   id SERIAL PRIMARY KEY,
   flux_id INTEGER NOT NULL,
-  user_id INTEGER NOT NULL,
+  flux_user_id INTEGER NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE (flux_id, user_id),
+  UNIQUE (flux_id, flux_user_id),
   FOREIGN KEY (flux_id) REFERENCES fluxes(id) ON DELETE CASCADE,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  FOREIGN KEY (flux_user_id) REFERENCES flux_users(id) ON DELETE CASCADE
 );
 
 
@@ -53,7 +56,7 @@ SELECT
 FROM 
   fluxes f
 JOIN 
-  flux_authors fa ON f.author_id = fa.id
+  flux_users fa ON f.author_id = fa.id
 WHERE 
   f.deleted_at IS NULL
 ORDER BY 
@@ -80,7 +83,7 @@ SELECT
 FROM 
   fluxes f
 JOIN 
-  flux_authors fa ON f.author_id = fa.id
+  flux_users fa ON f.author_id = fa.id
 WHERE 
   f.deleted_at IS NULL
   AND f.created_at < :last_created_at
@@ -88,7 +91,7 @@ ORDER BY
   f.created_at DESC
 LIMIT 11;
 
-# Here is a query to get flux_authors for a list of handles:
+# Here is a query to get flux_users for a list of handles:
 
 SELECT 
   id,
@@ -98,12 +101,12 @@ SELECT
   created_at,
   updated_at
 FROM 
-  flux_authors
+  flux_users
 WHERE 
   handle = ANY($1::varchar[]);
 
 const handles = ['user1', 'user2', 'user3'];
 const result = await client.query(
-  'SELECT id, handle, display_name, avatar_url, created_at, updated_at FROM flux_authors WHERE handle = ANY($1::varchar[])',
+  'SELECT id, handle, display_name, avatar_url, created_at, updated_at FROM flux_users WHERE handle = ANY($1::varchar[])',
   [handles]
 );

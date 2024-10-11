@@ -1,6 +1,6 @@
 <template>
   <div class="user-profile-page">
-    <UserProfile :username="username" />
+    <FluxUserProfile :username="username" />
     <FluxTimeline :username="username" @select-flux="handleSelectFlux" />
   </div>
 </template>

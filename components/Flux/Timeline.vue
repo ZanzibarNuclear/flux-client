@@ -1,12 +1,12 @@
 <template>
   <div class="flux-list">
-    <h3>{{ listTitle }}</h3>
+    <h2>{{ listTitle }}</h2>
     <div v-if="loading" class="loading">Loading fluxes...</div>
     <div v-else-if="error" class="error">Error loading fluxes. Please try again.</div>
     <template v-else>
-      <FluxItem v-for="flux in fluxes" :key="flux.id" :flux="flux" @seeThread="handleFluxSelect" @reply="handleReply"
-        @boost="handleBoost" @profile="handleProfile" />
-      <div v-if="fluxes.length === 0" class="no-fluxes">No fluxes to display.</div>
+      <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
+        @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
+      <div v-if="fluxStore.timeline.length === 0" class="no-fluxes">No fluxes to display.</div>
     </template>
   </div>
 </template>
@@ -25,11 +25,11 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['select-flux'])
+const emit = defineEmits(['select-flux', 'boost'])
 
-const { fluxes, loading, error, fetchFluxes } = useFluxes()
+const { loading, error, fetchFluxes } = useFluxes()
 const fluxStore = useFluxStore()
-const listTitle = ref('Timeline')
+const listTitle = ref('The Latest Flux')
 
 onMounted(() => {
   const options = {}
@@ -48,7 +48,7 @@ watch(() => props.username, (newUsername) => {
   if (newUsername) {
     listTitle.value = `${newUsername}'s Fluxes`
   } else {
-    listTitle.value = 'Flux Timeline'
+    listTitle.value = 'The Latest Flux'
   }
   const options = {}
   if (props.username) {
@@ -57,18 +57,22 @@ watch(() => props.username, (newUsername) => {
   fetchFluxes(options)
 })
 
-const handleFluxSelect = (flux) => {
-  console.log('bubble up selected flux', flux)
-  emit('select-flux', flux)
+function handleView(flux) {
+  emit('viewFlux', flux)
 }
 
-function handleReply(fluxId) {
-  console.log('reply', fluxId)
+function handleBoost(flux) {
+  emit('boostFlux', flux)
 }
 
-function handleBoost(fluxId) {
-  console.log('boost', fluxId)
+function handleReply(flux) {
+  emit('replyToFlux', flux)
 }
+
+function handleViewProfile(handle) {
+  emit('viewProfile', handle)
+}
+
 
 function handleProfile(fluxId) {
   console.log('profile', fluxId)
@@ -80,11 +84,6 @@ function handleProfile(fluxId) {
   max-width: 600px;
   margin: 0 auto;
 }
-
-/* h2 {
-  padding: 15px;
-  border-bottom: 1px solid #e1e8ed;
-} */
 
 .loading,
 .no-fluxes {

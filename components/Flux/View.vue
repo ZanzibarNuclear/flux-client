@@ -2,12 +2,15 @@
   <div>
     <UButton icon="i-ph-arrow-left" label="Return to timeline" color="blue" variant="ghost" @click="returnToTimeline" />
     <div class="flux-view">
-      <FluxItem :flux="flux" @reply="handleReply" />
+      <FluxItem :flux="flux" @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-flux="handleView"
+        @view-profile="handleViewProfile" />
       <div class="flux-reactions">
-        <h3>Reaction Chains</h3>
+        <h3>Reactions</h3>
         <div v-if="loading">Loading...</div>
         <div v-else class="flux-reaction-chain">
-          <FluxItem v-for="reaction in reactions" :key="reaction.id" :flux="reaction" @reply="handleReply" />
+          <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction"
+            @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-flux="handleView"
+            @view-profile="handleViewProfile" />
         </div>
         <div v-if="error">Error: {{ error }}</div>
       </div>
@@ -20,8 +23,7 @@ import { useFluxes } from '@/composables/useFluxes'
 import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
-
-const { fluxes, loading, error, fetchReactions } = useFluxes()
+const { loading, error, fetchReactions } = useFluxes()
 
 const props = defineProps({
   flux: {
@@ -29,30 +31,42 @@ const props = defineProps({
     required: true
   },
 })
-const emit = defineEmits(['reply'])
+// TODO: get reactions from flux store
+
+const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 const reactions = ref([])
 
-onMounted(async () => {
+const load = (fluxId) => {
+  console.log('loading reactions to flux:', fluxId)
+  fetchReactions(fluxId)
+}
+
+onMounted(() => {
+  console.log('FluxView.onMounted', props.flux)
   if (props.flux.id) {
-    console.log('fetching reactions to', props.flux.id)
-    fetchReactions(props.flux.id)
+    load(props.flux.id)
   }
 })
 
-watch(props.flux, async (newFlux) => {
-  if (newFlux.id) {
-    console.log('fetching reactions to', newFlux.id)
-    fetchReactions(newFlux.id)
-  }
+watch(() => props.flux, (newFlux) => {
+  console.log('flux changed:', newFlux)
+  load(newFlux.id)
 })
 
-watch(fluxes, async (newFluxes) => {
-  console.log('fluxes', newFluxes)
-  reactions.value = newFluxes
-})
+function handleView(flux) {
+  emit('viewFlux', flux)
+}
 
-const handleReply = (flux) => {
-  emit('reply', flux)
+function handleBoost(flux) {
+  emit('boostFlux', flux)
+}
+
+function handleReply(flux) {
+  emit('replyToFlux', flux)
+}
+
+function handleViewProfile(handle) {
+  emit('viewProfile', handle)
 }
 
 const returnToTimeline = () => {

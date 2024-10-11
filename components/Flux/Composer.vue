@@ -1,8 +1,5 @@
 <template>
   <div v-if="isActive" class="flux-composer">
-    <div v-if="replyingTo" class="replying-to">
-      Replying to: {{ replyingTo.content }}
-    </div>
     <textarea v-model="fluxContent" :placeholder="placeholder" id="flux-content"></textarea>
     <button @click="postFlux">{{ replyingTo ? 'Reply' : 'Flux it' }}</button>
     <button v-if="replyingTo" @click="cancelReply" class="cancel-reply">Cancel Reply</button>
@@ -15,18 +12,16 @@
 <script setup>
 import { useFluxStore } from '@/stores/flux'
 
-const fluxStore = useFluxStore()
-
 const props = defineProps({
   replyingTo: {
     type: Object,
     default: null
   }
 })
+
+const fluxStore = useFluxStore()
 const fluxContent = ref('')
-
-const isActive = computed(() => fluxStore.activeAuthor)
-
+const isActive = computed(() => fluxStore.fluxUser)
 const placeholder = computed(() =>
   props.replyingTo ? "Write your reply..." : "What's nu(-clear)?"
 )
@@ -34,8 +29,8 @@ const placeholder = computed(() =>
 function postFlux() {
   const fluxData = {
     content: fluxContent.value,
+    authorId: fluxStore.fluxUser.id,
     parentId: props.replyingTo?.id,
-    authorId: fluxStore.activeAuthor.id
   }
   // Send fluxData to your API
   console.log('Posting flux:', fluxData)
@@ -50,10 +45,11 @@ function postFlux() {
     .then(response => response.json())
     .then(data => {
       console.log('Flux posted successfully:', data)
+      console.warn('TODO: Add to reactions in store')
       if (props.replyingTo) {
-        emit('reply-posted', data)
+        fluxStore.addReply(data)
       } else {
-        emit('posted', data)
+        fluxStore.addToTimeline(data)
       }
     })
     .catch(error => {
@@ -65,8 +61,6 @@ function postFlux() {
 function cancelReply() {
   emit('cancel-reply')
 }
-
-const emit = defineEmits(['posted', 'reply-posted', 'cancel-reply'])
 </script>
 
 <style scoped>

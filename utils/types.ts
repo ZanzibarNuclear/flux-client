@@ -12,7 +12,7 @@ export interface Flux {
   boosted: boolean
 }
 
-export interface FluxAuthor {
+export interface FluxUser {
   id: string
   userId: string
   handle: string
