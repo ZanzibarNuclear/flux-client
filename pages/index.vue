@@ -1,13 +1,12 @@
 <template>
   <div class="home-timeline">
     <template v-if="fluxStore.activeFlux">
-      <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @posted="handlePosted"
-        @reply-posted="handleReplyPosted" />
+      <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" />
       <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @boost-flux="handleBoost"
         @view-profile="handleViewProfile" @view-flux="handleViewFlux" />
     </template>
     <template v-else>
-      <FluxComposer @posted="handlePosted" @reply-posted="handleReplyPosted" />
+      <FluxComposer />
       <FluxTimeline @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile"
         @view-flux="handleViewFlux" />
     </template>
@@ -20,6 +19,7 @@ import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
 const user = useSupabaseUser()
+
 const isReply = ref(false)
 
 const fetchFluxUser = async (userId: string): Promise<FluxUser | null> => {
@@ -49,22 +49,22 @@ watch(fluxUser, (newFluxUser) => {
 watchEffect(() => {
   if (error.value) {
     console.error('Error fetching flux user:', error.value)
-    // Handle the error appropriately (e.g., show a notification to the user)
+    // TODO: Handle the error appropriately (e.g., show a notification to the user)
   }
 })
 
 const handleViewFlux = (flux: Flux) => {
-  console.log('show selected flux', flux)
+  isReply.value = false
   fluxStore.setActiveFlux(flux)
 }
 
 const handleViewProfile = (handle: string) => {
-  console.log('show profile', handle)
+  navigateTo(`/profile/${handle}`)
 }
 
 const handleReply = (flux: Flux) => {
-  fluxStore.setActiveFlux(flux)
   isReply.value = true
+  fluxStore.setActiveFlux(flux)
 }
 
 async function handleBoost(flux: Flux) {
@@ -80,16 +80,7 @@ async function handleBoost(flux: Flux) {
       'Content-Type': 'application/json'
     }
   })
-
-  console.log(response)
-}
-
-const handlePosted = (flux: Flux) => {
-  console.log('posted', flux)
-}
-
-const handleReplyPosted = (flux: Flux) => {
-  console.log('reply posted', flux)
+  console.log(response) // TODO: update locally
 }
 </script>
 

@@ -17,13 +17,15 @@
         <span class="icon">✉️</span>
         <span class="label">Messages</span>
       </NuxtLink> -->
-      <NuxtLink v-if="fluxStore.activeAuthor" :to="`/profile/${fluxStore.activeAuthor.handle}`" class="nav-item">
+      <NuxtLink v-if="fluxStore.fluxUser" :to="`/profile/${fluxStore.fluxUser.handle}`" class="nav-item">
         <span class="icon">👤</span>
         <span class="label">Profile</span>
       </NuxtLink>
       <NuxtLink v-else to="/join" class="nav-item">
-        <UIcon name="i-ph-sign-in" />
-        <span class="label">Sign in or Join</span>
+        <span class="icon">
+          <UIcon name="i-ph-sign-in" />
+        </span>
+        <span class="label">Sign in</span>
       </NuxtLink>
       <hr class="my-4 border-t-2 border-slate-300" />
       <NuxtLink to="https://worldofnuclear.com" class="nav-item">

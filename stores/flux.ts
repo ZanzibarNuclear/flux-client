@@ -29,12 +29,20 @@ export const useFluxStore = defineStore('flux', () => {
     timeline.value = fluxes
   }
 
+  function addToTimeline(flux: Flux) {
+    timeline.value.unshift(flux)
+  }
+
   function clearTimeline() {
     timeline.value = []
   }
 
   function setReactions(fluxes: Flux[]) {
     reactions.value = fluxes
+  }
+
+  function addReply(flux: Flux) {
+    reactions.value.unshift(flux)
   }
 
   function clearReactions() {
@@ -50,9 +58,11 @@ export const useFluxStore = defineStore('flux', () => {
     clearTimeline,
     activeFlux,
     setActiveFlux,
+    addToTimeline,
     clearActiveFlux,
     reactions,
     setReactions,
+    addReply,
     clearReactions,
   }
 })

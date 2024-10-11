@@ -21,7 +21,7 @@ const props = defineProps({
 
 const fluxStore = useFluxStore()
 const fluxContent = ref('')
-const isActive = computed(() => fluxStore.activeAuthor)
+const isActive = computed(() => fluxStore.fluxUser)
 const placeholder = computed(() =>
   props.replyingTo ? "Write your reply..." : "What's nu(-clear)?"
 )
@@ -29,7 +29,7 @@ const placeholder = computed(() =>
 function postFlux() {
   const fluxData = {
     content: fluxContent.value,
-    authorId: fluxStore.activeAuthor.id,
+    authorId: fluxStore.fluxUser.id,
     parentId: props.replyingTo?.id,
   }
   // Send fluxData to your API
@@ -46,7 +46,11 @@ function postFlux() {
     .then(data => {
       console.log('Flux posted successfully:', data)
       console.warn('TODO: Add to reactions in store')
-      // TODO: add reply to store.reactions for active flux
+      if (props.replyingTo) {
+        fluxStore.addReply(data)
+      } else {
+        fluxStore.addToTimeline(data)
+      }
     })
     .catch(error => {
       console.error('Error posting flux:', error)

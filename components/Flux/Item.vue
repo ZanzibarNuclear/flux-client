@@ -1,28 +1,29 @@
 <template>
   <div class="flux-item">
-    <UAvatar :src="flux.author?.avatar" :alt="flux.author?.display_name || 'User'" @click="handleViewProfile" />
+    <UAvatar @click="handleViewProfile" class="clickable" :src="flux.author?.avatar"
+      :alt="flux.author?.display_name || '?? User'" />
     <div class="flux-content">
       <div class="flux-header">
         <div class="flux-header-left">
-          <span class="author-name" @click="handleViewProfile">{{ flux.author.display_name }}</span>
-          <span class="author-username">@{{ flux.author.handle }}</span>
+          <span @click="handleViewProfile" class="author-name clickable">{{ flux.author.display_name }}</span>
+          <span @click="handleViewProfile" class="author-username clickable">@{{ flux.author.handle }}</span>
           <span class="flux-time"> - {{ formatTimeAgo(flux.created_at) }}</span>
         </div>
         <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="Reply" color="blue"
           variant="ghost" />
       </div>
-      <div @click="handleView">
+      <div @click="handleView" class="clickable">
         <p class="flux-text">{{ flux.content }}</p>
       </div>
       <div class="flux-actions">
-        <UButton icon="i-ph-eye" label="View" color="gray" variant="ghost">
+        <UButton @click="handleView" icon="i-ph-eye" label="View" color="gray" variant="ghost">
           {{ flux.view_count }} Views
         </UButton>
-        <UButton icon="i-ph-chat-circle-text" color="gray" variant="ghost">
+        <UButton @click="handleReply" icon="i-ph-chat-circle-text" color="gray" variant="ghost">
           {{ flux.reply_count }} Replies
           <Icon v-if="flux.replied" name="i-ph-star" />
         </UButton>
-        <UButton icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'" @click="handleBoost">
+        <UButton @click="handleBoost" icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'">
           {{ flux.boost_count }} Boosts
         </UButton>
       </div>
@@ -93,5 +94,9 @@ function handleViewProfile() {
 .flux-actions {
   display: flex;
   gap: 1rem;
+}
+
+.clickable {
+  cursor: pointer;
 }
 </style>
