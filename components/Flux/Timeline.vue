@@ -66,8 +66,16 @@ function handleReply(fluxId) {
   console.log('reply', fluxId)
 }
 
-function handleBoost(fluxId) {
-  console.log('boost', fluxId)
+async function handleBoost(fluxId) {
+  const response = await $fetch(`/api/fluxes/${fluxId}/boost`, {
+    method: 'POST',
+    body: { authorId: fluxStore.activeAuthor.id },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  console.log(response)
 }
 
 function handleProfile(fluxId) {
