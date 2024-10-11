@@ -1,6 +1,6 @@
 <template>
   <div class="flux-list">
-    <h3>{{ listTitle }}</h3>
+    <h2>{{ listTitle }}</h2>
     <div v-if="loading" class="loading">Loading fluxes...</div>
     <div v-else-if="error" class="error">Error loading fluxes. Please try again.</div>
     <template v-else>
@@ -29,7 +29,7 @@ const emit = defineEmits(['select-flux'])
 
 const { fluxes, loading, error, fetchFluxes } = useFluxes()
 const fluxStore = useFluxStore()
-const listTitle = ref('Timeline')
+const listTitle = ref('The Latest Flux')
 
 onMounted(() => {
   const options = {}
@@ -48,7 +48,7 @@ watch(() => props.username, (newUsername) => {
   if (newUsername) {
     listTitle.value = `${newUsername}'s Fluxes`
   } else {
-    listTitle.value = 'Flux Timeline'
+    listTitle.value = 'The Latest Flux'
   }
   const options = {}
   if (props.username) {

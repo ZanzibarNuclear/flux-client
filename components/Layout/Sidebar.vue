@@ -1,7 +1,7 @@
 <template>
   <aside class="sidebar">
     <nav>
-      <NuxtLink to="/" class="nav-item">
+      <NuxtLink @click="goToTop" to="/" class="nav-item">
         <span class="icon">🏠</span>
         <span class="label">Overview</span>
       </NuxtLink>
@@ -17,10 +17,15 @@
         <span class="icon">✉️</span>
         <span class="label">Messages</span>
       </NuxtLink> -->
-      <NuxtLink :to="`/profile/${currentUser.username}`" class="nav-item">
+      <NuxtLink v-if="fluxStore.activeAuthor" :to="`/profile/${fluxStore.activeAuthor.handle}`" class="nav-item">
         <span class="icon">👤</span>
         <span class="label">Profile</span>
       </NuxtLink>
+      <NuxtLink v-else to="/join" class="nav-item">
+        <UIcon name="i-ph-sign-in" />
+        <span class="label">Sign in or Join</span>
+      </NuxtLink>
+      <hr class="my-4 border-t-2 border-slate-300" />
       <NuxtLink to="https://worldofnuclear.com" class="nav-item">
         <span class="icon">🌐</span>
         <span>World of Nuclear</span>
@@ -30,12 +35,14 @@
 </template>
 
 <script setup>
-// Mock current user data (replace with actual auth system later)
-const currentUser = ref({
-  name: 'John Doe',
-  username: 'johndoe',
-  avatar: 'https://api.dicebear.com/6.x/initials/svg?seed=JD'
-})
+import { useFluxStore } from '@/stores/flux'
+
+const fluxStore = useFluxStore()
+
+const goToTop = () => {
+  fluxStore.clearActiveAuthor()
+  navigateTo('/')
+}
 </script>
 
 <style scoped>
