@@ -36,18 +36,21 @@ const props = defineProps({
 const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 const reactions = ref([])
 
-onMounted(async () => {
+const load = (fluxId) => {
+  console.log('loading reactions to flux:', fluxId)
+  fetchReactions(fluxId)
+}
+
+onMounted(() => {
+  console.log('FluxView.onMounted', props.flux)
   if (props.flux.id) {
-    console.log('fetching reactions to', props.flux.id)
-    fetchReactions(props.flux.id)
+    load(props.flux.id)
   }
 })
 
-watch(props.flux, async (newFlux) => {
-  if (newFlux.id) {
-    console.log('fetching reactions to', newFlux.id)
-    fetchReactions(newFlux.id)
-  }
+watch(() => props.flux, (newFlux) => {
+  console.log('flux changed:', newFlux)
+  load(newFlux.id)
 })
 
 function handleView(flux) {

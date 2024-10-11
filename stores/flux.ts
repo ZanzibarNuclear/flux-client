@@ -18,6 +18,7 @@ export const useFluxStore = defineStore('flux', () => {
 
   function setActiveFlux(flux: Flux) {
     activeFlux.value = flux
+    reactions.value = []
   }
 
   function clearActiveFlux() {
