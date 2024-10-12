@@ -45,7 +45,7 @@ const userCover = computed(() => props.fluxUser?.cover_url || '/images/flux-them
 const userBio = computed(() => props.fluxUser?.bio)
 const location = computed(() => props.fluxUser?.location)
 const website = computed(() => props.fluxUser?.website)
-const joinDate = computed(() => props.fluxUser?.created_at)
+const joinDate = computed(() => formatDate(props.fluxUser?.created_at))
 
 const isOwnProfile = computed(() => {
   return (fluxStore.fluxUser.handle === props.fluxUser.handle)

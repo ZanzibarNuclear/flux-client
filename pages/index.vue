@@ -1,7 +1,7 @@
 <template>
   <div class="home-timeline">
     <template v-if="fluxStore.activeFlux">
-      <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" />
+      <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @cancel-reply="handleCancelReply" />
       <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @boost-flux="handleBoost"
         @view-profile="handleViewProfile" @view-flux="handleViewFlux" />
     </template>
@@ -29,6 +29,10 @@ const fetchFluxUser = async (userId: string): Promise<FluxUser | null> => {
     .eq('user_id', userId)
     .single()
   return data
+}
+
+const handleCancelReply = () => {
+  isReply.value = false
 }
 
 // Use useAsyncData to handle the author fetching

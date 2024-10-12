@@ -1,8 +1,8 @@
 <template>
   <div v-if="isActive" class="flux-composer">
-    <textarea v-model="fluxContent" :placeholder="placeholder" id="flux-content"></textarea>
-    <button @click="postFlux">{{ replyingTo ? 'Reply' : 'Flux it' }}</button>
-    <button v-if="replyingTo" @click="cancelReply" class="cancel-reply">Cancel Reply</button>
+    <UTextarea v-model="fluxContent" :placeholder="placeholder" id="flux-content"></UTextarea>
+    <UButton @click="postFlux">{{ replyingTo ? 'React' : 'Flux it' }}</UButton>
+    <UButton v-if="replyingTo" @click="cancelReply" class="cancel-reply">Cancel Reaction</UButton>
   </div>
   <div v-else>
     <p>Please log in to flux.</p>
@@ -18,15 +18,20 @@ const props = defineProps({
     default: null
   }
 })
+const emit = defineEmits(['cancelReply'])
 
 const fluxStore = useFluxStore()
 const fluxContent = ref('')
 const isActive = computed(() => fluxStore.fluxUser)
 const placeholder = computed(() =>
-  props.replyingTo ? "Write your reply..." : "What's nu(-clear)?"
+  props.replyingTo ? "Write your reaction..." : "What's nu(-clear)?"
 )
 
 function postFlux() {
+  if (fluxContent.value.length === 0) {
+    alert('You have to write something to flux it.')
+    return
+  }
   const fluxData = {
     content: fluxContent.value,
     fluxUserId: fluxStore.fluxUser.id,
@@ -59,7 +64,8 @@ function postFlux() {
 }
 
 function cancelReply() {
-  emit('cancel-reply')
+  fluxContent.value = ''
+  emit('cancelReply')
 }
 </script>
 

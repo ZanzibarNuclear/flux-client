@@ -34,7 +34,6 @@ const props = defineProps({
 // TODO: get reactions from flux store
 
 const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
-const reactions = ref([])
 
 const load = (fluxId) => {
   console.log('loading reactions to flux:', fluxId)
