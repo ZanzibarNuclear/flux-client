@@ -7,8 +7,9 @@
       Zanzibar's World of Nuclear Energy
     </div>
     <div class="top-right">
-      <UButton v-if="!user" to="/join" icon="i-ph-sign-in" label="Sign In" />
-      <UButton v-else to="/profile" icon="i-ph-user" label="Profile" />
+      <NavatarWidget />
+      <!-- <UButton v-if="!user" to="/join" icon="i-ph-sign-in" label="Sign In" />
+      <UButton v-else to="/profile" icon="i-ph-user" label="Profile" /> -->
     </div>
   </header>
 </template>

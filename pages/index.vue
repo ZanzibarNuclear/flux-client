@@ -1,7 +1,7 @@
 <template>
   <div class="home-timeline">
     <template v-if="fluxStore.activeFlux">
-      <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" />
+      <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @cancel-reply="handleCancelReply" />
       <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @boost-flux="handleBoost"
         @view-profile="handleViewProfile" @view-flux="handleViewFlux" />
     </template>
@@ -24,11 +24,15 @@ const isReply = ref(false)
 
 const fetchFluxUser = async (userId: string): Promise<FluxUser | null> => {
   const { data } = await useSupabaseClient()
-    .from('flux_authors')
+    .from('flux_users')
     .select('*')
     .eq('user_id', userId)
     .single()
   return data
+}
+
+const handleCancelReply = () => {
+  isReply.value = false
 }
 
 // Use useAsyncData to handle the author fetching
@@ -81,6 +85,9 @@ async function handleBoost(flux: Flux) {
     }
   })
   console.log(response) // TODO: update locally
+  if (response.success) {
+    flux.boostCount = response.boostCount
+  }
 }
 </script>
 

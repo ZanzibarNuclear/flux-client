@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
   const { error } = await client
     .from('flux_boosts')
-    .insert([{ user_id: fluxUserId, flux_id: id }])
+    .insert([{ flux_user_id: fluxUserId, flux_id: id }])
 
   if (error) {
     if (error.code === '23505') { // unique_violation error code for PostgreSQL
@@ -64,5 +64,5 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  return { success: true }
+  return { success: true, fluxId: id, boostCount }
 })

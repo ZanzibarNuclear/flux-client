@@ -8,8 +8,8 @@ export const useFluxStore = defineStore('flux', () => {
   const activeFlux = ref<Flux | null>(null)
   const reactions = ref<Flux[]>([]) // shows replies to activeFlux
 
-  function setFluxUser(author: FluxUser) {
-    fluxUser.value = author
+  function setFluxUser(myFluxUser: FluxUser) {
+    fluxUser.value = myFluxUser
   }
 
   function clearFluxUser() {
@@ -17,6 +17,9 @@ export const useFluxStore = defineStore('flux', () => {
   }
 
   function setActiveFlux(flux: Flux) {
+    if (flux === activeFlux.value) {
+      return
+    }
     activeFlux.value = flux
     reactions.value = []
   }

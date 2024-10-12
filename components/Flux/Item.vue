@@ -9,7 +9,7 @@
           <span @click="handleViewProfile" class="author-username clickable">@{{ flux.author.handle }}</span>
           <span class="flux-time"> - {{ formatTimeAgo(flux.created_at) }}</span>
         </div>
-        <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="Reply" color="blue"
+        <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="React" color="blue"
           variant="ghost" />
       </div>
       <div @click="handleView" class="clickable">
@@ -20,7 +20,7 @@
           {{ flux.view_count }} Views
         </UButton>
         <UButton @click="handleReply" icon="i-ph-chat-circle-text" color="gray" variant="ghost">
-          {{ flux.reply_count }} Replies
+          {{ flux.reply_count }} Reactions
           <Icon v-if="flux.replied" name="i-ph-star" />
         </UButton>
         <UButton @click="handleBoost" icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'">

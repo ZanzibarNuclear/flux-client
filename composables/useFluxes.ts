@@ -1,7 +1,7 @@
 
 export function useFluxes() {
   const fluxStore = useFluxStore()
-  // const fluxes = ref([])
+  const fluxUser = ref(null)
   const loading = ref(false)
   const error = ref(null)
 
@@ -46,7 +46,7 @@ export function useFluxes() {
     error.value = null
     try {
       const data = await $fetch(`/api/fluxes/author/${userId}`)
-      fluxes.value = data
+      fluxUser.value = data
     } catch (err) {
       console.error('Error fetching flux author:', err)
     } finally {
