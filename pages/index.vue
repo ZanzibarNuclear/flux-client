@@ -81,6 +81,9 @@ async function handleBoost(flux: Flux) {
     }
   })
   console.log(response) // TODO: update locally
+  if (response.success) {
+    flux.boostCount = response.boostCount
+  }
 }
 </script>
 

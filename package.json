@@ -15,7 +15,6 @@
     "@nuxtjs/supabase": "^1.2.2",
     "@pinia/nuxt": "^0.5.5",
     "@supabase/gotrue-js": "^2.65.0",
-    "lodash": "^4.17.21",
     "nuxt": "^3.13.0",
     "pinia": "^2.2.4",
     "vue": "latest",
@@ -23,8 +22,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@iconify-json/ph": "^1.2.0",
-    "@types/lodash": "^4.17.10"
+    "@iconify-json/ph": "^1.2.0"
   },
   "overrides": {
     "vue": "latest"

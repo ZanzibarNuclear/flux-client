@@ -1,7 +1,6 @@
 import { defineEventHandler, getQuery, readBody } from 'h3'
 import { serverSupabaseClient } from '#supabase/server'
-
-// In-memory store for fluxes
+import { toSnakeCase, toCamelCase } from '@/utils'
 
 export default defineEventHandler(async (event) => {
   const method = event.node.req.method
@@ -53,16 +52,12 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     console.log(body)
 
-    const parentFluxId = body.parentId
+    const dataIn = toSnakeCase(body)
 
     const { data: newFlux, error } = await client
       .from('fluxes')
-      .insert({
-        flux_user_id: body.authorId,
-        content: body.content,
-        parent_id: body.parentId || null,
-      })
-      .select('*, author:flux_authors(*)')
+      .insert(dataIn)
+      .select('*, author:flux_users(*)')
       .single()
 
     if (error) {
@@ -73,13 +68,14 @@ export default defineEventHandler(async (event) => {
       })
     }
     console.log(newFlux)
-
-    if (parentFluxId) {
-      console.log('increase reply count for', parentFluxId)
+    const fluxOut = toCamelCase(newFlux)
+    const parentId = fluxOut.parentId
+    if (parentId) {
+      console.log('increase reply count for', parentId)
       const { count: replyCount, error: countError } = await client
         .from('fluxes')
         .select('id', { count: 'exact' })
-        .eq('parent_id', parentFluxId)
+        .eq('parent_id', parentId)
 
       if (countError) {
         console.error('Error counting replies:', countError)
@@ -93,7 +89,7 @@ export default defineEventHandler(async (event) => {
       const { error: updateError } = await client
         .from('fluxes')
         .update({ reply_count: replyCount })
-        .eq('id', parentFluxId)
+        .eq('id', parentId)
 
       if (updateError) {
         console.error('Error updating reply count:', updateError)
@@ -106,6 +102,6 @@ export default defineEventHandler(async (event) => {
       console.log('Not a reply, so no affect on reply count')
     }
 
-    return newFlux
+    return fluxOut
   }
 })

@@ -29,7 +29,7 @@ const placeholder = computed(() =>
 function postFlux() {
   const fluxData = {
     content: fluxContent.value,
-    authorId: fluxStore.fluxUser.id,
+    fluxUserId: fluxStore.fluxUser.id,
     parentId: props.replyingTo?.id,
   }
   // Send fluxData to your API
