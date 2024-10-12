@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from 'h3'
+import { defineEventHandler } from 'h3'
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     const client = await serverSupabaseClient(event)
     const { data: replies, error } = await client
       .from('fluxes')
-      .select('*, author:flux_authors(*)')
+      .select('*, author:flux_users(*)')
       .eq('parent_id', parentId)
 
     if (error) {
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Failed to fetch replies',
       })
     }
-
+    console.log('replies to ' + parentId, replies)
     return replies
   }
 })
