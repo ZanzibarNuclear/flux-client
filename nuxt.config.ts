@@ -2,10 +2,11 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@nuxt/image', '@pinia/nuxt', '@nuxtjs/supabase'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/supabase', '@nuxt/image'],
   ui: {
     global: true,
   },
+  css: ['~/assets/css/tailwind.css'],
   colorMode: {
     preference: 'light',
     fallback: 'light',
@@ -17,12 +18,14 @@ export default defineNuxtConfig({
     },
   },
   supabase: {
-    redirect: false,
+    redirect: true,
     redirectOptions: {
       login: '/join',
       callback: '/confirm-auth',
-      exclude: ['/', '/join', '/confirm-auth'],
+      cookieRedirect: true,
+      include: ['/explore', '/messages', '/notifications'],
     },
+    cookieName: 'won-token',
     cookieOptions: {
       maxAge: 60 * 60 * 8,
       sameSite: 'lax',
