@@ -1,9 +1,8 @@
-
 export function useFluxes() {
   const fluxStore = useFluxStore()
-  const fluxUser = ref(null)
   const loading = ref(false)
   const error = ref(null)
+  const config = useRuntimeConfig()
 
   interface FetchFluxOptions {
     filter?: string
@@ -19,8 +18,8 @@ export function useFluxes() {
       const query = new URLSearchParams()
       if (filter) query.append('filter', filter)
       if (author) query.append('author', author)
-      const data = await $fetch(`/api/fluxes?${query.toString()}`)
-      fluxStore.setTimeline(data)
+      const data = await $fetch(`${config.public.apiRootUrl}/api/fluxes?${query.toString()}`)
+      fluxStore.setTimeline(data as Flux[])
     } catch (err) {
       console.error('Error fetching fluxes:', err)
     } finally {
@@ -32,8 +31,8 @@ export function useFluxes() {
     loading.value = true
     error.value = null
     try {
-      const data = await $fetch(`/api/fluxes/${fluxId}/replies`)
-      fluxStore.setReactions(data)
+      const data = await $fetch(`${config.public.apiRootUrl}/api/fluxes/${fluxId}/replies`)
+      fluxStore.setReactions(data as Flux[])
     } catch (err) {
       console.error('Error fetching reactions:', err)
     } finally {
@@ -41,17 +40,21 @@ export function useFluxes() {
     }
   }
 
-  const fetchFluxUser = async (userId: string) => {
-    loading.value = true
-    error.value = null
-    try {
-      const data = await $fetch(`/api/fluxes/author/${userId}`)
-      fluxUser.value = data
-    } catch (err) {
-      console.error('Error fetching flux author:', err)
-    } finally {
-      loading.value = false
-    }
+  const createFlux = async (fluxData: Flux) => {
+    fetch(`${config.public.apiRootUrl}/api/fluxes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(fluxData)
+    })
+      .then(response => response.json())
+      .then(data => {
+        return data
+      })
+      .catch(error => {
+        console.error('Error posting flux:', error)
+      })
   }
 
   return {
@@ -59,6 +62,6 @@ export function useFluxes() {
     error,
     fetchFluxes,
     fetchReactions,
-    fetchFluxUser,
+    createFlux
   }
 }

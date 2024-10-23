@@ -8,14 +8,11 @@
     </div>
     <div class="top-right">
       <NavatarWidget />
-      <!-- <UButton v-if="!user" to="/join" icon="i-ph-sign-in" label="Sign In" />
-      <UButton v-else to="/profile" icon="i-ph-user" label="Profile" /> -->
     </div>
   </header>
 </template>
 
 <script lang="ts" setup>
-const user = useSupabaseUser()
 </script>
 
 <style scoped>

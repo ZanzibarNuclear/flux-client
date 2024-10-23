@@ -21,13 +21,14 @@ const props = defineProps({
 const emit = defineEmits(['cancelReply'])
 
 const fluxStore = useFluxStore()
+const { createFlux } = useFluxes()
 const fluxContent = ref('')
 const isActive = computed(() => fluxStore.fluxUser)
 const placeholder = computed(() =>
   props.replyingTo ? "Write your reaction..." : "What's nu(-clear)?"
 )
 
-function postFlux() {
+async function postFlux() {
   if (fluxContent.value.length === 0) {
     alert('You have to write something to flux it.')
     return
@@ -37,29 +38,12 @@ function postFlux() {
     fluxUserId: fluxStore.fluxUser.id,
     parentId: props.replyingTo?.id,
   }
-  // Send fluxData to your API
-  console.log('Posting flux:', fluxData)
-  console.log('replyingTo', props.replyingTo)
-  fetch('/api/fluxes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(fluxData)
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Flux posted successfully:', data)
-      console.warn('TODO: Add to reactions in store')
-      if (props.replyingTo) {
-        fluxStore.addReply(data)
-      } else {
-        fluxStore.addToTimeline(data)
-      }
-    })
-    .catch(error => {
-      console.error('Error posting flux:', error)
-    })
+  const newFlux = await createFlux(fluxData)
+  if (props.replyingTo) {
+    fluxStore.addReply(newFlux)
+  } else {
+    fluxStore.addToTimeline(newFlux)
+  }
   fluxContent.value = '' // Clear the input after posting
 }
 
