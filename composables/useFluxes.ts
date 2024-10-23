@@ -18,7 +18,9 @@ export function useFluxes() {
       const query = new URLSearchParams()
       if (filter) query.append('filter', filter)
       if (author) query.append('author', author)
-      const data = await $fetch(`${config.public.apiRootUrl}/api/fluxes?${query.toString()}`)
+      const data = await $fetch(`${config.public.apiRootUrl}/api/fluxes?${query.toString()}`, {
+        mode: 'no-cors'
+      })
       fluxStore.setTimeline(data as Flux[])
     } catch (err) {
       console.error('Error fetching fluxes:', err)
