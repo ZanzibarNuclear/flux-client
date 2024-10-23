@@ -11,7 +11,6 @@
 
 <script setup>
 import { useFluxStore } from '@/stores/flux'
-
 const props = defineProps({
   replyingTo: {
     type: Object,
@@ -21,7 +20,7 @@ const props = defineProps({
 const emit = defineEmits(['cancelReply'])
 
 const fluxStore = useFluxStore()
-const { createFlux } = useFluxes()
+const { createFlux } = useFluxService()
 const fluxContent = ref('')
 const isActive = computed(() => fluxStore.fluxUser)
 const placeholder = computed(() =>

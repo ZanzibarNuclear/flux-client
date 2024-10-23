@@ -28,6 +28,8 @@ export const useFluxStore = defineStore('flux', () => {
     activeFlux.value = null
   }
 
+  const timelineEmpty = computed(() => !timeline.value || timeline.value.length === 0)
+
   function setTimeline(fluxes: Flux[]) {
     timeline.value = fluxes
   }
@@ -61,6 +63,7 @@ export const useFluxStore = defineStore('flux', () => {
     clearTimeline,
     activeFlux,
     setActiveFlux,
+    timelineEmpty,
     addToTimeline,
     clearActiveFlux,
     reactions,

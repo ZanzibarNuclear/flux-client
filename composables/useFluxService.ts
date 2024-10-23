@@ -1,4 +1,4 @@
-export function useFluxes() {
+export function useFluxService() {
   const fluxStore = useFluxStore()
   const loading = ref(false)
   const error = ref(null)
@@ -59,11 +59,17 @@ export function useFluxes() {
       })
   }
 
+  const fetchFluxUser = async (userHandle: string) => {
+    const data = await $fetch(`${config.public.apiRootUrl}/api/flux-users/${userHandle}`)
+    return data
+  }
+
   return {
     loading,
     error,
     fetchFluxes,
     fetchReactions,
-    createFlux
+    createFlux,
+    fetchFluxUser
   }
 }
