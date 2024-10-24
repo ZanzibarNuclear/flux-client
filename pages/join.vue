@@ -22,15 +22,15 @@
       <h2 class="text-2xl font-semibold mb-4">Step 1: Sign up or Sign in</h2>
       <h3>Use your account on one of these identity providers.</h3>
       <div class="flex justify-between gap-4">
-        <UButton @click="() => loginWithOAuth('twitter')" icon="i-ph-x-logo"
+        <UButton @click="() => loginWithAuthService('x')" icon="i-ph-x-logo"
           class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
           X
         </UButton>
-        <UButton @click="() => loginWithOAuth('google')" icon="i-ph-google-logo"
+        <UButton @click="() => loginWithAuthService('google')" icon="i-ph-google-logo"
           class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
           Google
         </UButton>
-        <UButton @click="() => loginWithOAuth('github')" icon="i-ph-github-logo"
+        <UButton @click="() => loginWithAuthService('github')" icon="i-ph-github-logo"
           class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
           GitHub
         </UButton>
@@ -138,6 +138,10 @@ const initializePage = async () => {
 
 // Call initializePage when the component is mounted
 onMounted(initializePage)
+
+const loginWithAuthService = async (provider: string) => {
+  await useAuthService().loginWithOAuth(provider)
+}
 
 const loginWithOAuth = async (provider: Provider) => {
   const { error } = await supabase.auth.signInWithOAuth({

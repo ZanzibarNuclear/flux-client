@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { useFluxAPI } from '~/composables/useFluxAPI'
+import { useFluxService } from '~/composables/useFluxService'
 import { useFluxStore } from '~/stores/flux'
 
 const props = defineProps({
@@ -27,7 +27,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['select-flux', 'boost'])
 
-const { loading, error, fetchFluxes } = useFluxAPI()
+const { loading, error, fetchFluxes } = useFluxService()
 const fluxStore = useFluxStore()
 const listTitle = ref('Fluxlines')
 

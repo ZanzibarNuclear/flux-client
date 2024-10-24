@@ -19,11 +19,11 @@
 </template>
 
 <script setup>
-import { useFluxes } from '@/composables/useFluxes'
+import { useFluxService } from '@/composables/useFluxService'
 import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
-const { loading, error, fetchReactions } = useFluxes()
+const { loading, error, fetchReactions } = useFluxService()
 
 const props = defineProps({
   flux: {
