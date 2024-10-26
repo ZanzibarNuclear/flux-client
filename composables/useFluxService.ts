@@ -71,11 +71,35 @@ export function useFluxService() {
    */
   const fetchMyFluxProfile = async () => {
     // must be signed in for this to work
-    const data = await $fetch(`${config.public.apiRootUrl}/api/me/flux-profile`)
-    if (data) {
-      fluxStore.setProfile(data as FluxProfile)
+    try {
+      const sessionToken = useCookie('session-token')
+      if (!sessionToken.value) {
+        console.warn('No session token found')
+        return
+      }
+      loading.value = true
+      const data = await $fetch(`${config.public.apiRootUrl}/api/me/flux-profile`, {
+        credentials: 'include',
+        headers: {
+          'X-Session-Token': sessionToken.value
+        }
+      })
+      if (data) {
+        console.log('setting my flux profile:', data)
+        fluxStore.setProfile(data as FluxProfile)
+      }
+    } catch (err) {
+      const error = err as Error & { response?: { status: number } };
+      if (error.response && error.response.status === 404) {
+        console.log('No flux profile found for user (404 response)')
+        // Ignore the 404 error
+        return
+      }
+      // Handle other errors
+      console.error('Error fetching flux profile:', err)
+    } finally {
+      loading.value = false
     }
-    return data
   }
 
   const checkFluxHandleAvailability = async (handle: string) => {

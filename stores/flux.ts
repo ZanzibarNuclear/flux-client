@@ -8,16 +8,14 @@ export const useFluxStore = defineStore('flux', () => {
   const activeFlux = ref<Flux | null>(null)
   const reactions = ref<Flux[]>([]) // shows replies to activeFlux
 
+  const hasProfile = computed(() => !!profile.value)
+
   function setProfile(myProfile: FluxProfile) {
     profile.value = myProfile
   }
 
   function clearProfile() {
     profile.value = null
-  }
-
-  function hasProfile() {
-    return !!profile.value
   }
 
   function setActiveFlux(flux: Flux) {

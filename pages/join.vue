@@ -18,7 +18,7 @@
       </p>
     </section>
 
-    <section v-if="isStep(1)" class="auth-options mt-8">
+    <section v-if="isStep1" class="auth-options mt-8">
       <h2 class="text-2xl font-semibold mb-4">Step 1: Sign up or Sign in</h2>
       <h3>Use your account on one of these identity providers.</h3>
       <div class="flex justify-between gap-4">
@@ -37,7 +37,7 @@
       </div>
     </section>
 
-    <section v-if="isStep(2)" class="join-form mt-8">
+    <section v-if="isStep2" class="join-form mt-8">
       <h2 class="text-2xl font-semibold mb-4">Step 2: Create Your Flux Profile</h2>
       <form @submit.prevent="onCreateFluxProfile">
         <div class="mb-4">
@@ -54,7 +54,7 @@
       </form>
     </section>
 
-    <section v-if="isStep(3)" class="congratulations mt-8">
+    <section v-if="isStep3" class="congratulations mt-8">
       <h2 class="text-2xl font-semibold mb-4">Step 3: Congratulations!</h2>
       <p>Welcome to Flux! Here are some tips to get started:</p>
       <ul class="list-disc list-inside mt-2">
@@ -72,7 +72,7 @@
       </div>
     </section>
 
-    <div v-if="!isStep(1)" class="mt-4">
+    <div v-if="!isStep1" class="mt-4">
       <button @click="previousStep" class="text-nuclear-blue-400">Back</button>
     </div>
   </div>
@@ -86,33 +86,44 @@ import { useAuthService } from '@/composables/useAuthService'
 const userStore = useUserStore()
 const fluxStore = useFluxStore()
 const fluxService = useFluxService()
+const authService = useAuthService()
 const router = useRouter()
 
 const handle = ref('')
 const displayName = ref('')
-const currentStep = ref(1)
 const errorMsg = ref('')
-
 const hasError = computed(() => errorMsg.value !== '')
-const isStep = (aStep: number) => currentStep.value === aStep
+const isStep1 = computed(() => !userStore.isSignedIn)
+const isStep2 = computed(() => !fluxStore.hasProfile)
+const isStep3 = computed(() => !!fluxStore.hasProfile)
 
 const initializePage = async () => {
   if (!userStore.isSignedIn) {
-    currentStep.value = 1
-    return
-  }
-  if (!fluxStore.hasProfile) {
-    const profile = await fluxService.fetchMyFluxProfile()
-    if (!profile) {
-      currentStep.value = 2
-    } else {
-      currentStep.value = 3
+    try {
+      await authService.getCurrentUser()
+    } catch (error) {
+      console.error('Error fetching current user:', error)
+      return
+    }
+    if (!userStore.isSignedIn) {
+      console.log('no user found; should go to step 1')
+      return
     }
   }
+  if (!fluxStore.hasProfile) {
+    await fluxService.fetchMyFluxProfile()
+    if (!fluxStore.hasProfile) {
+      console.log('no flux profile found; should go to step 2')
+      return
+    }
+  }
+  console.log('should go to step 3')
 }
 
 // Call initializePage when the component is mounted
-onMounted(initializePage)
+onMounted(async () => {
+  await initializePage()
+})
 
 const loginWithAuthService = async (provider: string) => {
   const returnTo = useCookie('return-to')
