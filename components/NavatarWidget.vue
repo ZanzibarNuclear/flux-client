@@ -17,24 +17,18 @@
 </template>
 
 <script setup lang="ts">
-// const user = useSupabaseUser()
 const fluxStore = useFluxStore()
 const userStore = useUserStore()
-const authService = useAuthService()
 
 const screenName = computed(() => {
   if (userStore.isSignedIn) {
-    return userStore.credentials?.alias || 'Mystery Guest'
+    return userStore.alias || 'Mystery Guest'
   } else {
     return 'anonymouns'
   }
 })
 const profileUrl = computed(() => {
   return `/profile/${fluxStore.fluxUser?.handle}`
-})
-
-onMounted(async () => {
-  authService.fetchUserInfo()
 })
 
 const openJoin = () => {
@@ -52,8 +46,7 @@ const items = [
       label: 'Sign Out',
       icon: 'i-ph-sign-out',
       click: async () => {
-        await useSupabaseClient().auth.signOut()
-        fluxStore.clearFluxUser()
+        userStore.clearCurrentUser()
         navigateTo('/')
       },
     },

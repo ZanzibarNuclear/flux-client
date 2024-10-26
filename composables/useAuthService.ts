@@ -3,11 +3,7 @@ export function useAuthService() {
   const config = useRuntimeConfig()
 
   const loading = ref(false)
-  const userInfo = ref(null)
-  const error = ref(null)
-
-  const isSignedIn = computed(() => !!userInfo.value)
-  // TODO: keep context of the current user
+  const error = ref<Error | null>(null)
 
   const loginWithOAuth = async (provider: string) => {
     console.log(`useAuthService.loginWithOAuth provider: ${provider} host: ${config.public.apiRootUrl}`)
@@ -16,14 +12,24 @@ export function useAuthService() {
     })
   }
 
-  const fetchUserInfo = async () => {
-    const apiRootUrl = config.public.apiRootUrl
-    console.log(`useAuthService.fetchUserInfo apiRootUrl: ${apiRootUrl}`)
-    const out = await $fetch(`http://localhost:3030/api/me`)
-    if (out) {
-      userStore.setCredentials(out as UserCredentials)
-    } else {
-      console.log('User is not signed in')
+  const getCurrentUser = async () => {
+    try {
+      loading.value = true
+      const userData = await $fetch(config.public.apiRootUrl + '/api/me', {
+        credentials: 'include'
+      })
+      userStore.setCurrentUser(userData as { userId: string, alias: string })
+      return userData
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        error.value = err
+        console.error('Error fetching user info', err.message)
+      } else {
+        error.value = new Error('An unknown error occurred')
+        console.error('Error fetching user info', err)
+      }
+    } finally {
+      loading.value = false
     }
   }
 
@@ -31,7 +37,6 @@ export function useAuthService() {
     loading,
     error,
     loginWithOAuth,
-    isSignedIn,
-    fetchUserInfo,
+    getCurrentUser,
   }
 }
