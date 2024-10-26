@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/supabase', '@nuxt/image'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxt/image'],
   ui: {
     global: true,
   },
@@ -17,28 +17,5 @@ export default defineNuxtConfig({
       baseUrl: process.env.BASE_URL,
       apiRootUrl: process.env.API_ROOT_URL,
     },
-  },
-  supabase: {
-    redirect: true,
-    redirectOptions: {
-      login: '/join',
-      callback: '/confirm-auth',
-      cookieRedirect: true,
-      include: ['/explore', '/messages', '/notifications'],
-    },
-    cookieName: 'won-token',
-    cookieOptions: {
-      maxAge: 60 * 60 * 8,
-      sameSite: 'lax',
-      secure: true
-    },
-    clientOptions: {
-      auth: {
-        flowType: 'pkce',
-        detectSessionInUrl: true,
-        persistSession: true,
-        autoRefreshToken: true
-      }
-    }
   },
 })

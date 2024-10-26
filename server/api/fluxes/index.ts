@@ -1,10 +1,8 @@
 import { defineEventHandler, getQuery, readBody } from 'h3'
-import { serverSupabaseClient } from '#supabase/server'
 import { toSnakeCase, toCamelCase } from '@/utils'
 
 export default defineEventHandler(async (event) => {
   const method = event.node.req.method
-  const client = await serverSupabaseClient(event)
 
   // GET /api/fluxes
   if (method === 'GET') {
