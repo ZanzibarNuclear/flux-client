@@ -108,14 +108,30 @@ export function useFluxService() {
   }
 
   const createMyFluxProfile = async (handle: string, displayName: string) => {
-    const data = await $fetch(`${config.public.apiRootUrl}/api/me/flux-profile`, {
-      method: 'POST',
-      body: JSON.stringify({ handle, displayName })
-    })
-    if (data) {
-      fluxStore.setProfile(data as FluxProfile)
+    try {
+      const sessionToken = useCookie('session-token')
+      if (!sessionToken.value) {
+        console.warn('No session token found')
+        return
+      }
+      loading.value = true
+      const data = await $fetch(`${config.public.apiRootUrl}/api/me/flux-profile`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'X-Session-Token': sessionToken.value
+        },
+        body: JSON.stringify({ handle, displayName })
+      })
+      if (data) {
+        fluxStore.setProfile(data as FluxProfile)
+      }
+      return data
+    } catch (err) {
+      console.error('Error creating my flux profile:', err)
+    } finally {
+      loading.value = false
     }
-    return data
   }
 
   /**

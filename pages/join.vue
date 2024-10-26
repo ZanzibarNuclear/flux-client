@@ -71,10 +71,6 @@
         <a href="#" class="text-nuclear-blue-400">FAQ</a>
       </div>
     </section>
-
-    <div v-if="!isStep1" class="mt-4">
-      <button @click="previousStep" class="text-nuclear-blue-400">Back</button>
-    </div>
   </div>
 </template>
 
@@ -139,17 +135,9 @@ const onCreateFluxProfile = async () => {
     const profile = await fluxService.createMyFluxProfile(handle.value, displayName.value)
 
     fluxStore.setProfile(profile as FluxProfile)
-    currentStep.value = 3
   } catch (error) {
     console.error('Error creating profile:', error)
     errorMsg.value = 'Failed to create profile. Please try again.'
-  }
-}
-
-const previousStep = () => {
-  if (currentStep.value > 1) {
-    currentStep.value--
-    router.push({ query: { step: currentStep.value.toString() } })
   }
 }
 </script>
