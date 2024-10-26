@@ -22,7 +22,7 @@ const emit = defineEmits(['cancelReply'])
 const fluxStore = useFluxStore()
 const { createFlux } = useFluxService()
 const fluxContent = ref('')
-const isActive = computed(() => fluxStore.fluxUser)
+const isActive = computed(() => !!fluxStore.profile)
 const placeholder = computed(() =>
   props.replyingTo ? "Write your reaction..." : "What's nu(-clear)?"
 )
@@ -34,7 +34,7 @@ async function postFlux() {
   }
   const fluxData = {
     content: fluxContent.value,
-    fluxUserId: fluxStore.fluxUser.id,
+    fluxUserId: fluxStore.profile.id,
     parentId: props.replyingTo?.id,
   }
   const newFlux = await createFlux(fluxData)

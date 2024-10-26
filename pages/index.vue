@@ -14,47 +14,34 @@
 </template>
 
 <script setup lang="ts">
-import type { Flux, FluxUser } from '@/utils/types' // Add FluxAuthor type
-import { useFluxStore } from '@/stores/flux'
+import type { Flux, FluxProfile } from '@/utils/types' // Add FluxAuthor type
 
+const authService = useAuthService()
+const userStore = useUserStore()
+const fluxService = useFluxService()
 const fluxStore = useFluxStore()
-const user = useSupabaseUser()
 
 const isReply = ref(false)
-
-const fetchFluxUser = async (userId: string): Promise<FluxUser | null> => {
-  const { data } = await useSupabaseClient()
-    .from('flux_users')
-    .select('*')
-    .eq('user_id', userId)
-    .single()
-  return data
-}
 
 const handleCancelReply = () => {
   isReply.value = false
 }
 
-// Use useAsyncData to handle the author fetching
-const { data: fluxUser, error } = await useAsyncData(
-  'fluxUser',
-  async () => user.value ? await fetchFluxUser(user.value.id) : null,
-  { watch: [user] }
-)
-
-// Watch for changes in the flux user data
-watch(fluxUser, (newFluxUser) => {
-  if (newFluxUser) {
-    fluxStore.setFluxUser(newFluxUser)
+onMounted(async () => {
+  // re-establish the current user and flux profile if session is valid
+  if (!userStore.isSignedIn) {
+    try {
+      await authService.getCurrentUser()
+    } catch (error) {
+      console.error('Error fetching current user:', error)
+      return
+    }
   }
-}, { immediate: true })
-
-// Handle error if author fetch fails
-watchEffect(() => {
-  if (error.value) {
-    console.error('Error fetching flux user:', error.value)
-    // TODO: Handle the error appropriately (e.g., show a notification to the user)
+  if (!fluxStore.hasProfile) {
+    await fluxService.fetchMyFluxProfile()
   }
+
+  // TODO: think about redirecting to join page if user is not signed in or no Flux profile
 })
 
 const handleViewFlux = (flux: Flux) => {
@@ -72,21 +59,22 @@ const handleReply = (flux: Flux) => {
 }
 
 async function handleBoost(flux: Flux) {
-  const fluxUser = fluxStore.fluxUser
-  if (!fluxUser) {
+  if (!fluxStore.hasProfile) {
     console.warn('Unknown user -- not able to boost')
     return
   }
-  const response = await $fetch(`/api/fluxes/${flux.id}/boost`, {
-    method: 'POST',
-    body: { fluxUserId: fluxUser.id },
-    headers: {
-      'Content-Type': 'application/json'
+  try {
+    await $fetch(`/api/fluxes/${flux.id}/boost`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (fluxStore.activeFlux) {
+      fluxStore.activeFlux.boostCount += 1
     }
-  })
-  console.log(response) // TODO: update locally
-  if (response.success) {
-    flux.boostCount = response.boostCount
+  } catch (error) {
+    console.error('Error boosting flux:', error)
   }
 }
 </script>

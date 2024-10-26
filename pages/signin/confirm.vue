@@ -3,7 +3,6 @@
     <h1>Sign In Confirmation</h1>
     <div v-if="sessionToken" class="w-3/4">
       <p>Login successful! You are now authenticated.</p>
-      <p>Session token: {{ sessionToken }}</p>
 
       <div v-if="isLoading">
         <p>Loading user info...</p>
@@ -20,7 +19,8 @@
         <p>Now that you're signed in, you can:</p>
         <ul>
           <li>
-            <NuxtLink to="/join?step=2">Use Flux</NuxtLink>
+            <NuxtLink v-if="!!returnTo" :to="returnTo">Go back to where you were.</NuxtLink>
+            <NuxtLink to="/">Use Flux</NuxtLink>
           </li>
         </ul>
       </div>
@@ -41,6 +41,7 @@ const authService = useAuthService()
 
 const route = useRoute()
 const sessionToken = ref<string | null>(null)
+const returnTo = useCookie('return-to')
 
 const isLoading = computed(() => authService.loading.value)
 const error = computed(() => authService.error.value)

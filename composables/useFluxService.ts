@@ -59,9 +59,47 @@ export function useFluxService() {
       })
   }
 
-  const fetchFluxUser = async (userHandle: string) => {
-    const data = await $fetch(`${config.public.apiRootUrl}/api/flux-users/${userHandle}`)
+  const boostFlux = async (fluxId: string) => {
+    const data = await $fetch(`${config.public.apiRootUrl}/api/fluxes/${fluxId}/boost`, {
+      method: 'POST',
+    })
     return data
+  }
+
+  /**
+   * Fetch the current user's Flux profile
+   */
+  const fetchMyFluxProfile = async () => {
+    // must be signed in for this to work
+    const data = await $fetch(`${config.public.apiRootUrl}/api/me/flux-profile`)
+    if (data) {
+      fluxStore.setProfile(data as FluxProfile)
+    }
+    return data
+  }
+
+  const checkFluxHandleAvailability = async (handle: string) => {
+    const data = await $fetch(`${config.public.apiRootUrl}/api/flux-users/${handle}`)
+    return !data
+  }
+
+  const createMyFluxProfile = async (handle: string, displayName: string) => {
+    const data = await $fetch(`${config.public.apiRootUrl}/api/me/flux-profile`, {
+      method: 'POST',
+      body: JSON.stringify({ handle, displayName })
+    })
+    if (data) {
+      fluxStore.setProfile(data as FluxProfile)
+    }
+    return data
+  }
+
+  /**
+   * Fetch any Flux user profile by their handle
+   */
+  const fetchFluxProfile = async (userHandle: string) => {
+    const data = await $fetch(`${config.public.apiRootUrl}/api/flux-users/${userHandle}`)
+    return data as FluxProfile
   }
 
   return {
@@ -70,6 +108,10 @@ export function useFluxService() {
     fetchFluxes,
     fetchReactions,
     createFlux,
-    fetchFluxUser
+    fetchFluxProfile,
+    checkFluxHandleAvailability,
+    createMyFluxProfile,
+    fetchMyFluxProfile,
+    boostFlux
   }
 }

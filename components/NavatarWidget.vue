@@ -28,7 +28,7 @@ const screenName = computed(() => {
   }
 })
 const profileUrl = computed(() => {
-  return `/profile/${fluxStore.fluxUser?.handle}`
+  return `/profile/${fluxStore.profile?.handle}`
 })
 
 const openJoin = () => {

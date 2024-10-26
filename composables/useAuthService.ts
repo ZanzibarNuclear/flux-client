@@ -41,10 +41,19 @@ export function useAuthService() {
     }
   }
 
+  const findIdentity = async (provider: string) => {
+    await getCurrentUser()
+    if (!userStore.isSignedIn) {
+      console.log('Did not find user with active session. Attempting OAuth login.')
+      await loginWithOAuth(provider)
+    }
+  }
+
   return {
     loading,
     error,
     loginWithOAuth,
     getCurrentUser,
+    findIdentity
   }
 }

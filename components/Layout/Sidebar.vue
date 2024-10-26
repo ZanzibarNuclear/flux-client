@@ -17,7 +17,7 @@
         <span class="icon">✉️</span>
         <span class="label">Messages</span>
       </NuxtLink> -->
-      <NuxtLink v-if="fluxStore.fluxUser" :to="`/profile/${fluxStore.fluxUser.handle}`" class="nav-item">
+      <NuxtLink v-if="fluxStore.profile" :to="`/profile/${fluxStore.profile.handle}`" class="nav-item">
         <span class="icon">👤</span>
         <span class="label">Profile</span>
       </NuxtLink>

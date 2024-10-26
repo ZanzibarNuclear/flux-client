@@ -12,14 +12,26 @@ export interface Flux {
   boosted: boolean
 }
 
-export interface FluxUser {
+export interface FluxProfile {
   id: string
   userId: string
   handle: string
   displayName: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface UserProfile {
+  id: string
+  userId: string
+  screenName: string
+  fullName: string
   avatarUrl: string
   bio: string
   location: string
+  joinReason: string
+  nuclearLikes: string
+  xUsername: string
   website: string
   createdAt: string
   updatedAt: string

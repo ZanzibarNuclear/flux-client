@@ -1,19 +1,23 @@
 import { defineStore } from 'pinia'
-import type { Flux, FluxUser } from '@/utils/types'
+import type { Flux, FluxProfile } from '@/utils/types'
 
 export const useFluxStore = defineStore('flux', () => {
   // State
-  const fluxUser = ref<FluxUser | null>(null)
+  const profile = ref<FluxProfile | null>(null)
   const timeline = ref<Flux[]>([])  // shows relevant fluxes for user
   const activeFlux = ref<Flux | null>(null)
   const reactions = ref<Flux[]>([]) // shows replies to activeFlux
 
-  function setFluxUser(myFluxUser: FluxUser) {
-    fluxUser.value = myFluxUser
+  function setProfile(myProfile: FluxProfile) {
+    profile.value = myProfile
   }
 
-  function clearFluxUser() {
-    fluxUser.value = null
+  function clearProfile() {
+    profile.value = null
+  }
+
+  function hasProfile() {
+    return !!profile.value
   }
 
   function setActiveFlux(flux: Flux) {
@@ -55,9 +59,10 @@ export const useFluxStore = defineStore('flux', () => {
   }
 
   return {
-    fluxUser,
-    setFluxUser,
-    clearFluxUser,
+    profile,
+    setProfile,
+    clearProfile,
+    hasProfile,
     timeline,
     setTimeline,
     clearTimeline,
