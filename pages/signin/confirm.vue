@@ -5,11 +5,11 @@
       <p>Login successful! You are now authenticated.</p>
       <p>Session token: {{ sessionToken }}</p>
 
-      <div v-if="authService.loading">
+      <div v-if="isLoading">
         <p>Loading user info...</p>
       </div>
-      <div v-else-if="authService.error">
-        <p>Error loading user info: {{ authService.error }}</p>
+      <div v-else-if="error">
+        <p>Error loading user info: {{ error }}</p>
       </div>
       <div v-else>
         <p>We shall call you {{ userStore.alias || 'The Amazing Wonder Person' }}</p>
@@ -33,7 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCookie } from 'nuxt/app'
 
@@ -43,6 +42,9 @@ const authService = useAuthService()
 const route = useRoute()
 const sessionToken = ref<string | null>(null)
 
+const isLoading = computed(() => authService.loading.value)
+const error = computed(() => authService.error.value)
+
 onMounted(() => {
   // expect cookie to have been sent by server and stored
   authService.getCurrentUser()
@@ -51,11 +53,9 @@ onMounted(() => {
   const token = route.query.token as string | null
   if (token) {
     console.log('Keeping session token in cookie')
-    const cookie = useCookie('blah-token', {
+    const cookie = useCookie('session-token', {
       maxAge: 60 * 60 * 24 * 90, // 90 days
-      secure: true,
-      httpOnly: true,
-      sameSite: 'lax'
+      sameSite: 'none'
     })
     cookie.value = token
     sessionToken.value = token

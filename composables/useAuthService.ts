@@ -14,11 +14,19 @@ export function useAuthService() {
 
   const getCurrentUser = async () => {
     try {
+      const sessionToken = useCookie('session-token')
+      if (!sessionToken.value) {
+        console.warn('No session token found')
+        return
+      }
       loading.value = true
       const userData = await $fetch(config.public.apiRootUrl + '/api/me', {
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'X-Session-Token': sessionToken.value
+        }
       })
-      userStore.setCurrentUser(userData as { userId: string, alias: string })
+      userStore.setCurrentUser(userData as { id: string, alias: string })
       return userData
     } catch (err: unknown) {
       if (err instanceof Error) {

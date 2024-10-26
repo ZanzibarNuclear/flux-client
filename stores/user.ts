@@ -4,9 +4,9 @@ export const useUserStore = defineStore('userStore', () => {
   const userId = ref<string | null>(null)
   const alias = ref<string | null>(null)
 
-  function setCurrentUser(newCredentials: { userId: string, alias: string }) {
-    userId.value = newCredentials.userId
-    alias.value = newCredentials.alias
+  function setCurrentUser(userInfo: { id: string, alias: string }) {
+    userId.value = userInfo.id
+    alias.value = userInfo.alias
   }
 
   const isSignedIn = computed(() => !!userId.value)
