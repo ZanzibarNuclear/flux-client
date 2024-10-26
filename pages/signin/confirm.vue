@@ -3,6 +3,8 @@
     <h1>Sign In Confirmation</h1>
     <div v-if="sessionToken" class="w-3/4">
       <p>{{ confirmationMessage }}</p>
+      <p>We shall call you {{ userStore.credentials?.alias || 'The Amazing Wonder Person' }}</p>
+      <p>Your user ID is {{ userStore.credentials?.userId || 'unknown' }}</p>
       <p>Now that you're signed in, you can:</p>
       <ul>
         <li>
@@ -22,6 +24,11 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCookie } from 'nuxt/app'
 
+import type { UserCredentials } from '@/stores/user'
+
+const userStore = useUserStore()
+const authService = useAuthService()
+
 const route = useRoute()
 const sessionToken = ref<string | null>(null)
 const confirmationMessage = ref<string>('')
@@ -32,7 +39,7 @@ onMounted(() => {
 
   if (token) {
     // Store the token in a cookie
-    const cookie = useCookie('session-token', {
+    const cookie = useCookie('blah-token', {
       maxAge: 60 * 60 * 24 * 90, // 90 days
       secure: true,
       httpOnly: true,
@@ -43,5 +50,7 @@ onMounted(() => {
     sessionToken.value = token
     confirmationMessage.value = 'Login successful! You are now authenticated.'
   }
+
+  authService.fetchUserInfo()
 })
 </script>

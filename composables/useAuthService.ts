@@ -1,8 +1,12 @@
 export function useAuthService() {
-  const loading = ref(false)
-  const error = ref(null)
+  const userStore = useUserStore()
   const config = useRuntimeConfig()
 
+  const loading = ref(false)
+  const userInfo = ref(null)
+  const error = ref(null)
+
+  const isSignedIn = computed(() => !!userInfo.value)
   // TODO: keep context of the current user
 
   const loginWithOAuth = async (provider: string) => {
@@ -12,9 +16,22 @@ export function useAuthService() {
     })
   }
 
+  const fetchUserInfo = async () => {
+    const apiRootUrl = config.public.apiRootUrl
+    console.log(`useAuthService.fetchUserInfo apiRootUrl: ${apiRootUrl}`)
+    const out = await $fetch(`http://localhost:3030/api/me`)
+    if (out) {
+      userStore.setCredentials(out as UserCredentials)
+    } else {
+      console.log('User is not signed in')
+    }
+  }
+
   return {
     loading,
     error,
-    loginWithOAuth
+    loginWithOAuth,
+    isSignedIn,
+    fetchUserInfo,
   }
 }

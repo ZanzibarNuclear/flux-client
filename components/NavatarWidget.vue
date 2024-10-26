@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!signedIn">
+    <div v-if="!userStore.isSignedIn">
       <div>
         <UButton label="Join" variant="solid" color="amber" icon="i-ph-arrow-bend-down-right-duotone" class="mr-2 mb-1"
           @click="openJoin" />
@@ -9,7 +9,7 @@
         <UButton label="Sign In" variant="solid" color="primary" icon="i-ph-sign-in" @click="openJoin" />
       </div>
     </div>
-    <UDropdown v-if="signedIn" :items="items" :popper="{ placement: 'bottom-start' }" class="text-primary">
+    <UDropdown v-if="userStore.isSignedIn" :items="items" :popper="{ placement: 'bottom-start' }" class="text-primary">
       <UButton color="primary" variant="solid" icon="i-ph-person" :label="screenName"
         trailing-icon="i-ph-caret-double-down" />
     </UDropdown>
@@ -17,17 +17,16 @@
 </template>
 
 <script setup lang="ts">
-const user = useSupabaseUser()
+// const user = useSupabaseUser()
 const fluxStore = useFluxStore()
+const userStore = useUserStore()
+const authService = useAuthService()
 
-const signedIn = computed(() => !!user.value)
 const screenName = computed(() => {
-  if (!signedIn.value) {
-    return 'Guest'
-  } else if (!fluxStore.fluxUser) {
-    return 'Special Guest'
+  if (userStore.isSignedIn) {
+    return userStore.credentials?.alias || 'Mystery Guest'
   } else {
-    return fluxStore.fluxUser?.display_name
+    return 'anonymouns'
   }
 })
 const profileUrl = computed(() => {
@@ -35,7 +34,7 @@ const profileUrl = computed(() => {
 })
 
 onMounted(async () => {
-  // TODO: load flux user if logged in -- implement in composable
+  authService.fetchUserInfo()
 })
 
 const openJoin = () => {
