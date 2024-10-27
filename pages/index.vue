@@ -64,14 +64,9 @@ async function handleBoost(flux: Flux) {
     return
   }
   try {
-    await $fetch(`/api/fluxes/${flux.id}/boost`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    if (fluxStore.activeFlux) {
-      fluxStore.activeFlux.boostCount += 1
+    const boostedFlux = await fluxService.boostFlux(flux.id)
+    if (boostedFlux) {
+      fluxStore.updateFlux(boostedFlux as Flux)
     }
   } catch (error) {
     console.error('Error boosting flux:', error)

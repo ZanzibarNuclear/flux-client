@@ -26,6 +26,17 @@ export const useFluxStore = defineStore('fluxStore', () => {
     reactions.value = []
   }
 
+  function updateFlux(flux: Flux) {
+    let index = timeline.value.findIndex(item => item.id === flux.id)
+    if (index !== -1) {
+      timeline.value[index] = flux
+    }
+    index = reactions.value.findIndex(item => item.id === flux.id)
+    if (index !== -1) {
+      reactions.value[index] = flux
+    }
+  }
+
   function clearActiveFlux() {
     activeFlux.value = null
   }
@@ -66,6 +77,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
     clearTimeline,
     activeFlux,
     setActiveFlux,
+    updateFlux,
     timelineEmpty,
     addToTimeline,
     clearActiveFlux,

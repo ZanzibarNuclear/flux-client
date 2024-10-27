@@ -3,7 +3,6 @@ export function useFluxService() {
   const api = useApi()
   const loading = ref(false)
   const error = ref(null)
-  const config = useRuntimeConfig()
 
   interface FetchFluxOptions {
     filter?: string
@@ -50,8 +49,13 @@ export function useFluxService() {
     return data
   }
 
-  const boostFlux = async (fluxId: string) => {
-    const data = await api.post(`api/fluxes/${fluxId}/boost`, {})
+  const boostFlux = async (fluxId: number) => {
+    const data = await api.post(`/api/fluxes/${fluxId}/boost`, {})
+    return data
+  }
+
+  const deboostFlux = async (fluxId: number) => {
+    const data = await api.delete(`/api/fluxes/${fluxId}/boost`)
     return data
   }
 
