@@ -43,7 +43,7 @@ export function useFluxService() {
 
   const createFlux = async (fluxData: Flux) => {
     const data = await api.post('/api/fluxes', fluxData)
-    return data as Flux
+    return data
   }
 
   const boostFlux = async (fluxId: string) => {

@@ -42,6 +42,10 @@ const props = defineProps({
 })
 const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 
+onMounted(() => {
+  console.log('flux:', props.flux)
+})
+
 function handleView() {
   emit('viewFlux', props.flux)
 }
