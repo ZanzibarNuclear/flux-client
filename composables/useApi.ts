@@ -5,7 +5,7 @@ export const useApi = () => {
     }),
     post: async (url: string, data: any) => {
       console.log(`posting to ${url}:`, data)
-      await $fetch(`${useRuntimeConfig().public.apiBaseUrl}${url}`, {
+      return await $fetch(`${useRuntimeConfig().public.apiBaseUrl}${url}`, {
         method: 'POST',
         body: data,
         credentials: 'include', // This is crucial for sending cookies

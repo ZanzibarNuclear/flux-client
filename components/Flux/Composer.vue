@@ -32,12 +32,7 @@ async function postFlux() {
     alert('You have to write something to flux it.')
     return
   }
-  const fluxData = {
-    content: fluxContent.value,
-    fluxUserId: fluxStore.profile.id,
-    parentId: props.replyingTo?.id,
-  }
-  const newFlux = await createFlux(fluxData)
+  const newFlux = await createFlux(fluxContent.value, props.replyingTo?.id)
   if (props.replyingTo) {
     fluxStore.addReply(newFlux)
   } else {

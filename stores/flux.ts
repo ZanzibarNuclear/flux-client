@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Flux, FluxProfile } from '@/utils/types'
 
-export const useFluxStore = defineStore('flux', () => {
+export const useFluxStore = defineStore('fluxStore', () => {
   // State
   const profile = ref<FluxProfile | null>(null)
   const timeline = ref<Flux[]>([])  // shows relevant fluxes for user

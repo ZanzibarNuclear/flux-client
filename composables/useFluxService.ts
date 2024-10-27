@@ -41,8 +41,12 @@ export function useFluxService() {
     }
   }
 
-  const createFlux = async (fluxData: Flux) => {
-    const data = await api.post('/api/fluxes', fluxData)
+  const createFlux = async (content: string, parentId: string | null = null) => {
+    const data = await api.post('/api/fluxes', {
+      content,
+      parentId,
+    })
+    console.log('returned new flux:', data)
     return data
   }
 
