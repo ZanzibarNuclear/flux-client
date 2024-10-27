@@ -49,17 +49,5 @@ const error = computed(() => authService.error.value)
 onMounted(() => {
   // expect cookie to have been sent by server and stored
   authService.getCurrentUser()
-
-  // alternate: pass session token via query string
-  const token = route.query.token as string | null
-  if (token) {
-    console.log('Keeping session token in cookie')
-    const cookie = useCookie('session-token', {
-      maxAge: 60 * 60 * 24 * 90, // 90 days
-      sameSite: 'none'
-    })
-    cookie.value = token
-    sessionToken.value = token
-  }
 })
 </script>

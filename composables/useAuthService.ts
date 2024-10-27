@@ -1,32 +1,24 @@
 export function useAuthService() {
   const userStore = useUserStore()
-  const config = useRuntimeConfig()
 
   const loading = ref(false)
   const error = ref<Error | null>(null)
 
   const loginWithOAuth = async (provider: string) => {
-    console.log(`useAuthService.loginWithOAuth provider: ${provider} host: ${config.public.apiRootUrl}`)
-    navigateTo(`${config.public.apiRootUrl}/login/${provider}`, {
+    navigateTo(`${useRuntimeConfig().public.apiRootUrl}/login/${provider}`, {
       external: true
     })
   }
 
   const getCurrentUser = async () => {
     try {
-      const sessionToken = useCookie('session-token')
-      if (!sessionToken.value) {
-        console.warn('No session token found')
-        return
-      }
+      const api = useApi()
+
       loading.value = true
-      const userData = await $fetch(config.public.apiRootUrl + '/api/me', {
-        credentials: 'include',
-        headers: {
-          'X-Session-Token': sessionToken.value
-        }
-      })
-      userStore.setCurrentUser(userData as { id: string, alias: string })
+      const userData = await api.get('/api/me')
+
+      console.log('found current user:', userData)
+      userStore.setCurrentUser(userData as { id: string, alias: string, roles: string[] })
       return userData
     } catch (err: unknown) {
       if (err instanceof Error) {

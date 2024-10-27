@@ -23,7 +23,6 @@ export interface FluxProfile {
 
 export interface UserProfile {
   id: string
-  userId: string
   screenName: string
   fullName: string
   avatarUrl: string

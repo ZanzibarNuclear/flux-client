@@ -96,7 +96,8 @@ const isStep3 = computed(() => !!fluxStore.hasProfile)
 const initializePage = async () => {
   if (!userStore.isSignedIn) {
     try {
-      await authService.getCurrentUser()
+      const currentUser = await authService.getCurrentUser()
+      console.log('join.vue current user:', currentUser)
     } catch (error) {
       console.error('Error fetching current user:', error)
       return
@@ -128,8 +129,11 @@ const loginWithAuthService = async (provider: string) => {
 }
 
 const onCreateFluxProfile = async () => {
-  // TODO: Make sure handle is unique and has URL-friendly format
   const isHandleAvailable = await fluxService.checkFluxHandleAvailability(handle.value)
+  if (!isHandleAvailable) {
+    errorMsg.value = 'Handle is already taken. Please try another one.'
+    return
+  }
 
   try {
     const profile = await fluxService.createMyFluxProfile(handle.value, displayName.value)
