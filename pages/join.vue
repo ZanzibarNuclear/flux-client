@@ -67,6 +67,7 @@
         <li>Start a conversation</li>
       </ul>
       <div class="mt-4">
+        <h3>A little light reading...</h3>
         <a href="#" class="text-nuclear-blue-400">Terms of Use</a> |
         <a href="#" class="text-nuclear-blue-400">FAQ</a>
       </div>
@@ -83,7 +84,6 @@ const userStore = useUserStore()
 const fluxStore = useFluxStore()
 const fluxService = useFluxService()
 const authService = useAuthService()
-const router = useRouter()
 
 const handle = ref('')
 const displayName = ref('')
@@ -95,26 +95,12 @@ const isStep3 = computed(() => !!fluxStore.hasProfile)
 
 const initializePage = async () => {
   if (!userStore.isSignedIn) {
-    try {
-      const currentUser = await authService.getCurrentUser()
-      console.log('join.vue current user:', currentUser)
-    } catch (error) {
-      console.error('Error fetching current user:', error)
-      return
-    }
-    if (!userStore.isSignedIn) {
-      console.log('no user found; should go to step 1')
-      return
-    }
+    console.log('no user found; should go to step 1')
+  } else if (!fluxStore.hasProfile) {
+    console.log('no flux profile found; should go to step 2')
+  } else {
+    console.log('should go to step 3')
   }
-  if (!fluxStore.hasProfile) {
-    await fluxService.fetchMyFluxProfile()
-    if (!fluxStore.hasProfile) {
-      console.log('no flux profile found; should go to step 2')
-      return
-    }
-  }
-  console.log('should go to step 3')
 }
 
 // Call initializePage when the component is mounted

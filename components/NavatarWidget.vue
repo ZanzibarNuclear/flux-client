@@ -20,15 +20,26 @@
 const fluxStore = useFluxStore()
 const userStore = useUserStore()
 
+const profileUrl = ref('/join')
+
+onMounted(() => {
+  if (fluxStore.hasProfile) {
+    profileUrl.value = `/profile/${fluxStore.profile?.handle}`
+  }
+})
+
+watch(() => fluxStore.hasProfile, (newProfile) => {
+  if (newProfile) {
+    profileUrl.value = `/profile/${fluxStore.profile?.handle}`
+  }
+})
+
 const screenName = computed(() => {
   if (userStore.isSignedIn) {
     return userStore.alias || 'Mystery Guest'
   } else {
     return 'anonymouns'
   }
-})
-const profileUrl = computed(() => {
-  return `/profile/${fluxStore.profile?.handle}`
 })
 
 const openJoin = () => {

@@ -15,6 +15,24 @@
 </template>
 
 <script setup>
+const authService = useAuthService()
+const userStore = useUserStore()
+const fluxService = useFluxService()
+const fluxStore = useFluxStore()
+
+onMounted(async () => {
+  if (!userStore.isSignedIn) {
+    try {
+      await authService.getCurrentUser()
+    } catch (error) {
+      console.error('Error fetching current user:', error)
+      return
+    }
+  }
+  if (!fluxStore.hasProfile) {
+    await fluxService.fetchMyFluxProfile()
+  }
+})
 </script>
 
 <style scoped>

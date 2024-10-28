@@ -27,23 +27,6 @@ const handleCancelReply = () => {
   isReply.value = false
 }
 
-onMounted(async () => {
-  // re-establish the current user and flux profile if session is valid
-  if (!userStore.isSignedIn) {
-    try {
-      await authService.getCurrentUser()
-    } catch (error) {
-      console.error('Error fetching current user:', error)
-      return
-    }
-  }
-  if (!fluxStore.hasProfile) {
-    await fluxService.fetchMyFluxProfile()
-  }
-
-  // TODO: think about redirecting to join page if user is not signed in or no Flux profile
-})
-
 const handleViewFlux = (flux: Flux) => {
   isReply.value = false
   fluxStore.setActiveFlux(flux)
