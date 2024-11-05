@@ -5,7 +5,7 @@ export function useAuthService() {
   const error = ref<Error | null>(null)
 
   const loginWithOAuth = async (provider: string) => {
-    navigateTo(`${useRuntimeConfig().public.apiRootUrl}/login/${provider}`, {
+    navigateTo(`${useRuntimeConfig().public.apiBaseUrl}/login/${provider}`, {
       external: true
     })
   }
