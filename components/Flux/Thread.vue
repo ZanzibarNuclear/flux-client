@@ -7,7 +7,7 @@
         <button @click="boostFlux">Boost ({{ flux.boost_count }})</button>
       </div>
     </div>
-    <Composer v-if="showReplyForm" :replyingTo="flux" @reply-posted="handleReplyPosted"
+    <FluxComposer v-if="showReplyForm" :replyingTo="flux" @reply-posted="handleReplyPosted"
       @cancel-reply="showReplyForm = false" />
     <div v-if="flux.replies && flux.replies.length > 0" class="replies">
       <div v-for="reply in flux.replies" :key="reply.id" class="reply">
@@ -18,8 +18,6 @@
 </template>
 
 <script setup>
-import Composer from './Composer.vue'
-
 const props = defineProps({
   flux: {
     type: Object,

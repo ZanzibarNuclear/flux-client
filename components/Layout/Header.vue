@@ -7,14 +7,12 @@
       Zanzibar's World of Nuclear Energy
     </div>
     <div class="top-right">
-      <UButton v-if="!user" to="/join" icon="i-ph-sign-in" label="Sign In" />
-      <UButton v-else to="/profile" icon="i-ph-user" label="Profile" />
+      <NavatarWidget />
     </div>
   </header>
 </template>
 
 <script lang="ts" setup>
-const user = useSupabaseUser()
 </script>
 
 <style scoped>

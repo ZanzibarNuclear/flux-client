@@ -6,17 +6,17 @@
     <template v-else>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
         @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
-      <div v-if="fluxStore.timeline.length === 0" class="no-fluxes">No fluxes to display.</div>
+      <div v-if="!fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
     </template>
   </div>
 </template>
 
 <script setup>
-import { useFluxes } from '~/composables/useFluxes'
+import { useFluxService } from '~/composables/useFluxService'
 import { useFluxStore } from '~/stores/flux'
 
 const props = defineProps({
-  username: {
+  userHandle: {
     type: String,
     default: null
   },
@@ -27,14 +27,14 @@ const props = defineProps({
 })
 const emit = defineEmits(['select-flux', 'boost'])
 
-const { loading, error, fetchFluxes } = useFluxes()
+const { loading, error, fetchFluxes } = useFluxService()
 const fluxStore = useFluxStore()
-const listTitle = ref('The Latest Flux')
+const listTitle = ref('Fluxlines')
 
 onMounted(() => {
   const options = {}
-  if (props.username) {
-    options.author = props.username
+  if (props.userHandle) {
+    options.author = props.userHandle
   }
   if (props.trendy) {
     options.filter = 'trendy'
@@ -44,15 +44,15 @@ onMounted(() => {
   fetchFluxes(options)
 })
 
-watch(() => props.username, (newUsername) => {
-  if (newUsername) {
-    listTitle.value = `${newUsername}'s Fluxes`
+watch(() => props.userHandle, (newUserHandle) => {
+  if (newUserHandle) {
+    listTitle.value = `${newUserHandle}'s Fluxes`
   } else {
     listTitle.value = 'The Latest Flux'
   }
   const options = {}
-  if (props.username) {
-    options.author = props.username
+  if (props.userHandle) {
+    options.author = props.userHandle
   }
   fetchFluxes(options)
 })

@@ -19,11 +19,11 @@
 </template>
 
 <script setup>
-import { useFluxes } from '@/composables/useFluxes'
+import { useFluxService } from '@/composables/useFluxService'
 import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
-const { loading, error, fetchReactions } = useFluxes()
+const { loading, error, fetchReactions } = useFluxService()
 
 const props = defineProps({
   flux: {
@@ -34,7 +34,6 @@ const props = defineProps({
 // TODO: get reactions from flux store
 
 const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
-const reactions = ref([])
 
 const load = (fluxId) => {
   console.log('loading reactions to flux:', fluxId)

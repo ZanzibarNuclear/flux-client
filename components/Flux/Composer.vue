@@ -1,8 +1,8 @@
 <template>
   <div v-if="isActive" class="flux-composer">
-    <textarea v-model="fluxContent" :placeholder="placeholder" id="flux-content"></textarea>
-    <button @click="postFlux">{{ replyingTo ? 'Reply' : 'Flux it' }}</button>
-    <button v-if="replyingTo" @click="cancelReply" class="cancel-reply">Cancel Reply</button>
+    <UTextarea v-model="fluxContent" :placeholder="placeholder" id="flux-content"></UTextarea>
+    <UButton @click="postFlux">{{ replyingTo ? 'React' : 'Flux it' }}</UButton>
+    <UButton v-if="replyingTo" @click="cancelReply" class="cancel-reply">Cancel Reaction</UButton>
   </div>
   <div v-else>
     <p>Please log in to flux.</p>
@@ -11,55 +11,39 @@
 
 <script setup>
 import { useFluxStore } from '@/stores/flux'
-
 const props = defineProps({
   replyingTo: {
     type: Object,
     default: null
   }
 })
+const emit = defineEmits(['cancelReply'])
 
 const fluxStore = useFluxStore()
+const { createFlux } = useFluxService()
 const fluxContent = ref('')
-const isActive = computed(() => fluxStore.fluxUser)
+const isActive = computed(() => !!fluxStore.profile)
 const placeholder = computed(() =>
-  props.replyingTo ? "Write your reply..." : "What's nu(-clear)?"
+  props.replyingTo ? "Write your reaction..." : "What's nu(-clear)?"
 )
 
-function postFlux() {
-  const fluxData = {
-    content: fluxContent.value,
-    authorId: fluxStore.fluxUser.id,
-    parentId: props.replyingTo?.id,
+async function postFlux() {
+  if (fluxContent.value.length === 0) {
+    alert('You have to write something to flux it.')
+    return
   }
-  // Send fluxData to your API
-  console.log('Posting flux:', fluxData)
-  console.log('replyingTo', props.replyingTo)
-  fetch('/api/fluxes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(fluxData)
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Flux posted successfully:', data)
-      console.warn('TODO: Add to reactions in store')
-      if (props.replyingTo) {
-        fluxStore.addReply(data)
-      } else {
-        fluxStore.addToTimeline(data)
-      }
-    })
-    .catch(error => {
-      console.error('Error posting flux:', error)
-    })
+  const newFlux = await createFlux(fluxContent.value, props.replyingTo?.id)
+  if (props.replyingTo) {
+    fluxStore.addReply(newFlux)
+  } else {
+    fluxStore.addToTimeline(newFlux)
+  }
   fluxContent.value = '' // Clear the input after posting
 }
 
 function cancelReply() {
-  emit('cancel-reply')
+  fluxContent.value = ''
+  emit('cancelReply')
 }
 </script>
 

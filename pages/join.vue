@@ -18,28 +18,28 @@
       </p>
     </section>
 
-    <section v-if="currentStep === 1" class="auth-options mt-8">
+    <section v-if="isStep1" class="auth-options mt-8">
       <h2 class="text-2xl font-semibold mb-4">Step 1: Sign up or Sign in</h2>
       <h3>Use your account on one of these identity providers.</h3>
       <div class="flex justify-between gap-4">
-        <UButton @click="() => loginWithOAuth('twitter')" icon="i-ph-x-logo"
+        <UButton @click="() => loginWithAuthService('x')" icon="i-ph-x-logo"
           class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
           X
         </UButton>
-        <UButton @click="() => loginWithOAuth('google')" icon="i-ph-google-logo"
+        <UButton @click="() => loginWithAuthService('google')" icon="i-ph-google-logo"
           class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
           Google
         </UButton>
-        <UButton @click="() => loginWithOAuth('github')" icon="i-ph-github-logo"
+        <UButton @click="() => loginWithAuthService('github')" icon="i-ph-github-logo"
           class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
           GitHub
         </UButton>
       </div>
     </section>
 
-    <section v-if="currentStep === 2" class="join-form mt-8">
+    <section v-if="isStep2" class="join-form mt-8">
       <h2 class="text-2xl font-semibold mb-4">Step 2: Create Your Flux Profile</h2>
-      <form @submit.prevent="submitProfileForm">
+      <form @submit.prevent="onCreateFluxProfile">
         <div class="mb-4">
           <label for="handle" class="block mb-2">Handle</label>
           <input v-model="handle" id="handle" type="text" required class="w-full px-3 py-2 border rounded">
@@ -54,7 +54,7 @@
       </form>
     </section>
 
-    <section v-if="currentStep === 3" class="congratulations mt-8">
+    <section v-if="isStep3" class="congratulations mt-8">
       <h2 class="text-2xl font-semibold mb-4">Step 3: Congratulations!</h2>
       <p>Welcome to Flux! Here are some tips to get started:</p>
       <ul class="list-disc list-inside mt-2">
@@ -62,133 +62,72 @@
           <NuxtLink to="/">Absorb some flux (read what others have shared)</NuxtLink>
         </li>
         <li>
-          <NuxtLink :to="`/profile/${fluxStore.fluxUser?.handle}`">Complete your profile</NuxtLink>
+          <NuxtLink :to="`/profile/${fluxStore.profile?.handle}`">Complete your profile</NuxtLink>
         </li>
         <li>Start a conversation</li>
       </ul>
       <div class="mt-4">
+        <h3>A little light reading...</h3>
         <a href="#" class="text-nuclear-blue-400">Terms of Use</a> |
         <a href="#" class="text-nuclear-blue-400">FAQ</a>
       </div>
     </section>
-
-    <div v-if="currentStep > 1" class="mt-4">
-      <button @click="previousStep" class="text-nuclear-blue-400">Back</button>
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { Provider } from '@supabase/supabase-js'
-import type { FluxUser } from '@/utils/types'
+import type { FluxProfile } from '@/utils/types'
 import { useFluxStore } from '@/stores/flux'
+import { useAuthService } from '@/composables/useAuthService'
 
-const supabase = useSupabaseClient()
-const user = useSupabaseUser()
+const userStore = useUserStore()
 const fluxStore = useFluxStore()
-const router = useRouter()
+const fluxService = useFluxService()
+const authService = useAuthService()
 
 const handle = ref('')
 const displayName = ref('')
-const currentStep = ref(1)
 const errorMsg = ref('')
-const author = ref<FluxUser | null>(null)
-
-const loggedIn = computed(() => user.value !== null)
 const hasError = computed(() => errorMsg.value !== '')
+const isStep1 = computed(() => !userStore.isSignedIn)
+const isStep2 = computed(() => !fluxStore.hasProfile)
+const isStep3 = computed(() => !!fluxStore.hasProfile)
 
-// Function to fetch user profile
-const fetchFluxUserProfile = async (userId: string) => {
-  const { data, error } = await supabase
-    .from('flux_authors')
-    .select('*')
-    .eq('user_id', userId)
-    .single()
-
-  if (error) {
-    console.error('Error fetching user profile:', error)
-    return null
-  }
-  return data
-}
-
-// Initialize the page
 const initializePage = async () => {
-  if (loggedIn.value) {
-    // Check if profile exists in the store
-    if (fluxStore.fluxUser) {
-      author.value = fluxStore.fluxUser
-      currentStep.value = 3
-    } else {
-      // Try to fetch profile from database
-      const profile = await fetchFluxUserProfile(user.value!.id)
-      if (profile) {
-        author.value = profile
-        fluxStore.setFluxUser(profile)
-        currentStep.value = 3
-      } else {
-        currentStep.value = 2
-      }
-    }
+  if (!userStore.isSignedIn) {
+    console.log('no user found; should go to step 1')
+  } else if (!fluxStore.hasProfile) {
+    console.log('no flux profile found; should go to step 2')
   } else {
-    currentStep.value = 1
+    console.log('should go to step 3')
   }
-  // Update URL to reflect current step
-  router.push({ query: { step: currentStep.value.toString() } })
 }
 
 // Call initializePage when the component is mounted
-onMounted(initializePage)
+onMounted(async () => {
+  await initializePage()
+})
 
-const loginWithOAuth = async (provider: Provider) => {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: provider,
-    options: {
-      redirectTo: `${window.location.origin}/join?step=2`
-    }
-  })
-
-  if (error) {
-    console.error('OAuth error:', error)
-  }
+const loginWithAuthService = async (provider: string) => {
+  const returnTo = useCookie('return-to')
+  returnTo.value = '/join?step=2'
+  await useAuthService().findIdentity(provider)
 }
 
-const submitProfileForm = async () => {
-  const { data: { user }, error } = await supabase.auth.getUser()
-
-  if (error || !user) {
-    console.error('User not authenticated:', error)
-    currentStep.value = 1
+const onCreateFluxProfile = async () => {
+  const isHandleAvailable = await fluxService.checkFluxHandleAvailability(handle.value)
+  if (!isHandleAvailable) {
+    errorMsg.value = 'Handle is already taken. Please try another one.'
     return
   }
 
-  // TODO: Make sure handle has correct format (no spaces, only lowercase letters, numbers, and underscores)
-  // TODO: Make sure handle is not already taken - avoid the non-unique error
+  try {
+    const profile = await fluxService.createMyFluxProfile(handle.value, displayName.value)
 
-  const { data, error: updateError } = await supabase
-    .from('flux_authors')
-    .upsert({
-      user_id: user.id,
-      handle: handle.value,
-      display_name: displayName.value
-    })
-    .select()
-    .single()
-
-  if (updateError) {
-    console.error('Profile update error:', updateError)
+    fluxStore.setProfile(profile as FluxProfile)
+  } catch (error) {
+    console.error('Error creating profile:', error)
     errorMsg.value = 'Failed to create profile. Please try again.'
-  } else if (data) {
-    author.value = data
-    fluxStore.setFluxUser(data)
-    currentStep.value = 3
-  }
-}
-
-const previousStep = () => {
-  if (currentStep.value > 1) {
-    currentStep.value--
-    router.push({ query: { step: currentStep.value.toString() } })
   }
 }
 </script>

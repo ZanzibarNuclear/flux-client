@@ -2,100 +2,66 @@
   <div class="user-profile">
     <div class="profile-header">
       <img :src="userCover" alt="Cover" class="cover-image">
-      <img :src="userAvatar" :alt="username" class="avatar">
     </div>
     <div class="profile-actions">
-      <button v-if="isCurrentUser" @click="toggleEditMode" class="edit-profile-btn">
+      <button v-if="!isOwnProfile" @click="toggleEditMode" class="edit-profile-btn">
         {{ isEditing ? 'Cancel' : 'Edit Profile' }}
-      </button>
-      <button v-else @click="toggleTuneIn" :class="['tune-in-btn', { 'tuned-in': isTunedIn }]">
-        {{ isTunedIn ? 'Tuned In' : 'Tune In' }}
       </button>
     </div>
     <div v-if="isEditing" class="profile-edit">
-      <FluxUserProfileEditForm :userData="userData" @save="saveProfile" @cancel="toggleEditMode" />
+      <FluxUserProfileEditForm :userData="userData" @save="handleSaveProfile" @cancel="toggleEditMode" />
     </div>
     <div v-else class="profile-info">
-      <h2 class="user-name">{{ displayName }}</h2>
-      <p class="user-handle">@{{ username }}</p>
-      <p class="user-bio">{{ userBio }}</p>
-      <div class="user-meta">
-        <span class="location" v-if="location">📍 {{ location }}</span>
-        <span class="website" v-if="website">
-          🔗 <a :href="website" target="_blank" rel="noopener noreferrer">{{ websiteDomain }}</a>
-        </span>
-        <span class="join-date">🗓️ Joined {{ joinDate }}</span>
-      </div>
-      <div class="user-stats">
-        <span><strong>{{ followingCount }}</strong> Tuning In</span>
-        <span><strong>{{ followersCount }}</strong> Tuned In</span>
+      <UAvatar :src="userAvatar" class="mr-4" />
+      <div>
+        <h2 class="user-name">{{ displayName }}</h2>
+        <p class="user-handle">@{{ handle }}</p>
+        <p class="user-bio">{{ userBio }}</p>
+        <div class="user-meta">
+          <span class="location" v-if="location">📍 {{ location }}</span>
+          <span class="website" v-if="website">
+            🔗 <a :href="website" target="_blank" rel="noopener noreferrer">{{ websiteDomain }}</a>
+          </span>
+          <span class="join-date">🗓️ Joined {{ joinDate }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+const fluxStore = useFluxStore()
 const props = defineProps({
-  username: {
-    type: String,
+  fluxUser: {
+    type: Object,
     required: true
   }
 })
 
-// Mock user data (replace with API call in real app)
-const userData = ref({
-  displayName: 'John Doe',
-  avatar: `https://api.dicebear.com/6.x/initials/svg?seed=${props.username}`,
-  cover: 'https://picsum.photos/800/200',
-  bio: 'Enthusiastic developer and Flux enjoyer',
-  location: 'San Francisco, CA',
-  website: 'https://johndoe.com',
-  joinDate: 'September 2023',
-  followingCount: 1234,
-  followersCount: 5678
+const displayName = computed(() => props.fluxUser?.display_name)
+const handle = computed(() => props.fluxUser?.handle)
+const userAvatar = computed(() => props.fluxUser?.avatar_url || '/images/logo-sq-pirate.jpg')
+const userCover = computed(() => props.fluxUser?.cover_url || '/images/flux-theme-v1.jpg')
+const userBio = computed(() => props.fluxUser?.bio)
+const location = computed(() => props.fluxUser?.location)
+const website = computed(() => props.fluxUser?.website)
+const joinDate = computed(() => formatDate(props.fluxUser?.created_at))
+
+const isOwnProfile = computed(() => {
+  return (fluxStore.profile.handle === props.fluxUser.handle)
 })
-
-const isCurrentUser = computed(() => {
-  // Logic to determine if this is the current user's profile
-  return false
-})
-
-const isTunedIn = ref(false)
-const displayName = computed(() => userData.value.displayName)
-const userAvatar = computed(() => userData.value.avatar)
-const userCover = computed(() => userData.value.cover)
-const userBio = computed(() => userData.value.bio)
-const location = computed(() => userData.value.location)
-const website = computed(() => userData.value.website)
-const websiteDomain = computed(() => {
-  if (website.value) {
-    return new URL(website.value).hostname
-  }
-  return ''
-})
-const joinDate = computed(() => userData.value.joinDate)
-const followingCount = computed(() => userData.value.followingCount)
-const followersCount = computed(() => userData.value.followersCount)
-
-function toggleTuneIn() {
-  isTunedIn.value = !isTunedIn.value
-  // Implement tune in/out functionality
-  console.log(isTunedIn.value ? 'Tuned in' : 'Tuned out')
-}
-
 const isEditing = ref(false);
 
 function toggleEditMode() {
-  isEditing.value = !isEditing.value;
+  if (isOwnProfile.value) {
+    isEditing.value = !isEditing.value;
+  } else {
+    console.warn('Not your profile')
+  }
 }
 
-function saveProfile(updatedData) {
-  // Update the userData with the new information
-  userData.value = { ...userData.value, ...updatedData };
-  // Close the edit form
-  isEditing.value = false;
-  // Here you would typically make an API call to save the changes
-  console.log('Profile updated:', userData.value);
+function handleSaveProfile(updatedData) {
+  console.log('Profile updated:', updatedData.value);
 }
 </script>
 
@@ -165,6 +131,7 @@ function saveProfile(updatedData) {
 }
 
 .profile-info {
+  display: flex;
   padding: 20px;
 }
 

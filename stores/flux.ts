@@ -1,29 +1,47 @@
 import { defineStore } from 'pinia'
-import type { Flux, FluxUser } from '@/utils/types'
+import type { Flux, FluxProfile } from '@/utils/types'
 
-export const useFluxStore = defineStore('flux', () => {
+export const useFluxStore = defineStore('fluxStore', () => {
   // State
-  const fluxUser = ref<FluxUser | null>(null)
+  const profile = ref<FluxProfile | null>(null)
   const timeline = ref<Flux[]>([])  // shows relevant fluxes for user
   const activeFlux = ref<Flux | null>(null)
   const reactions = ref<Flux[]>([]) // shows replies to activeFlux
 
-  function setFluxUser(author: FluxUser) {
-    fluxUser.value = author
+  const hasProfile = computed(() => !!profile.value)
+
+  function setProfile(myProfile: FluxProfile) {
+    profile.value = myProfile
   }
 
-  function clearFluxUser() {
-    fluxUser.value = null
+  function clearProfile() {
+    profile.value = null
   }
 
   function setActiveFlux(flux: Flux) {
+    if (flux === activeFlux.value) {
+      return
+    }
     activeFlux.value = flux
     reactions.value = []
+  }
+
+  function updateFlux(flux: Flux) {
+    let index = timeline.value.findIndex(item => item.id === flux.id)
+    if (index !== -1) {
+      timeline.value[index] = flux
+    }
+    index = reactions.value.findIndex(item => item.id === flux.id)
+    if (index !== -1) {
+      reactions.value[index] = flux
+    }
   }
 
   function clearActiveFlux() {
     activeFlux.value = null
   }
+
+  const timelineEmpty = computed(() => !timeline.value || timeline.value.length === 0)
 
   function setTimeline(fluxes: Flux[]) {
     timeline.value = fluxes
@@ -50,14 +68,17 @@ export const useFluxStore = defineStore('flux', () => {
   }
 
   return {
-    fluxUser,
-    setFluxUser,
-    clearFluxUser,
+    profile,
+    setProfile,
+    clearProfile,
+    hasProfile,
     timeline,
     setTimeline,
     clearTimeline,
     activeFlux,
     setActiveFlux,
+    updateFlux,
+    timelineEmpty,
     addToTimeline,
     clearActiveFlux,
     reactions,
