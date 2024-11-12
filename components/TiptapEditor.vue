@@ -26,9 +26,9 @@
           color="gray" icon="ph:arrow-arc-right-duotone" />
       </div>
       <div class="ml-auto flex space-x-2">
-        <UButton @click="onPostFlux" color="orange" label="Cancel" icon="ph:x-circle" />
-        <UButton @click="onCancelFlux" color="blue" :disabled="isDirty" :label="saveButtonLabel"
-          icon="ph:lightning-duotone" />
+        <UButton @click="handleProof" color="green" icon="ph:eye-duotone" />
+        <UButton @click="handleCancelFlux" color="orange" label="Cancel" icon="ph:x-circle" />
+        <UButton @click="handlePostFlux" color="blue" :label="saveButtonLabel" icon="ph:lightning-duotone" />
       </div>
     </div>
   </div>
@@ -69,14 +69,19 @@ const editor = useEditor({
   },
 });
 
-const isDirty = computed(() => editor.value?.getHTML() !== props.initialContent)
-
-const onPostFlux = () => {
-  emit('postFluxMessage', editor.value?.getHTML())
+const handleProof = () => {
+  // alert(editor.value.getHTML())
+  alert(props.initialContent)
 }
-const onCancelFlux = () => {
+
+const handlePostFlux = () => {
+  emit('postFluxMessage', editor.value?.getHTML())
+  editor.value?.commands.setContent('')
+}
+
+const handleCancelFlux = () => {
   emit('cancelFlux')
-  editor.value?.commands.setContent(props.initialContent)
+  editor.value?.commands.setContent('')
 }
 
 onBeforeUnmount(() => {
@@ -105,6 +110,7 @@ onBeforeUnmount(() => {
 }
 
 .tiptap li p {
-  margin: 0;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 </style>

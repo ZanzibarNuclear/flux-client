@@ -1,7 +1,7 @@
 <template>
-  <div v-if="isActive" class="flux-composer">
-    <TiptapEditor @post-flux-message="postFlux" :initial-content="initialContent" :placeholder="placeholder"
-      :save-button-label="replyingTo ? 'React' : 'Flux it'" />
+  <div v-if="fluxStore.hasProfile" class="flux-composer">
+    <TiptapEditor @post-flux-message="handlePostFlux" @cancel-flux="cancelReply" :initial-content="initialContent"
+      :placeholder="placeholder" :save-button-label="saveButtonLabel" />
   </div>
   <div v-else>
     <p>Please log in to flux.</p>
@@ -20,30 +20,28 @@ const emit = defineEmits(['cancelReply'])
 
 const fluxStore = useFluxStore()
 const { createFlux } = useFluxService()
-const fluxContent = ref('')
-const isActive = computed(() => !!fluxStore.profile)
 
-const initialContent = ref('<p>This is a sample to help with formatting.</p><ul><li>First point</li><li>Second point</li></ul><p>Very pithy and insightful point being made here. Why not respond with your impression of this idea?</p><p>And then there was more...</p>')
+const initialContent = ref('')
 const placeholder = computed(() =>
   props.replyingTo ? "Write your reaction..." : "What's nu(-clear)?"
 )
+const saveButtonLabel = computed(() => props.replyingTo ? 'React' : 'Flux it')
 
-async function postFlux() {
-  if (fluxContent.value.length === 0) {
+async function handlePostFlux(contentToPost) {
+
+  if (!contentToPost || contentToPost.length === 0) {
     alert('You have to write something to flux it.')
     return
   }
-  const newFlux = await createFlux(fluxContent.value, props.replyingTo?.id)
+  const newFlux = await createFlux(contentToPost, props.replyingTo?.id)
   if (props.replyingTo) {
     fluxStore.addReply(newFlux)
   } else {
     fluxStore.addToTimeline(newFlux)
   }
-  fluxContent.value = '' // Clear the input after posting
 }
 
 function cancelReply() {
-  fluxContent.value = ''
   emit('cancelReply')
 }
 </script>
