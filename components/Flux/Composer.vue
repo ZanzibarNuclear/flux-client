@@ -1,6 +1,7 @@
 <template>
   <div v-if="isActive" class="flux-composer">
-    <TiptapEditor @post-flux-message="postFlux" :save-button-label="replyingTo ? 'React' : 'Flux it'" />
+    <TiptapEditor @post-flux-message="postFlux" :initial-content="initialContent" :placeholder="placeholder"
+      :save-button-label="replyingTo ? 'React' : 'Flux it'" />
   </div>
   <div v-else>
     <p>Please log in to flux.</p>
@@ -21,6 +22,8 @@ const fluxStore = useFluxStore()
 const { createFlux } = useFluxService()
 const fluxContent = ref('')
 const isActive = computed(() => !!fluxStore.profile)
+
+const initialContent = ref('<p>This is a sample to help with formatting.</p><ul><li>First point</li><li>Second point</li></ul><p>Very pithy and insightful point being made here. Why not respond with your impression of this idea?</p><p>And then there was more...</p>')
 const placeholder = computed(() =>
   props.replyingTo ? "Write your reaction..." : "What's nu(-clear)?"
 )

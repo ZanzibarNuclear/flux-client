@@ -40,6 +40,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  placeholder: {
+    type: String,
+    default: "What's nu(-clear)?",
+  },
   saveButtonLabel: {
     type: String,
     default: 'Flux It',
@@ -48,15 +52,21 @@ const props = defineProps({
 const emit = defineEmits(['postFluxMessage', 'cancelFlux'])
 
 const editor = useEditor({
-  autofocus: true,
+  autofocus: 'start',
   content: props.initialContent,
+  extensions: [
+    TiptapStarterKit,
+    TiptapPlaceholder.configure({
+      emptyEditorClass: 'is-editor-empty',
+      placeholder: props.placeholder,
+    }),
+  ],
   editorProps: {
     attributes: {
       class:
-        'border-2 p-2 prose prose-sm focus:outline-none',
+        'border-2 bg-white text-slate-700 max-w-none prose prose-stone prose-sm m-0 prose-p:p-1 prose-li:m-0 prose-li:p-0 focus:outline-none',
     },
   },
-  extensions: [TiptapStarterKit],
 });
 
 const isDirty = computed(() => editor.value?.getHTML() !== props.initialContent)
@@ -74,9 +84,27 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped>
+<style>
 .editor-frame {
   overflow-y: scroll;
-  max-height: 60vh;
+  max-height: 50vh;
+}
+
+.tiptap {
+  font-size: small;
+}
+
+.tiptap p {
+  margin: 1em 0;
+  font-size: medium;
+}
+
+.tiptap ol,
+.tiptap ul {
+  margin: 1rem 0;
+}
+
+.tiptap li p {
+  margin: 0;
 }
 </style>
