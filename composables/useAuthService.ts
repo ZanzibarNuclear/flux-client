@@ -10,6 +10,12 @@ export function useAuthService() {
     })
   }
 
+  const loginWithMagicLink = async (email: string, alias: string) => {
+    await useApi().post('/login/magiclink', {
+      email,
+      alias
+    })
+  }
   const getCurrentUser = async () => {
     try {
       const api = useApi()
@@ -45,6 +51,7 @@ export function useAuthService() {
     loading,
     error,
     loginWithOAuth,
+    loginWithMagicLink,
     getCurrentUser,
     findIdentity
   }

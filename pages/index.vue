@@ -14,10 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Flux } from '@/utils/types' // Add FluxAuthor type
+import type { Flux } from '@/utils/types'
 
-const authService = useAuthService()
-const userStore = useUserStore()
 const fluxService = useFluxService()
 const fluxStore = useFluxStore()
 

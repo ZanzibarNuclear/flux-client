@@ -12,7 +12,7 @@
       </div>
       <div v-else>
         <p>We shall call you {{ userStore.alias || 'The Amazing Wonder Person' }}</p>
-        <p>Your user ID is {{ userStore.userId || 'unknown' }}</p>
+        <p>Your user ID is {{ userStore.id || 'unknown' }}</p>
       </div>
 
       <div v-if="userStore.isSignedIn">
@@ -49,5 +49,6 @@ const error = computed(() => authService.error.value)
 onMounted(() => {
   // expect cookie to have been sent by server and stored
   authService.getCurrentUser()
+  sessionToken.value = route.query.token as string
 })
 </script>
