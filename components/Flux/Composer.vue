@@ -1,9 +1,6 @@
 <template>
   <div v-if="isActive" class="flux-composer">
-    <UTextarea v-model="fluxContent" :placeholder="placeholder" id="flux-content"></UTextarea>
-    <TiptapEditor />
-    <UButton @click="postFlux">{{ replyingTo ? 'React' : 'Flux it' }}</UButton>
-    <UButton v-if="replyingTo" @click="cancelReply" class="cancel-reply">Cancel Reaction</UButton>
+    <TiptapEditor @post-flux-message="postFlux" :save-button-label="replyingTo ? 'React' : 'Flux it'" />
   </div>
   <div v-else>
     <p>Please log in to flux.</p>
