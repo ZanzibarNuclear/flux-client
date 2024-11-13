@@ -10,14 +10,20 @@ export function useAuthService() {
     })
   }
 
+  const loginWithMagicLink = async (email: string, alias: string) => {
+    await useApi().post('/login/magiclink', {
+      email,
+      alias
+    })
+  }
   const getCurrentUser = async () => {
     try {
       const api = useApi()
 
       loading.value = true
       const userData = await api.get('/api/me')
-
       console.log('found current user:', userData)
+
       userStore.setCurrentUser(userData as { id: string, alias: string, roles: string[] })
       return userData
     } catch (err: unknown) {
@@ -35,7 +41,7 @@ export function useAuthService() {
 
   const findIdentity = async (provider: string) => {
     await getCurrentUser()
-    if (!userStore.isSignedIn) {
+    if (!userStore.isSignedIn && provider) {
       console.log('Did not find user with active session. Attempting OAuth login.')
       await loginWithOAuth(provider)
     }
@@ -45,6 +51,7 @@ export function useAuthService() {
     loading,
     error,
     loginWithOAuth,
+    loginWithMagicLink,
     getCurrentUser,
     findIdentity
   }

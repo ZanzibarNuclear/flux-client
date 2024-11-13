@@ -13,7 +13,7 @@
           variant="ghost" />
       </div>
       <div @click="handleView" class="clickable">
-        <p class="flux-text">{{ flux.content }}</p>
+        <div class="rich-text" v-html="flux.content" />
       </div>
       <div class="flux-actions">
         <UButton @click="handleView" icon="i-ph-eye" label="View" color="gray" variant="ghost">
@@ -67,7 +67,6 @@ function handleViewProfile() {
 .flux-item {
   display: flex;
   padding: 1rem;
-  border-bottom: 1px solid theme('colors[nuclear-blue]300');
 }
 
 .flux-content {
@@ -97,10 +96,32 @@ function handleViewProfile() {
 
 .flux-actions {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
+  background-color: theme('colors[nuclear-blue]100');
+  border: 1px solid theme('colors[nuclear-blue]300');
 }
 
 .clickable {
   cursor: pointer;
+}
+
+.rich-text :deep(p) {
+  margin: 0.75rem 0;
+}
+
+.rich-text :deep(ul) {
+  margin: 1rem 1rem 0 1rem;
+  list-style: disc;
+}
+
+.rich-text :deep(ol) {
+  margin: 1rem 1rem 0 1rem;
+  list-style: decimal;
+}
+
+.rich-text :deep(blockquote) {
+  margin-left: 1rem;
+  border-left: 2px solid goldenrod;
+  padding-left: 1rem;
 }
 </style>

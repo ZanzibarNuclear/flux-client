@@ -1,9 +1,12 @@
 <template>
-  <div>
+  <div class="confirm-page">
     <h1>Sign In Confirmation</h1>
-    <div v-if="sessionToken" class="w-3/4">
-      <p>Login successful! You are now authenticated.</p>
+    <div v-if="userStore.isSignedIn" class="w-3/4">
+      <p>Thanks for signing in.</p>
 
+      <p>
+        <NuxtLink v-if="!!returnTo" :to="returnTo">Continue from where you left off.</NuxtLink>
+      </p>
       <div v-if="isLoading">
         <p>Loading user info...</p>
       </div>
@@ -12,7 +15,7 @@
       </div>
       <div v-else>
         <p>We shall call you {{ userStore.alias || 'The Amazing Wonder Person' }}</p>
-        <p>Your user ID is {{ userStore.userId || 'unknown' }}</p>
+        <p>Your user ID is {{ userStore.id || 'unknown' }}</p>
       </div>
 
       <div v-if="userStore.isSignedIn">
@@ -26,8 +29,8 @@
       </div>
     </div>
     <p v-else>
-      No session token found. Please try signing in again. Or if you already have, maybe we broke something.
-      Hmm, that would be annoying.
+      You are not signed in. Please try signing in again. Or if you already have, maybe we broke something. Hmm, that
+      would be annoying.
     </p>
   </div>
 </template>
@@ -46,8 +49,21 @@ const returnTo = useCookie('return-to')
 const isLoading = computed(() => authService.loading.value)
 const error = computed(() => authService.error.value)
 
-onMounted(() => {
+onMounted(async () => {
   // expect cookie to have been sent by server and stored
-  authService.getCurrentUser()
+  await authService.getCurrentUser()
+  sessionToken.value = route.query.token as string
+
+  if (userStore.isSignedIn && returnTo.value) {
+    navigateTo(returnTo.value)
+  }
 })
 </script>
+
+<style scoped>
+.confirm-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+</style>
