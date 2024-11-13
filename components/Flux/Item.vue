@@ -1,5 +1,5 @@
 <template>
-  <div class="flux-item">
+  <article class="flux-item">
     <UAvatar @click="handleViewProfile" class="clickable" :src="flux.author?.avatar"
       :alt="flux.author?.display_name || '?? User'" />
     <div class="flux-content">
@@ -28,7 +28,7 @@
         </UButton>
       </div>
     </div>
-  </div>
+  </article>
 </template>
 
 <script setup>
@@ -43,7 +43,6 @@ const props = defineProps({
 const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 
 onMounted(() => {
-  console.log('flux:', props.flux)
 })
 
 function handleView() {
