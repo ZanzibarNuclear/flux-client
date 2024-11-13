@@ -7,6 +7,7 @@
       <div class="flux-reactions">
         <h3>Reactions</h3>
         <div v-if="loading">Loading...</div>
+        <div v-else-if="fluxStore.reactions.length === 0">Be the first to react!</div>
         <div v-else class="flux-reaction-chain">
           <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction"
             @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-flux="handleView"
@@ -106,7 +107,7 @@ const returnToTimeline = () => {
 
 .flux-reactions {
   margin-top: 1rem;
-  border-top: 1px solid theme('colors[nuclear-blue]300');
+  border-top: 5px solid theme('colors[nuclear-blue]300');
   padding-top: 1rem;
 }
 </style>

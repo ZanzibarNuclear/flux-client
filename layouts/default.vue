@@ -35,11 +35,18 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
-.app-container {
-  max-width: 1200px;
-  margin: 0 auto;
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
   background-color: #f6f2eb;
+}
+
+.app-container {
+  margin: 0 auto;
 }
 
 .main-content {

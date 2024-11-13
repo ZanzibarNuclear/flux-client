@@ -24,6 +24,7 @@
           </span>
           <span class="join-date">🗓️ Joined {{ joinDate }}</span>
         </div>
+        <p v-if="isOwnProfile">This is you!</p>
       </div>
     </div>
   </div>
@@ -48,7 +49,7 @@ const website = computed(() => props.fluxUser?.website)
 const joinDate = computed(() => formatDate(props.fluxUser?.created_at))
 
 const isOwnProfile = computed(() => {
-  return (fluxStore.profile.handle === props.fluxUser.handle)
+  return (fluxStore.profile.handle === handle.value)
 })
 const isEditing = ref(false);
 
