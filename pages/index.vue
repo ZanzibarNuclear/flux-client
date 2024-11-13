@@ -16,9 +16,12 @@
 <script setup lang="ts">
 import type { Flux } from '@/utils/types'
 
+definePageMeta({
+  layout: 'mobile-first'
+})
+
 const fluxService = useFluxService()
 const fluxStore = useFluxStore()
-
 const isReply = ref(false)
 
 const handleCancelReply = () => {
