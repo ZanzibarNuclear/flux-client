@@ -1,7 +1,7 @@
 <template>
   <aside class="sidebar">
     <nav>
-      <NuxtLink @click="goToTop" to="/" class="nav-item">
+      <NuxtLink :to="{ path: '/', hash: '#overview' }" class="nav-item">
         <span class="icon">🏠</span>
         <span class="label">Overview</span>
       </NuxtLink>
@@ -9,14 +9,6 @@
         <span class="icon">🔍</span>
         <span class="label">Explore</span>
       </NuxtLink>
-      <!-- <NuxtLink to="/notifications" class="nav-item">
-        <span class="icon">🔔</span>
-        <span class="label">Notifications</span>
-      </NuxtLink>
-      <NuxtLink to="/messages" class="nav-item">
-        <span class="icon">✉️</span>
-        <span class="label">Messages</span>
-      </NuxtLink> -->
       <NuxtLink v-if="fluxStore.profile" :to="`/profile/${fluxStore.profile.handle}`" class="nav-item">
         <span class="icon">👤</span>
         <span class="label">Profile</span>
@@ -40,11 +32,6 @@
 import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
-
-const goToTop = () => {
-  fluxStore.clearActiveFlux()
-  navigateTo('/')
-}
 </script>
 
 <style scoped>

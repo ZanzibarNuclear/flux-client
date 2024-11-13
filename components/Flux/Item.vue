@@ -67,7 +67,6 @@ function handleViewProfile() {
 .flux-item {
   display: flex;
   padding: 1rem;
-  border-bottom: 1px solid theme('colors[nuclear-blue]300');
 }
 
 .flux-content {
@@ -97,7 +96,9 @@ function handleViewProfile() {
 
 .flux-actions {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
+  background-color: theme('colors[nuclear-blue]100');
+  border: 1px solid theme('colors[nuclear-blue]300');
 }
 
 .clickable {
