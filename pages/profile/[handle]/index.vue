@@ -1,7 +1,6 @@
 <template>
   <div class="user-profile-page">
     <FluxUserProfile v-if="fluxProfile" :flux-user="fluxProfile" />
-    <p v-if="isCurrentUser">This is you!</p>
     <FluxTimeline v-if="handle" :user-handle="handle" />
   </div>
 </template>
@@ -15,7 +14,6 @@ const route = useRoute()
 const handle = ref(route.params.handle)
 
 const fluxProfile = ref(null)
-const isCurrentUser = computed(() => fluxProfile.value?.handle === fluxStore.profile?.handle)
 
 onMounted(async () => {
   if (handle.value) {

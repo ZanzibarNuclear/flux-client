@@ -70,8 +70,7 @@ const editor = useEditor({
 });
 
 const handleProof = () => {
-  // alert(editor.value.getHTML())
-  alert(props.initialContent)
+  alert(editor.value.getHTML())
 }
 
 const handlePostFlux = () => {
