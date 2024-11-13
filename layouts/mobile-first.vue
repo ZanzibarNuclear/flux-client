@@ -4,9 +4,9 @@
     <!-- Fixed Header -->
     <header class="app-header fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10">
       <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-        <UButton icon="i-heroicons-bars-3" color="gray" variant="ghost" />
+        <NuxtImg src="/images/logo-sq-smooth.jpg" alt="World of Nuclear Logo" class="w-12 h-12 -mt-4" />
         <h1 class="text-x3l font-bold text-white">Flux on World of Nuclear</h1>
-        <UButton icon="i-heroicons-ellipsis-horizontal" variant="ghost" />
+        <UButton icon="i-heroicons-bars-3" color="white" />
       </div>
     </header>
 
