@@ -11,6 +11,7 @@
         </main>
       </div>
       <LayoutFooter />
+      <div class="text-center">desktop ❤️</div>
     </div>
   </UContainer>
 </template>
