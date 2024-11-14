@@ -6,7 +6,14 @@
         @view-profile="handleViewProfile" @view-flux="handleViewFlux" />
     </template>
     <template v-else>
-      <FluxComposer />
+      <div class="py-8">
+        <FluxComposer v-if="fluxStore.hasProfile" />
+        <div v-else>
+          <NuxtImg src="/images/flux-theme-v1.jpg" class="mx-auto" />
+          <NuxtLink to="/join" class="block text-center text-lg text-[nuclear-blue]">Sign in to participate.</NuxtLink>
+        </div>
+        <hr />
+      </div>
       <FluxTimeline @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile"
         @view-flux="handleViewFlux" />
     </template>

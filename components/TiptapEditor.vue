@@ -26,11 +26,21 @@
           color="gray" icon="ph:arrow-arc-right-duotone" />
       </div>
       <div class="ml-auto flex space-x-2">
-        <UButton @click="handleProof" color="green" icon="ph:eye-duotone" />
-        <UButton @click="handleCancelFlux" color="orange" label="Cancel" icon="ph:x-circle" />
+        <UButton @click="() => confirmCancel = true" color="orange" icon="ph:x-circle" />
         <UButton @click="handlePostFlux" color="blue" :label="saveButtonLabel" icon="ph:lightning-duotone" />
       </div>
     </div>
+    <UModal v-model="confirmCancel">
+      <UCard>
+        <template #header>
+          <div class="text-center">Are you sure you want to cancel?</div>
+        </template>
+        <div class="flex justify-center space-x-6">
+          <UButton @click="handleCancelFlux" color="orange" label="Yes" />
+          <UButton @click="confirmCancel = false" color="gray" label="No" />
+        </div>
+      </UCard>
+    </UModal>
   </div>
 </template>
 
@@ -69,10 +79,7 @@ const editor = useEditor({
   },
 });
 
-const handleProof = () => {
-  alert(editor.value.getHTML())
-}
-
+const confirmCancel = ref(false)
 const handlePostFlux = () => {
   emit('postFluxMessage', editor.value?.getHTML())
   editor.value?.commands.setContent('')
@@ -81,6 +88,7 @@ const handlePostFlux = () => {
 const handleCancelFlux = () => {
   emit('cancelFlux')
   editor.value?.commands.setContent('')
+  confirmCancel.value = false
 }
 
 onBeforeUnmount(() => {
