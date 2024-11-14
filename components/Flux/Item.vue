@@ -1,31 +1,31 @@
 <template>
-  <article class="flux-item">
-    <UAvatar @click="handleViewProfile" class="clickable" :src="flux.author?.avatar"
-      :alt="flux.author?.display_name || '?? User'" />
-    <div class="flux-content">
-      <div class="flux-header">
-        <div class="flux-header-left">
-          <span @click="handleViewProfile" class="author-name clickable">{{ flux.author.display_name }}</span>
-          <span @click="handleViewProfile" class="author-username clickable">@{{ flux.author.handle }}</span>
-          <span class="flux-time"> - {{ formatTimeAgo(flux.created_at) }}</span>
+  <article class="p-4 bg-white">
+    <div class="flex gap-3">
+      <UAvatar @click="handleViewProfile" class="w-10 h-10 flex-shrink-0" :src="flux.author?.avatar"
+        :alt="flux.author?.display_name || '?? User'" />
+      <div class="flex-1">
+        <div class="flex items-center gap-2">
+          <span @click="handleViewProfile" class="font-bold">{{ flux.author.display_name }}</span>
+          <span @click="handleViewProfile" class="text-gray-500">@{{ flux.author.handle }}</span>
+          <span class="text-gray-500">· {{ formatTimeAgo(flux.created_at) }}</span>
+          <UButton class="ml-auto" @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="React"
+            color="blue" variant="ghost" />
         </div>
-        <UButton @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="React" color="blue"
-          variant="ghost" />
-      </div>
-      <div @click="handleView" class="clickable">
-        <div class="rich-text" v-html="flux.content" />
-      </div>
-      <div class="flux-actions">
-        <UButton @click="handleView" icon="i-ph-eye" label="View" color="gray" variant="ghost">
-          {{ flux.view_count }} Views
-        </UButton>
-        <UButton @click="handleReply" icon="i-ph-chat-circle-text" color="gray" variant="ghost">
-          {{ flux.reply_count }} Reactions
-          <Icon v-if="flux.replied" name="i-ph-star" />
-        </UButton>
-        <UButton @click="handleBoost" icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'">
-          {{ flux.boost_count }} Boosts
-        </UButton>
+        <div @click="handleView" class="mt-1">
+          <div class="rich-text" v-html="flux.content" />
+        </div>
+        <div class="flex justify-between mt-3 text-gray-500 flux-actions">
+          <UButton @click="handleReply" icon="i-ph-chat-circle-text" color="gray" variant="ghost">
+            {{ flux.reply_count }} Reactions
+            <Icon v-if="flux.replied" name="i-ph-star" />
+          </UButton>
+          <UButton @click="handleBoost" icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'">
+            {{ flux.boost_count }} Boosts
+          </UButton>
+          <UButton @click="handleView" icon="i-ph-eye" label="View" color="gray" variant="ghost">
+            {{ flux.view_count }} Views
+          </UButton>
+        </div>
       </div>
     </div>
   </article>
@@ -63,40 +63,8 @@ function handleViewProfile() {
 </script>
 
 <style scoped>
-.flux-item {
-  display: flex;
-  padding: 1rem;
-}
-
-.flux-content {
-  margin-left: 1rem;
-  flex: 1;
-}
-
-.flux-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.author-name {
-  font-weight: bold;
-}
-
-.author-username,
-.flux-time {
-  color: #6b7280;
-}
-
-.flux-text {
-  margin-bottom: 0.5rem;
-}
-
 .flux-actions {
-  display: flex;
-  justify-content: space-between;
-  background-color: theme('colors[nuclear-blue]100');
+  background-color: theme('colors[nuclear-blue]50');
   border: 1px solid theme('colors[nuclear-blue]300');
 }
 

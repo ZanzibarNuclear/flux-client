@@ -1,5 +1,5 @@
 <template>
-  <div class="flux-list">
+  <div class="divide-y divide-gray-200">
     <h2 class="text-center">{{ listTitle }}</h2>
     <div v-if="loading" class="loading">Loading fluxes...</div>
     <div v-else-if="error" class="error">Error loading fluxes. Please try again.</div>
