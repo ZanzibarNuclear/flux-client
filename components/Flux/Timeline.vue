@@ -6,7 +6,7 @@
     <template v-else>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
         @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
-      <div v-if="!fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
+      <div v-if="fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
     </template>
   </div>
 </template>

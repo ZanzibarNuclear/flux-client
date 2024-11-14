@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@iconify-json/ph": "^1.2.1",
+    "@nuxtjs/device": "^3.2.4",
     "@tiptap/extension-placeholder": "^2.9.1"
   }
 }
