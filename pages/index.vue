@@ -1,5 +1,5 @@
 <template>
-  <div class="home-timeline">
+  <div>
     <template v-if="fluxStore.activeFlux">
       <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @cancel-reply="handleCancelReply" />
       <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @boost-flux="handleBoost"
@@ -23,13 +23,25 @@
 <script setup lang="ts">
 import type { Flux } from '@/utils/types'
 
-definePageMeta({
-  layout: 'mobile-first'
-})
-
+const authService = useAuthService()
+const userStore = useUserStore()
 const fluxService = useFluxService()
 const fluxStore = useFluxStore()
 const isReply = ref(false)
+
+onMounted(async () => {
+  if (!userStore.isSignedIn) {
+    try {
+      await authService.getCurrentUser()
+    } catch (error) {
+      console.error('Error fetching current user:', error)
+      return
+    }
+  }
+  if (!fluxStore.hasProfile) {
+    await fluxService.fetchMyFluxProfile()
+  }
+})
 
 const handleCancelReply = () => {
   isReply.value = false
