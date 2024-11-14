@@ -16,14 +16,13 @@
     </main>
 
     <!-- Fixed Bottom Navigation -->
-    <footer>
-      <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-        <div class="max-w-lg mx-auto px-4 py-3 flex justify-around">
-          <UButton v-for="item in navigationItems" :key="item.label" :icon="item.icon" variant="ghost" class="flex-1" />
-        </div>
-      </nav>
-      <div class="text-center">mobile ❤️</div>
-    </footer>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+      <div class="max-w-lg mx-auto px-4 py-3 flex justify-around">
+        <UButton v-for="item in navigationItems" :key="item.label" :icon="item.icon" variant="ghost" class="flex-1" />
+      </div>
+    </nav>
+    <LayoutFooter />
+    <div class="text-center">mobile ❤️</div>
   </div>
 </template>
 
