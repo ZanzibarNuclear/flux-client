@@ -9,9 +9,6 @@
         <UButton @click="editor.chain().focus().toggleItalic().run()" color="gray"
           :disabled="!editor.can().chain().focus().toggleItalic().run()"
           :class="{ 'is-active': editor.isActive('italic') }" icon="ph:text-italic" />
-        <UButton @click="editor.chain().focus().toggleStrike().run()" color="gray"
-          :disabled="!editor.can().chain().focus().toggleStrike().run()"
-          :class="{ 'is-active': editor.isActive('strike') }" icon="ph:text-strikethrough" />
         <UButton @click="editor.chain().focus().toggleBulletList().run()" color="gray"
           :class="{ 'is-active': editor.isActive('bulletList') }" icon="ph:list-bullets" />
         <UButton @click="editor.chain().focus().toggleOrderedList().run()" color="gray"
@@ -20,10 +17,6 @@
           :class="{ 'is-active': editor.isActive('blockquote') }" icon="ph:quotes" />
         <UButton @click="editor.chain().focus().setParagraph().run()" color="gray"
           :class="{ 'is-active': editor.isActive('paragraph') }" icon="ph:paragraph" />
-        <UButton @click="editor.chain().focus().undo().run()" :disabled="!editor.can().chain().focus().undo().run()"
-          color="gray" icon="ph:arrow-arc-left-duotone" />
-        <UButton @click="editor.chain().focus().redo().run()" :disabled="!editor.can().chain().focus().redo().run()"
-          color="gray" icon="ph:arrow-arc-right-duotone" />
       </div>
       <div class="ml-auto flex space-x-2">
         <UButton @click="() => confirmCancel = true" color="orange" icon="ph:x-circle" />

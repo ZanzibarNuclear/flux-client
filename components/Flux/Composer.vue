@@ -1,12 +1,17 @@
 <template>
-  <div v-if="fluxStore.hasProfile" class="flux-composer">
-    <div class="italic">What do you want to tell the world?</div>
-
-    <TiptapEditor @post-flux-message="handlePostFlux" @cancel-flux="cancelReply" :initial-content="initialContent"
-      :placeholder="placeholder" :save-button-label="saveButtonLabel" />
-  </div>
-  <div v-else>
-    <p>Please log in to flux.</p>
+  <div class="p-4 border-b border-gray-200 bg-white">
+    <div v-if="fluxStore.hasProfile" class="flex gap-4">
+      <UAvatar src="" :alt="fluxStore.profile.handle" class="w-10 h-10" />
+      <TiptapEditor rows="1" class="flex-1" auto-size @post-flux-message="handlePostFlux" @cancel-flux="cancelReply"
+        :initial-content="initialContent" placeholder="What do you want to tell the world?"
+        :save-button-label="saveButtonLabel" />
+    </div>
+    <div v-else>
+      <h2>Want to share your thoughts?</h2>
+      <p>
+        <NuxtLink to="/join" class="block text-center text-lg text-[nuclear-blue]">Sign in to participate.</NuxtLink>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -49,10 +54,6 @@ function cancelReply() {
 </script>
 
 <style scoped>
-.flux-composer {
-  margin-bottom: 20px;
-}
-
 textarea {
   width: 100%;
   height: 100px;
