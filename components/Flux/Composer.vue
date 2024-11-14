@@ -1,5 +1,7 @@
 <template>
   <div v-if="fluxStore.hasProfile" class="flux-composer">
+    <div class="italic">What do you want to tell the world?</div>
+
     <TiptapEditor @post-flux-message="handlePostFlux" @cancel-flux="cancelReply" :initial-content="initialContent"
       :placeholder="placeholder" :save-button-label="saveButtonLabel" />
   </div>
