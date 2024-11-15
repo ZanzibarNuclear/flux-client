@@ -10,8 +10,8 @@
         class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
         Request Magic Link
       </UButton>
-      <UButton v-if="emailFeedback.done" @click="enableResend" class="bg-green-200 text-white px-4 py-2 rounded">
-        Resend
+      <UButton v-if="emailFeedback.done" @click="enableResend" class="bg-green-700 text-white px-4 py-2 rounded">
+        Hmmm...I want to try again.
       </UButton>
     </div>
     <UModal v-model="emailFeedback.show" :title="emailFeedback.heading">

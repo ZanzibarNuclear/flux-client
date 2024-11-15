@@ -2,11 +2,14 @@
   <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
     <nav>
       <div class="max-w-lg mx-auto px-4 py-3 flex justify-around">
-        <UButton to="/" icon="i-ph-arrow-bend-left-up-duotone" variant="ghost" color="blue" class="flex-1" />
-        <UButton to="/explore" icon="i-ph-magnifying-glass-duotone" variant="ghost" color="blue" class="flex-1" />
+        <UButton to="/" icon="i-ph-arrow-bend-left-up-duotone" variant="ghost" color="blue" class="flex-1 align-middle"
+          label="Reload" />
+        <UButton to="/explore" icon="i-ph-magnifying-glass-duotone" variant="ghost" color="blue"
+          class="flex-1 align-middle" label="Explore" />
         <UButton @click="goToProfileOrSignIn" icon="i-ph-user-circle-duotone" variant="ghost" color="blue"
-          class="flex-1" />
-        <UButton @click="goToWoN" icon="i-ph-globe-simple-duotone" variant="ghost" color="blue" class="flex-1" />
+          class="flex-1 align-middle" label="Profile" />
+        <UButton @click="goToWoN" icon="i-ph-globe-simple-duotone" variant="ghost" color="blue"
+          class="flex-1 align-middle" label="World of Nuclear" />
       </div>
     </nav>
   </footer>

@@ -1,5 +1,5 @@
 <template>
-  <div class="join-page">
+  <div class="join-page mx-auto pb-32">
     <section class="hero">
       <h1 class="text-6xl font-bold text-nuclear-blue-400">Flux</h1>
       <img src="/images/flux-theme-v1.jpg" alt="Join the conversation - Show your flux"
@@ -54,9 +54,26 @@
         <li>Start a conversation</li>
       </ul>
       <div class="mt-4">
-        <h3>A little light reading...</h3>
-        <a href="#" class="text-nuclear-blue-400">Terms of Use</a> |
-        <a href="#" class="text-nuclear-blue-400">FAQ</a>
+      </div>
+    </section>
+
+    <UDivider icon="i-ph-info-duotone" size="xl" type="dashed"
+      :ui="{ border: { base: 'border-nuclear-blue-300' }, icon: { base: 'text-nuclear-blue-400' } }" />
+
+    <section class="">
+      <div class="text-center font-bold text-2xl py-4">Information About Using Flux
+      </div>
+      <div class="flex flex-col gap-2">
+        <div>We only use your email address to verify who you are and to communicate with you about this service. To
+          find
+          out more about this and other ways we use data, please see our <NuxtLink
+            to="https://nuclearambitions.com/legal/privacy-policy.html">privacy
+            policy</NuxtLink>.</div>
+        <div>By signing up, you agree to our terms of use, which includes the use of cookies because that's how the Web
+          works. If you would like to review the details, please see our complete <NuxtLink
+            to="https://nuclearambitions.com/legal/terms-of-use.html">terms of
+            use</NuxtLink>.
+        </div>
       </div>
     </section>
   </div>
@@ -115,8 +132,6 @@ const onCreateFluxProfile = async () => {
 <style scoped>
 .join-page {
   max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
 }
 
 .hero {
