@@ -20,32 +20,8 @@
 
     <section v-if="isStep1" class="auth-options mt-8">
       <h2 class="text-2xl font-semibold mb-4">Step 1: Sign up or Sign in</h2>
-      <h3>Request a Magic Link</h3>
-      <div>This may be the easiest way to sign in. We'll send you a link to your email that you can click to sign in. If
-        you don't have an account, we'll create one for you.</div>
-      <div>
-        <UInput v-model="magicForm.email" label="Email" placeholder="Enter your email" />
-        <UInput v-model="magicForm.alias" label="Alias" placeholder="What should we call you?" />
-        <UButton @click="() => loginWithMagicLink()" icon="i-ph-envelope"
-          class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          Request Magic Link
-        </UButton>
-      </div>
-      <h3>Use your account on one of these identity providers.</h3>
-      <div class="flex justify-between gap-4">
-        <UButton @click="() => loginWithAuthService('x')" icon="i-ph-x-logo"
-          class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          X
-        </UButton>
-        <UButton @click="() => loginWithAuthService('google')" icon="i-ph-google-logo"
-          class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          Google
-        </UButton>
-        <UButton @click="() => loginWithAuthService('github')" icon="i-ph-github-logo"
-          class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          GitHub
-        </UButton>
-      </div>
+      <AuthMagicLink />
+      <AuthIdentityProviders />
     </section>
 
     <section v-if="isStep2" class="join-form mt-8">
@@ -89,7 +65,6 @@
 <script lang="ts" setup>
 import type { FluxProfile } from '@/utils/types'
 import { useFluxStore } from '@/stores/flux'
-import { useAuthService } from '@/composables/useAuthService'
 
 const userStore = useUserStore()
 const fluxStore = useFluxStore()
@@ -98,14 +73,10 @@ const fluxService = useFluxService()
 const handle = ref('')
 const displayName = ref('')
 const errorMsg = ref('')
-const magicForm = ref({
-  email: '',
-  alias: ''
-})
 const hasError = computed(() => errorMsg.value !== '')
 const isStep1 = computed(() => !userStore.isSignedIn)
-const isStep2 = computed(() => userStore.isSignedIn && !fluxStore.hasProfile)
-const isStep3 = computed(() => userStore.isSignedIn && fluxStore.hasProfile)
+const isStep2 = computed(() => !isStep1.value && !fluxStore.hasProfile)
+const isStep3 = computed(() => !isStep1.value && !isStep2.value)
 
 const initializePage = async () => {
   if (!userStore.isSignedIn) {
@@ -122,16 +93,6 @@ onMounted(async () => {
   await initializePage()
 })
 
-const loginWithAuthService = async (provider: string) => {
-  const returnTo = useCookie('return-to')
-  returnTo.value = '/join?step=2'
-  await useAuthService().findIdentity(provider)
-}
-
-const loginWithMagicLink = async () => {
-  // TODO: add field validation
-  await useAuthService().loginWithMagicLink(magicForm.value.email, magicForm.value.alias)
-}
 
 const onCreateFluxProfile = async () => {
   const isHandleAvailable = await fluxService.checkFluxHandleAvailability(handle.value)
