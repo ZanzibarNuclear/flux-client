@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto min-h-screen w-full min-w-[600px]">
+  <div class="mx-auto min-h-screen w-full">
     <LayoutCompactHeader />
     <main class="mt-[75px] mb-16">
       <div class="text-center my-16">mobile ❤️</div>
