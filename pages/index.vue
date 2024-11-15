@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-28">
     <template v-if="fluxStore.activeFlux">
       <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @cancel-reply="handleCancelReply" />
       <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @boost-flux="handleBoost"
@@ -77,9 +77,4 @@ async function handleBoost(flux: Flux) {
 }
 </script>
 
-<style scoped>
-.home-timeline {
-  max-width: 600px;
-  margin: 1.0rem auto;
-}
-</style>
+<style scoped></style>
