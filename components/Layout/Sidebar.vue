@@ -1,25 +1,22 @@
 <template>
-  <aside class="sidebar">
-    <nav>
-      <NuxtLink :to="{ path: '/', hash: '#overview' }" class="nav-item">
-        <span class="icon">🏠</span>
-        <span class="label">Overview</span>
+  <aside class="sidebar mt-32">
+    <nav class="flex flex-col gap-4">
+      <NuxtLink to="/" class="nav-item">
+        <UIcon name="i-ph-arrow-bend-left-up-duotone" class="w-8 h-8" />
+        <span class="pl-2">Fluxlines</span>
       </NuxtLink>
       <NuxtLink to="/explore" class="nav-item">
-        <span class="icon">🔍</span>
-        <span class="label">Explore</span>
+        <UIcon name="i-ph-magnifying-glass-duotone" class="w-8 h-8" />
+        <span class="pl-2">Explore</span>
       </NuxtLink>
       <NuxtLink v-if="fluxStore.profile" :to="`/profile/${fluxStore.profile.handle}`" class="nav-item">
-        <span class="icon">👤</span>
-        <span class="label">Profile</span>
+        <UIcon name="i-ph-user-circle-duotone" class="w-8 h-8" />
+        <span class="pl-2">Profile</span>
       </NuxtLink>
       <NuxtLink v-else to="/join" class="nav-item">
-        <span class="icon">
-          <UIcon name="i-ph-sign-in" />
-        </span>
+        <UIcon name="i-ph-sign-in-duotone" class="w-8 h-8" />
         <span class="label">Sign in</span>
       </NuxtLink>
-      <hr class="my-4 border-t-2 border-slate-300" />
       <NuxtLink to="https://worldofnuclear.com" class="nav-item">
         <span class="icon">🌐</span>
         <span>World of Nuclear</span>
@@ -32,6 +29,10 @@
 import { useFluxStore } from '@/stores/flux'
 
 const fluxStore = useFluxStore()
+
+const refreshFluxlines = () => {
+  navigateTo('/')
+}
 </script>
 
 <style scoped>
