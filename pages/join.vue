@@ -1,5 +1,5 @@
 <template>
-  <div class="join-page">
+  <div class="join-page mx-auto pb-32">
     <section class="hero">
       <h1 class="text-6xl font-bold text-nuclear-blue-400">Flux</h1>
       <img src="/images/flux-theme-v1.jpg" alt="Join the conversation - Show your flux"
@@ -20,32 +20,8 @@
 
     <section v-if="isStep1" class="auth-options mt-8">
       <h2 class="text-2xl font-semibold mb-4">Step 1: Sign up or Sign in</h2>
-      <h3>Request a Magic Link</h3>
-      <div>This may be the easiest way to sign in. We'll send you a link to your email that you can click to sign in. If
-        you don't have an account, we'll create one for you.</div>
-      <div>
-        <UInput v-model="magicForm.email" label="Email" placeholder="Enter your email" />
-        <UInput v-model="magicForm.alias" label="Alias" placeholder="What should we call you?" />
-        <UButton @click="() => loginWithMagicLink()" icon="i-ph-envelope"
-          class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          Request Magic Link
-        </UButton>
-      </div>
-      <h3>Use your account on one of these identity providers.</h3>
-      <div class="flex justify-between gap-4">
-        <UButton @click="() => loginWithAuthService('x')" icon="i-ph-x-logo"
-          class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          X
-        </UButton>
-        <UButton @click="() => loginWithAuthService('google')" icon="i-ph-google-logo"
-          class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          Google
-        </UButton>
-        <UButton @click="() => loginWithAuthService('github')" icon="i-ph-github-logo"
-          class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          GitHub
-        </UButton>
-      </div>
+      <AuthMagicLink />
+      <AuthIdentityProviders />
     </section>
 
     <section v-if="isStep2" class="join-form mt-8">
@@ -78,9 +54,26 @@
         <li>Start a conversation</li>
       </ul>
       <div class="mt-4">
-        <h3>A little light reading...</h3>
-        <a href="#" class="text-nuclear-blue-400">Terms of Use</a> |
-        <a href="#" class="text-nuclear-blue-400">FAQ</a>
+      </div>
+    </section>
+
+    <UDivider icon="i-ph-info-duotone" size="xl" type="dashed"
+      :ui="{ border: { base: 'border-nuclear-blue-300' }, icon: { base: 'text-nuclear-blue-400' } }" />
+
+    <section class="">
+      <div class="text-center font-bold text-2xl py-4">Information About Using Flux
+      </div>
+      <div class="flex flex-col gap-2">
+        <div>We only use your email address to verify who you are and to communicate with you about this service. To
+          find
+          out more about this and other ways we use data, please see our <NuxtLink
+            to="https://nuclearambitions.com/legal/privacy-policy.html">privacy
+            policy</NuxtLink>.</div>
+        <div>By signing up, you agree to our terms of use, which includes the use of cookies because that's how the Web
+          works. If you would like to review the details, please see our complete <NuxtLink
+            to="https://nuclearambitions.com/legal/terms-of-use.html">terms of
+            use</NuxtLink>.
+        </div>
       </div>
     </section>
   </div>
@@ -89,7 +82,6 @@
 <script lang="ts" setup>
 import type { FluxProfile } from '@/utils/types'
 import { useFluxStore } from '@/stores/flux'
-import { useAuthService } from '@/composables/useAuthService'
 
 const userStore = useUserStore()
 const fluxStore = useFluxStore()
@@ -98,14 +90,10 @@ const fluxService = useFluxService()
 const handle = ref('')
 const displayName = ref('')
 const errorMsg = ref('')
-const magicForm = ref({
-  email: '',
-  alias: ''
-})
 const hasError = computed(() => errorMsg.value !== '')
 const isStep1 = computed(() => !userStore.isSignedIn)
-const isStep2 = computed(() => userStore.isSignedIn && !fluxStore.hasProfile)
-const isStep3 = computed(() => userStore.isSignedIn && fluxStore.hasProfile)
+const isStep2 = computed(() => !isStep1.value && !fluxStore.hasProfile)
+const isStep3 = computed(() => !isStep1.value && !isStep2.value)
 
 const initializePage = async () => {
   if (!userStore.isSignedIn) {
@@ -122,16 +110,6 @@ onMounted(async () => {
   await initializePage()
 })
 
-const loginWithAuthService = async (provider: string) => {
-  const returnTo = useCookie('return-to')
-  returnTo.value = '/join?step=2'
-  await useAuthService().findIdentity(provider)
-}
-
-const loginWithMagicLink = async () => {
-  // TODO: add field validation
-  await useAuthService().loginWithMagicLink(magicForm.value.email, magicForm.value.alias)
-}
 
 const onCreateFluxProfile = async () => {
   const isHandleAvailable = await fluxService.checkFluxHandleAvailability(handle.value)
@@ -154,8 +132,6 @@ const onCreateFluxProfile = async () => {
 <style scoped>
 .join-page {
   max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
 }
 
 .hero {

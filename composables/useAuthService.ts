@@ -11,11 +11,13 @@ export function useAuthService() {
   }
 
   const loginWithMagicLink = async (email: string, alias: string) => {
-    await useApi().post('/login/magiclink', {
+    const response = await useApi().post('/login/magiclink', {
       email,
       alias
     })
+    return response
   }
+
   const getCurrentUser = async () => {
     try {
       const api = useApi()
@@ -47,12 +49,22 @@ export function useAuthService() {
     }
   }
 
+  const signOut = async () => {
+    try {
+      await useApi().delete('/login')
+      userStore.clearCurrentUser()
+    } catch (err) {
+      console.error('Error signing out', err)
+    }
+  }
+
   return {
     loading,
     error,
     loginWithOAuth,
     loginWithMagicLink,
     getCurrentUser,
-    findIdentity
+    findIdentity,
+    signOut
   }
 }

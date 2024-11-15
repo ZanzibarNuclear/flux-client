@@ -1,12 +1,12 @@
 <template>
-  <div class="flux-list">
-    <h2>{{ listTitle }}</h2>
+  <div class="divide-y divide-gray-200">
+    <h2 class="text-center">{{ listTitle }}</h2>
     <div v-if="loading" class="loading">Loading fluxes...</div>
     <div v-else-if="error" class="error">Error loading fluxes. Please try again.</div>
     <template v-else>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
         @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
-      <div v-if="!fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
+      <div v-if="fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
     </template>
   </div>
 </template>

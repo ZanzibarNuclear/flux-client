@@ -1,10 +1,10 @@
 <template>
-  <div class="mx-auto w-3/4 min-w-[600px]">
+  <div class="mx-auto min-h-screen w-full">
     <LayoutCompactHeader />
-    <div class="mt-[75px] mb-16">
-      <div class="text-center">desktop ❤️</div>
+    <main class="mt-[75px] mb-16">
+      <div class="text-center my-16">mobile ❤️</div>
       <slot />
-    </div>
+    </main>
     <LayoutCompactFooter />
   </div>
 </template>
@@ -30,7 +30,7 @@ onMounted(async () => {
 })
 </script>
 
-<style>
+<style scoped>
 html,
 body {
   margin: 0;

@@ -1,12 +1,19 @@
 <template>
-  <div class="home-timeline">
+  <div class="pb-28">
     <template v-if="fluxStore.activeFlux">
       <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @cancel-reply="handleCancelReply" />
       <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @boost-flux="handleBoost"
         @view-profile="handleViewProfile" @view-flux="handleViewFlux" />
     </template>
     <template v-else>
-      <FluxComposer />
+      <div class="py-8">
+        <FluxComposer v-if="fluxStore.hasProfile" />
+        <div v-else>
+          <NuxtImg src="/images/flux-theme-v1.jpg" class="mx-auto" />
+          <NuxtLink to="/join" class="block text-center text-lg text-[nuclear-blue]">Sign in to participate.</NuxtLink>
+        </div>
+        <hr />
+      </div>
       <FluxTimeline @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile"
         @view-flux="handleViewFlux" />
     </template>
@@ -16,10 +23,25 @@
 <script setup lang="ts">
 import type { Flux } from '@/utils/types'
 
+const authService = useAuthService()
+const userStore = useUserStore()
 const fluxService = useFluxService()
 const fluxStore = useFluxStore()
-
 const isReply = ref(false)
+
+onMounted(async () => {
+  if (!userStore.isSignedIn) {
+    try {
+      await authService.getCurrentUser()
+    } catch (error) {
+      console.error('Error fetching current user:', error)
+      return
+    }
+  }
+  if (!fluxStore.hasProfile) {
+    await fluxService.fetchMyFluxProfile()
+  }
+})
 
 const handleCancelReply = () => {
   isReply.value = false
@@ -55,9 +77,4 @@ async function handleBoost(flux: Flux) {
 }
 </script>
 
-<style scoped>
-.home-timeline {
-  max-width: 600px;
-  margin: 1.0rem auto;
-}
-</style>
+<style scoped></style>

@@ -9,9 +9,6 @@
         <UButton @click="editor.chain().focus().toggleItalic().run()" color="gray"
           :disabled="!editor.can().chain().focus().toggleItalic().run()"
           :class="{ 'is-active': editor.isActive('italic') }" icon="ph:text-italic" />
-        <UButton @click="editor.chain().focus().toggleStrike().run()" color="gray"
-          :disabled="!editor.can().chain().focus().toggleStrike().run()"
-          :class="{ 'is-active': editor.isActive('strike') }" icon="ph:text-strikethrough" />
         <UButton @click="editor.chain().focus().toggleBulletList().run()" color="gray"
           :class="{ 'is-active': editor.isActive('bulletList') }" icon="ph:list-bullets" />
         <UButton @click="editor.chain().focus().toggleOrderedList().run()" color="gray"
@@ -20,17 +17,23 @@
           :class="{ 'is-active': editor.isActive('blockquote') }" icon="ph:quotes" />
         <UButton @click="editor.chain().focus().setParagraph().run()" color="gray"
           :class="{ 'is-active': editor.isActive('paragraph') }" icon="ph:paragraph" />
-        <UButton @click="editor.chain().focus().undo().run()" :disabled="!editor.can().chain().focus().undo().run()"
-          color="gray" icon="ph:arrow-arc-left-duotone" />
-        <UButton @click="editor.chain().focus().redo().run()" :disabled="!editor.can().chain().focus().redo().run()"
-          color="gray" icon="ph:arrow-arc-right-duotone" />
       </div>
       <div class="ml-auto flex space-x-2">
-        <UButton @click="handleProof" color="green" icon="ph:eye-duotone" />
-        <UButton @click="handleCancelFlux" color="orange" label="Cancel" icon="ph:x-circle" />
+        <UButton @click="() => confirmCancel = true" color="orange" icon="ph:x-circle" />
         <UButton @click="handlePostFlux" color="blue" :label="saveButtonLabel" icon="ph:lightning-duotone" />
       </div>
     </div>
+    <UModal v-model="confirmCancel">
+      <UCard>
+        <template #header>
+          <div class="text-center">Are you sure you want to cancel?</div>
+        </template>
+        <div class="flex justify-center space-x-6">
+          <UButton @click="handleCancelFlux" color="orange" label="Yes" />
+          <UButton @click="confirmCancel = false" color="gray" label="No" />
+        </div>
+      </UCard>
+    </UModal>
   </div>
 </template>
 
@@ -69,10 +72,7 @@ const editor = useEditor({
   },
 });
 
-const handleProof = () => {
-  alert(editor.value.getHTML())
-}
-
+const confirmCancel = ref(false)
 const handlePostFlux = () => {
   emit('postFluxMessage', editor.value?.getHTML())
   editor.value?.commands.setContent('')
@@ -81,6 +81,7 @@ const handlePostFlux = () => {
 const handleCancelFlux = () => {
   emit('cancelFlux')
   editor.value?.commands.setContent('')
+  confirmCancel.value = false
 }
 
 onBeforeUnmount(() => {
