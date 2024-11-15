@@ -47,12 +47,22 @@ export function useAuthService() {
     }
   }
 
+  const signOut = async () => {
+    try {
+      await useApi().delete('/login')
+      userStore.clearCurrentUser()
+    } catch (err) {
+      console.error('Error signing out', err)
+    }
+  }
+
   return {
     loading,
     error,
     loginWithOAuth,
     loginWithMagicLink,
     getCurrentUser,
-    findIdentity
+    findIdentity,
+    signOut
   }
 }
