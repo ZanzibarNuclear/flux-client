@@ -1,7 +1,7 @@
 <template>
   <div class="join-page mx-auto pb-32">
     <section class="hero">
-      <h1 class="text-6xl font-bold text-nuclear-blue-400">Flux</h1>
+      <h1 class="text-center text-nuclear-blue-600 text-4xl font-bold">Flux</h1>
       <img src="/images/flux-theme-v1.jpg" alt="Join the conversation - Show your flux"
         class="w-full h-64 object-cover">
     </section>
@@ -18,7 +18,7 @@
       </p>
     </section>
 
-    <section v-if="isStep1" class="auth-options mt-8">
+    <section v-if="isStep1" class="auth-options mt-8 mb-16">
       <h2 class="text-2xl font-semibold mb-4">Step 1: Sign up or Sign in</h2>
       <AuthMagicLink />
       <AuthIdentityProviders />
@@ -95,7 +95,7 @@ const isStep1 = computed(() => !userStore.isSignedIn)
 const isStep2 = computed(() => !isStep1.value && !fluxStore.hasProfile)
 const isStep3 = computed(() => !isStep1.value && !isStep2.value)
 
-const initializePage = async () => {
+onMounted(() => {
   if (!userStore.isSignedIn) {
     console.log('no user found; should go to step 1')
   } else if (!fluxStore.hasProfile) {
@@ -103,11 +103,6 @@ const initializePage = async () => {
   } else {
     console.log('should go to step 3')
   }
-}
-
-// Call initializePage when the component is mounted
-onMounted(async () => {
-  await initializePage()
 })
 
 
@@ -131,20 +126,7 @@ const onCreateFluxProfile = async () => {
 
 <style scoped>
 .join-page {
-  max-width: 800px;
-}
-
-.hero {
-  position: relative;
-}
-
-.hero h1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  max-width: 600px;
 }
 
 .error-message {

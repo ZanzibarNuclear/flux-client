@@ -2,8 +2,8 @@
   <div class="mx-auto w-3/4 min-w-[600px]">
     <LayoutCompactHeader />
     <div class="mt-[75px] mb-16">
-      <div class="text-center">desktop ❤️</div>
       <slot />
+      <div class="text-center pb-24">desktop ❤️</div>
     </div>
     <LayoutCompactFooter />
   </div>
