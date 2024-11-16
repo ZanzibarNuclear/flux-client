@@ -2,8 +2,8 @@
   <div class="mx-auto min-h-screen w-full">
     <LayoutCompactHeader />
     <main class="mt-[75px] mb-16">
-      <div class="text-center my-16">mobile ❤️</div>
       <slot />
+      <div class="text-center pb-24">mobile ❤️</div>
     </main>
     <LayoutCompactFooter />
   </div>

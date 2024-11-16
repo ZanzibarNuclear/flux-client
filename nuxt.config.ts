@@ -8,13 +8,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'nuxt-tiptap-editor',
     '@nuxtjs/device',
+    '@nuxtjs/turnstile',
   ],
-  tiptap: {
-    prefix: 'Tiptap', //prefix for Tiptap imports, composables not included
-  },
-  ui: {
-    global: true,
-  },
   css: ['~/assets/css/tailwind.css'],
   colorMode: {
     preference: 'light',
@@ -26,5 +21,17 @@ export default defineNuxtConfig({
       baseUrl: process.env.BASE_URL,
       apiBaseUrl: process.env.API_BASE_URL,
     },
+    turnstile: {
+      secretKey: process.env.TURNSTILE_SECRET_KEY,
+    }
+  },
+  tiptap: {
+    prefix: 'Tiptap', //prefix for Tiptap imports, composables not included
+  },
+  turnstile: {
+    siteKey: process.env.TURNSTILE_SITE_KEY,
+  },
+  ui: {
+    global: true,
   },
 })
