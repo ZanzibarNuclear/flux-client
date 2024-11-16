@@ -72,12 +72,15 @@ const isStep2 = computed(() => !isStep1.value && !fluxStore.hasProfile)
 const isStep3 = computed(() => !isStep1.value && !isStep2.value)
 
 onMounted(() => {
+  const returnTo = useCookie('return-to')
   if (!userStore.isSignedIn) {
     console.log('no user found; should go to step 1')
+    returnTo.value = '/join'
   } else if (!fluxStore.hasProfile) {
     console.log('no flux profile found; should go to step 2')
   } else {
     console.log('should go to step 3')
+    returnTo.value = ''
   }
 })
 </script>

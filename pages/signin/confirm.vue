@@ -56,6 +56,7 @@ onMounted(async () => {
 
   if (userStore.isSignedIn && returnTo.value) {
     navigateTo(returnTo.value)
+    returnTo.value = ''
   }
 })
 </script>
