@@ -23,25 +23,9 @@
 <script setup lang="ts">
 import type { Flux } from '@/utils/types'
 
-const authService = useAuthService()
-const userStore = useUserStore()
 const fluxService = useFluxService()
 const fluxStore = useFluxStore()
 const isReply = ref(false)
-
-onMounted(async () => {
-  if (!userStore.isSignedIn) {
-    try {
-      await authService.getCurrentUser()
-    } catch (error) {
-      console.error('Error fetching current user:', error)
-      return
-    }
-  }
-  if (!fluxStore.hasProfile) {
-    await fluxService.fetchMyFluxProfile()
-  }
-})
 
 const handleCancelReply = () => {
   isReply.value = false
