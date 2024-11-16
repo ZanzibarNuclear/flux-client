@@ -10,12 +10,19 @@ export function useAuthService() {
     })
   }
 
-  const loginWithMagicLink = async (email: string, alias: string) => {
-    const response = await useApi().post('/login/magiclink', {
-      email,
-      alias
-    })
-    return response
+  const loginWithMagicLink = async (email: string, alias: string, token: string) => {
+    try {
+      const response = await useApi().post('/login/magiclink', {
+        email,
+        alias,
+        token
+      })
+      console.log('loginWithMagicLink response:', response)
+      return response
+    } catch (error: any) {
+      console.error('Error logging in with magic link', error)
+      return { status: 'error', message: error.message }
+    }
   }
 
   const getCurrentUser = async () => {

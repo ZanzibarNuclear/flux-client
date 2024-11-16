@@ -17,6 +17,7 @@
   "dependencies": {
     "@nuxt/image": "^1.8.1",
     "@nuxt/ui": "^2.18.7",
+    "@nuxtjs/turnstile": "^0.9.11",
     "@pinia/nuxt": "^0.5.5",
     "@tailwindcss/typography": "^0.5.15",
     "nuxt": "^3.13.2",
