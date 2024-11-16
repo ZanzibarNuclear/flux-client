@@ -6,10 +6,6 @@
         class="w-full h-64 object-cover">
     </section>
 
-    <section v-if="hasError" class="error-message mt-8">
-      <p class="text-xl">{{ errorMsg }}</p>
-    </section>
-
     <section class="explanation mt-8">
       <p class="text-xl">
         Join Flux! Be part of the conversation about nuclear energy.
@@ -24,24 +20,12 @@
       <AuthIdentityProviders />
     </section>
 
-    <section v-if="isStep2" class="join-form mt-8">
+    <section v-if="isStep2" class="join-form mt-8 mb-16">
       <h2 class="text-2xl font-semibold mb-4">Step 2: Create Your Flux Profile</h2>
-      <form @submit.prevent="onCreateFluxProfile">
-        <div class="mb-4">
-          <label for="handle" class="block mb-2">Handle</label>
-          <input v-model="handle" id="handle" type="text" required class="w-full px-3 py-2 border rounded">
-        </div>
-        <div class="mb-4">
-          <label for="displayName" class="block mb-2">Display Name</label>
-          <input v-model="displayName" id="displayName" type="text" required class="w-full px-3 py-2 border rounded">
-        </div>
-        <button type="submit" class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
-          Create Profile
-        </button>
-      </form>
+      <FluxUserProfileSetup />
     </section>
 
-    <section v-if="isStep3" class="congratulations mt-8">
+    <section v-if="isStep3" class="congratulations mt-8 mb-16">
       <h2 class="text-2xl font-semibold mb-4">Step 3: Congratulations!</h2>
       <p>Welcome to Flux! Here are some tips to get started:</p>
       <ul class="list-disc list-inside mt-2">
@@ -80,17 +64,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { FluxProfile } from '@/utils/types'
-import { useFluxStore } from '@/stores/flux'
-
 const userStore = useUserStore()
 const fluxStore = useFluxStore()
-const fluxService = useFluxService()
 
-const handle = ref('')
-const displayName = ref('')
-const errorMsg = ref('')
-const hasError = computed(() => errorMsg.value !== '')
 const isStep1 = computed(() => !userStore.isSignedIn)
 const isStep2 = computed(() => !isStep1.value && !fluxStore.hasProfile)
 const isStep3 = computed(() => !isStep1.value && !isStep2.value)
@@ -104,24 +80,6 @@ onMounted(() => {
     console.log('should go to step 3')
   }
 })
-
-
-const onCreateFluxProfile = async () => {
-  const isHandleAvailable = await fluxService.checkFluxHandleAvailability(handle.value)
-  if (!isHandleAvailable) {
-    errorMsg.value = 'Handle is already taken. Please try another one.'
-    return
-  }
-
-  try {
-    const profile = await fluxService.createMyFluxProfile(handle.value, displayName.value)
-
-    fluxStore.setProfile(profile as FluxProfile)
-  } catch (error) {
-    console.error('Error creating profile:', error)
-    errorMsg.value = 'Failed to create profile. Please try again.'
-  }
-}
 </script>
 
 <style scoped>
