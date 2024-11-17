@@ -29,8 +29,8 @@
 
     <section v-if="isStep3" class="congratulations mt-8 mb-16">
       <h2 class="text-2xl font-semibold mb-4">Step 3: Congratulations!</h2>
-      <p>You are ready to Flux (flex?) your power!</p>
-      <p>Here is how to get started:</p>
+      <p class="text-lg mb-4">You are ready to Flux (flex?) your power!</p>
+      <p class="text-md mb-4">Here is how to get started:</p>
       <ol class="list-decimal list-inside mt-2">
         <li>
           <NuxtLink to="/">Start sharing your thoughts</NuxtLink>
