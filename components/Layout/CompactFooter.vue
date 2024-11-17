@@ -46,7 +46,7 @@ const goTo = (url: string) => {
   navigateTo(url)
 }
 const goToWoN = () => {
-  goTo('https://www.worldofnuclear.com')
+  navigateTo('https://www.worldofnuclear.com', { external: true })
 }
 const goToProfileOrSignIn = () => {
   if (!userStore.isSignedIn || !fluxStore.hasProfile) {
