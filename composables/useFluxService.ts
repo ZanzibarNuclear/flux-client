@@ -1,5 +1,6 @@
 export function useFluxService() {
   const fluxStore = useFluxStore()
+  const userStore = useUserStore()
   const api = useApi()
   const loading = ref(false)
   const error = ref(null)
@@ -40,7 +41,24 @@ export function useFluxService() {
     }
   }
 
+
+  /**
+   * Fetch any Flux user profile by their handle
+   */
+  const fetchFluxProfile = async (userHandle: string) => {
+    const data = await api.get(`/api/flux-users/${userHandle}`)
+    return data as FluxProfile
+  }
+
+  /*
+   * Protected actions - require the user to be signed in
+   */
+
   const createFlux = async (content: string, parentId: string | null = null) => {
+    if (!userStore.isSignedIn) {
+      console.warn('User not signed in -- cannot create flux')
+      return
+    }
     const data = await api.post('/api/fluxes', {
       content,
       parentId,
@@ -50,11 +68,19 @@ export function useFluxService() {
   }
 
   const boostFlux = async (fluxId: number) => {
+    if (!userStore.isSignedIn) {
+      console.warn('User not signed in -- cannot boost flux')
+      return
+    }
     const data = await api.post(`/api/fluxes/${fluxId}/boost`, {})
     return data
   }
 
   const deboostFlux = async (fluxId: number) => {
+    if (!userStore.isSignedIn) {
+      console.warn('User not signed in -- cannot deboost flux')
+      return
+    }
     const data = await api.delete(`/api/fluxes/${fluxId}/boost`)
     return data
   }
@@ -63,6 +89,10 @@ export function useFluxService() {
    * Fetch the current user's Flux profile
    */
   const fetchMyFluxProfile = async () => {
+    if (!userStore.isSignedIn) {
+      console.warn('User not signed in -- cannot fetch my flux profile')
+      return
+    }
     try {
       loading.value = true
       const data = await api.get('/api/me/flux-profile')
@@ -90,6 +120,10 @@ export function useFluxService() {
   }
 
   const createMyFluxProfile = async (handle: string, displayName: string) => {
+    if (!userStore.isSignedIn) {
+      console.warn('User not signed in -- cannot create my flux profile')
+      return
+    }
     try {
       loading.value = true
       const data = await api.post('/api/me/flux-profile', {
@@ -105,14 +139,6 @@ export function useFluxService() {
     } finally {
       loading.value = false
     }
-  }
-
-  /**
-   * Fetch any Flux user profile by their handle
-   */
-  const fetchFluxProfile = async (userHandle: string) => {
-    const data = await api.get(`/api/flux-users/${userHandle}`)
-    return data as FluxProfile
   }
 
   return {

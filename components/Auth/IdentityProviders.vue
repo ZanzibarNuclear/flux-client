@@ -24,8 +24,6 @@
 
 <script lang="ts" setup>
 const loginWithAuthService = async (provider: string) => {
-  const returnTo = useCookie('return-to')
-  returnTo.value = '/join?step=2'
   await useAuthService().findIdentity(provider)
 }
 </script>
