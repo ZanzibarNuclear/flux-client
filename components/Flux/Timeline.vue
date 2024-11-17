@@ -12,9 +12,6 @@
 </template>
 
 <script setup>
-import { useFluxService } from '~/composables/useFluxService'
-import { useFluxStore } from '~/stores/flux'
-
 const props = defineProps({
   userHandle: {
     type: String,

@@ -74,7 +74,7 @@ export function useFluxService() {
       // Update the context
       currentContext.value.hasMore = hasMore
       currentContext.value.total = total
-      currentContext.value.offset += items.length
+      currentContext.value.offset += items?.length || 0
 
       // Append or replace items in the store
       if (reset) {

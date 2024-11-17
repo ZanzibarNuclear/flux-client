@@ -20,9 +20,6 @@
 </template>
 
 <script setup>
-import { useFluxService } from '@/composables/useFluxService'
-import { useFluxStore } from '@/stores/flux'
-
 const fluxStore = useFluxStore()
 const { loading, error, fetchReactions } = useFluxService()
 
