@@ -51,6 +51,10 @@ export const useFluxStore = defineStore('fluxStore', () => {
     timeline.value.unshift(flux)
   }
 
+  function appendToTimeline(fluxes: Flux[]) {
+    timeline.value.push(...fluxes)
+  }
+
   function clearTimeline() {
     timeline.value = []
   }
@@ -74,6 +78,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
     hasProfile,
     timeline,
     setTimeline,
+    appendToTimeline,
     clearTimeline,
     activeFlux,
     setActiveFlux,

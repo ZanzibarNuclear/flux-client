@@ -61,7 +61,7 @@ const onCreateFluxProfile = async () => {
     errorMsg.value = 'Please choose a handle that follows the rules.'
     return
   }
-  const isHandleAvailable = await fluxService.checkFluxHandleAvailability(handle.value)
+  const isHandleAvailable = await fluxService.isHandleAvailable(handle.value)
   if (!isHandleAvailable) {
     errorMsg.value = 'Handle is already taken. Please try another one.'
     return

@@ -1,3 +1,20 @@
+interface FluxListContext {
+  filter: string
+  author: string | null
+  limit: number
+  offset: number
+  hasMore: boolean
+  sortOrder: 'desc' | 'asc'
+  total?: number
+}
+
+export interface FetchFluxOptions {
+  filter?: string
+  author?: string | null
+  limit?: number
+  reset?: boolean  // If true, reset the context and start fresh
+}
+
 export function useFluxService() {
   const fluxStore = useFluxStore()
   const userStore = useUserStore()
@@ -5,27 +22,82 @@ export function useFluxService() {
   const loading = ref(false)
   const error = ref(null)
 
-  interface FetchFluxOptions {
-    filter?: string
-    author?: string | null
-  }
+  const currentContext = ref<FluxListContext>({
+    filter: 'recent',
+    author: null,
+    limit: 5,
+    offset: 0,
+    hasMore: true,
+    sortOrder: 'desc'
+  })
 
   const fetchFluxes = async (options: FetchFluxOptions = {}) => {
-    const { filter = 'recent', author = null } = options
+    const {
+      filter = 'recent',
+      author = null,
+      limit = 5,
+      reset = false
+    } = options
+
     loading.value = true
     error.value = null
 
     try {
+      // Reset context if requested or if filter/author changed
+      if (reset || filter !== currentContext.value.filter || author !== currentContext.value.author) {
+        currentContext.value = {
+          filter,
+          author,
+          limit,
+          offset: 0,
+          hasMore: true,
+          sortOrder: 'desc'
+        }
+      }
+
+      // Don't fetch if we know there are no more results
+      if (!currentContext.value.hasMore) {
+        return []
+      }
+
       const query = new URLSearchParams()
-      if (filter) query.append('filter', filter)
-      if (author) query.append('author', author)
-      const data = await api.get(`/api/fluxes?${query.toString()}`)
-      fluxStore.setTimeline(data as Flux[])
-    } catch (err) {
+      query.append('filter', currentContext.value.filter)
+      query.append('limit', currentContext.value.limit.toString())
+      query.append('offset', currentContext.value.offset.toString())
+      if (currentContext.value.author) {
+        query.append('author', currentContext.value.author)
+      }
+
+      const response = await api.get(`/api/fluxes?${query.toString()}`)
+      const { items, total, hasMore } = response as { items: Flux[], total: number, hasMore: boolean }
+
+      // Update the context
+      currentContext.value.hasMore = hasMore
+      currentContext.value.total = total
+      currentContext.value.offset += items.length
+
+      // Append or replace items in the store
+      if (reset) {
+        fluxStore.setTimeline(items as Flux[])
+      } else {
+        fluxStore.appendToTimeline(items as Flux[])
+      }
+
+      return items
+    } catch (err: any) {
       console.error('Error fetching fluxes:', err)
+      error.value = err
     } finally {
       loading.value = false
     }
+  }
+
+  const loadMoreFluxes = () => {
+    return fetchFluxes({
+      filter: currentContext.value.filter,
+      author: currentContext.value.author,
+      limit: currentContext.value.limit
+    })
   }
 
   const fetchReactions = async (fluxId: string) => {
@@ -148,9 +220,11 @@ export function useFluxService() {
     fetchReactions,
     createFlux,
     fetchFluxProfile,
-    checkFluxHandleAvailability: isHandleAvailable,
+    isHandleAvailable,
     createMyFluxProfile,
     fetchMyFluxProfile,
-    boostFlux
+    boostFlux,
+    loadMoreFluxes,
+    currentContext: readonly(currentContext)
   }
 }
