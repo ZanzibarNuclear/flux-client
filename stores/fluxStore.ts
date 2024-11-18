@@ -53,7 +53,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
 
   function appendToTimeline(fluxes: Flux[]) {
     if (fluxes && fluxes.length > 0) {
-      timeline.value = [...timeline.value, ...fluxes]
+      timeline.value.push(...fluxes)
     }
   }
 

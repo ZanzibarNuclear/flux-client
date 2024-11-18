@@ -7,6 +7,10 @@
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
         @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
       <div v-if="fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
+      <div v-if="true" class="load-more">
+        <UButton @click="loadMoreFluxes">Load more</UButton>
+      </div>
+      <div v-else>You have reached the end.</div>
     </template>
   </div>
 </template>
@@ -24,10 +28,11 @@ const props = defineProps({
 })
 const emit = defineEmits(['select-flux', 'boost'])
 
-const { loading, error, fetchFluxes } = useFluxService()
+const { loading, error, fetchFluxes, currentContext, loadMoreFluxes } = useFluxService()
 const fluxStore = useFluxStore()
 const listTitle = ref('Fluxlines')
 
+const hasMore = computed(() => currentContext.value.hasMore)
 onMounted(() => {
   const options = {}
   if (props.userHandle) {

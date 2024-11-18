@@ -1,10 +1,9 @@
 interface FluxListContext {
-  filter: string
+  filter: string | null
   author: string | null
   limit: number
   offset: number
   hasMore: boolean
-  sortOrder: 'desc' | 'asc'
   total?: number
 }
 
@@ -23,12 +22,11 @@ export function useFluxService() {
   const error = ref(null)
 
   const currentContext = ref<FluxListContext>({
-    filter: 'recent',
+    filter: null,
     author: null,
     limit: 5,
     offset: 0,
     hasMore: true,
-    sortOrder: 'desc'
   })
 
   const fetchFluxes = async (options: FetchFluxOptions = {}) => {
@@ -51,7 +49,6 @@ export function useFluxService() {
           limit,
           offset: 0,
           hasMore: true,
-          sortOrder: 'desc'
         }
       }
 
@@ -61,12 +58,14 @@ export function useFluxService() {
       }
 
       const query = new URLSearchParams()
-      query.append('filter', currentContext.value.filter)
-      query.append('limit', currentContext.value.limit.toString())
-      query.append('offset', currentContext.value.offset.toString())
+      if (currentContext.value.filter) {
+        query.append('filter', currentContext.value.filter)
+      }
       if (currentContext.value.author) {
         query.append('author', currentContext.value.author)
       }
+      query.append('limit', currentContext.value.limit.toString())
+      query.append('offset', currentContext.value.offset.toString())
 
       const response = await api.get(`/api/fluxes?${query.toString()}`)
       const { items, total, hasMore } = response as { items: Flux[], total: number, hasMore: boolean }
