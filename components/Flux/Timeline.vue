@@ -54,10 +54,16 @@ function loadMore() {
 
 function handleView(flux: Flux) {
   console.log('timeline is viewing flux without composer', flux.id)
+  if (props.profile) {
+    navigateTo('/')
+  }
 }
 
 function handleReply(flux: Flux) {
   console.log('timeline is viewing flux with composer', flux.id)
+  if (props.profile) {
+    navigateTo('/')
+  }
 }
 </script>
 
