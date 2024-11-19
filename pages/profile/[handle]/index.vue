@@ -8,7 +8,6 @@
 <script setup>
 import { useRoute } from 'vue-router'
 const fluxService = useFluxService()
-const fluxStore = useFluxStore()
 
 const route = useRoute()
 const handle = ref(route.params.handle)

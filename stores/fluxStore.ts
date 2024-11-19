@@ -65,6 +65,12 @@ export const useFluxStore = defineStore('fluxStore', () => {
     reactions.value = fluxes
   }
 
+  function appendToReactions(fluxes: Flux[]) {
+    if (fluxes && fluxes.length > 0) {
+      reactions.value.push(...fluxes)
+    }
+  }
+
   function addReply(flux: Flux) {
     reactions.value.unshift(flux)
   }
@@ -90,6 +96,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
     clearActiveFlux,
     reactions,
     setReactions,
+    appendToReactions,
     addReply,
     clearReactions,
   }

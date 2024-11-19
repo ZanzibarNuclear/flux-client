@@ -7,8 +7,8 @@
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
         @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
       <div v-if="fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
-      <div v-if="true" class="load-more">
-        <UButton @click="loadMoreFluxes">Load more</UButton>
+      <div v-if="currentContext.hasMore" class="load-more">
+        <UButton @click="handleLoadMore">Load more</UButton>
       </div>
       <div v-else>You have reached the end.</div>
     </template>
@@ -28,22 +28,12 @@ const props = defineProps({
 })
 const emit = defineEmits(['select-flux', 'boost'])
 
-const { loading, error, fetchFluxes, currentContext, loadMoreFluxes } = useFluxService()
+const { loading, error, fetchTimeline, currentContext } = useFluxService()
 const fluxStore = useFluxStore()
 const listTitle = ref('Fluxlines')
 
-const hasMore = computed(() => currentContext.value.hasMore)
 onMounted(() => {
-  const options = {}
-  if (props.userHandle) {
-    options.author = props.userHandle
-  }
-  if (props.trendy) {
-    options.filter = 'trendy'
-  } else {
-    options.filter = 'recent'
-  }
-  fetchFluxes(options)
+  fetchTimeline(true)
 })
 
 watch(() => props.userHandle, (newUserHandle) => {
@@ -52,12 +42,12 @@ watch(() => props.userHandle, (newUserHandle) => {
   } else {
     listTitle.value = 'The Latest Flux'
   }
-  const options = {}
-  if (props.userHandle) {
-    options.author = props.userHandle
-  }
-  fetchFluxes(options)
+  fetchAuthorFluxes(newUserHandle, true)
 })
+
+function handleLoadMore() {
+  fetchTimeline(false)
+}
 
 function handleView(flux) {
   emit('viewFlux', flux)

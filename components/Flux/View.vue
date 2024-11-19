@@ -6,14 +6,18 @@
         @view-profile="handleViewProfile" />
       <div class="flux-reactions">
         <h3>Reactions</h3>
-        <div v-if="loading">Loading...</div>
+        <div v-if="error">Error: {{ error }}</div>
+        <div v-else-if="loading">Loading...</div>
         <div v-else-if="fluxStore.reactions.length === 0">Be the first to react!</div>
         <div v-else class="flux-reaction-chain">
           <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction"
             @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-flux="handleView"
             @view-profile="handleViewProfile" />
+          <div v-if="currentContext.hasMore" class="load-more">
+            <UButton @click="handleLoadMore">Load more</UButton>
+          </div>
+          <div v-else>You have reached the end.</div>
         </div>
-        <div v-if="error">Error: {{ error }}</div>
       </div>
     </div>
   </div>
@@ -21,7 +25,7 @@
 
 <script setup>
 const fluxStore = useFluxStore()
-const { loading, error, fetchReactions } = useFluxService()
+const { loading, error, fetchReactions, currentContext } = useFluxService()
 
 const props = defineProps({
   flux: {
@@ -29,13 +33,12 @@ const props = defineProps({
     required: true
   },
 })
-// TODO: get reactions from flux store
 
 const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
 
-const load = (fluxId) => {
+const load = async (fluxId) => {
   console.log('loading reactions to flux:', fluxId)
-  fetchReactions(fluxId)
+  await fetchReactions(fluxId, true)
 }
 
 onMounted(() => {
@@ -49,6 +52,10 @@ watch(() => props.flux, (newFlux) => {
   console.log('flux changed:', newFlux)
   load(newFlux.id)
 })
+
+function handleLoadMore() {
+  fetchReactions(props.flux.id, false)
+}
 
 function handleView(flux) {
   emit('viewFlux', flux)
