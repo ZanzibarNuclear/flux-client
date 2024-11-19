@@ -101,6 +101,16 @@ export function useFluxService() {
     return items
   }
 
+  const fetchAuthorFluxes = async (authorId: number, reset = false) => {
+    const items = await fetchFluxes('author', { authorId }, reset)
+    if (reset) {
+      fluxStore.setTimeline(items)
+    } else {
+      fluxStore.appendToTimeline(items)
+    }
+    return items
+  }
+
   /**
    * Fetch any Flux user profile by their handle
    */
@@ -205,6 +215,7 @@ export function useFluxService() {
     error,
     fetchTimeline,
     fetchReactions,
+    fetchAuthorFluxes,
     currentContext: readonly(currentContext),
     createFlux,
     boostFlux,

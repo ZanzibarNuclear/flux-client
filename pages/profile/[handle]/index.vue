@@ -1,7 +1,7 @@
 <template>
   <div class="user-profile-page">
     <FluxUserProfile v-if="fluxProfile" :flux-user="fluxProfile" />
-    <FluxTimeline v-if="handle" :user-handle="handle" />
+    <FluxTimeline v-if="handle" :profile="fluxProfile" />
   </div>
 </template>
 

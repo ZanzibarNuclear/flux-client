@@ -17,8 +17,8 @@
 
 <script setup>
 const props = defineProps({
-  userHandle: {
-    type: String,
+  profile: {
+    type: Object,
     default: null
   },
   trendy: {
@@ -28,25 +28,25 @@ const props = defineProps({
 })
 const emit = defineEmits(['select-flux', 'boost'])
 
-const { loading, error, fetchTimeline, currentContext } = useFluxService()
+const { loading, error, fetchTimeline, fetchAuthorFluxes, currentContext } = useFluxService()
 const fluxStore = useFluxStore()
 const listTitle = ref('Fluxlines')
+const forProfile = computed(() => props.profile !== null)
 
 onMounted(() => {
-  fetchTimeline(true)
-})
-
-watch(() => props.userHandle, (newUserHandle) => {
-  if (newUserHandle) {
-    listTitle.value = `${newUserHandle}'s Fluxes`
+  if (forProfile.value) {
+    fetchAuthorFluxes(props.profile.id, true)
   } else {
-    listTitle.value = 'The Latest Flux'
+    fetchTimeline(true)
   }
-  fetchAuthorFluxes(newUserHandle, true)
 })
 
 function handleLoadMore() {
-  fetchTimeline(false)
+  if (forProfile.value) {
+    fetchAuthorFluxes(props.profile.id, false)
+  } else {
+    fetchTimeline(false)
+  }
 }
 
 function handleView(flux) {
@@ -63,11 +63,6 @@ function handleReply(flux) {
 
 function handleViewProfile(handle) {
   emit('viewProfile', handle)
-}
-
-
-function handleProfile(fluxId) {
-  console.log('profile', fluxId)
 }
 </script>
 
