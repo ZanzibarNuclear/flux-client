@@ -3,7 +3,7 @@
     <template v-if="fluxStore.activeFlux">
       <FluxComposer v-if="isReply" :replying-to="fluxStore.activeFlux" @cancel-reply="handleCancelReply" />
       <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @boost-flux="handleBoost"
-        @view-profile="handleViewProfile" @view-flux="handleViewFlux" />
+        @view-flux="handleViewFlux" />
     </template>
     <template v-else>
       <div class="py-8">
@@ -14,8 +14,7 @@
         </div>
         <hr />
       </div>
-      <FluxTimeline @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile"
-        @view-flux="handleViewFlux" />
+      <FluxTimeline />
     </template>
   </div>
 </template>
@@ -34,10 +33,6 @@ const handleCancelReply = () => {
 const handleViewFlux = (flux: Flux) => {
   isReply.value = false
   fluxStore.setActiveFlux(flux)
-}
-
-const handleViewProfile = (handle: string) => {
-  navigateTo(`/profile/${handle}`)
 }
 
 const handleReply = (flux: Flux) => {

@@ -8,14 +8,16 @@
         @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
       <div v-if="fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
       <div v-if="currentContext.hasMore" class="load-more">
-        <UButton @click="handleLoadMore">Load more</UButton>
+        <UButton @click="loadMore">Load more</UButton>
       </div>
       <div v-else>You have reached the end.</div>
     </template>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import type { Flux } from '@/utils/types'
+
 const props = defineProps({
   profile: {
     type: Object,
@@ -26,7 +28,6 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['select-flux', 'boost'])
 
 const { loading, error, fetchTimeline, fetchAuthorFluxes, currentContext } = useFluxService()
 const fluxStore = useFluxStore()
@@ -41,7 +42,7 @@ onMounted(() => {
   }
 })
 
-function handleLoadMore() {
+function loadMore() {
   if (forProfile.value) {
     fetchAuthorFluxes(props.profile.id, false)
   } else {
@@ -49,20 +50,31 @@ function handleLoadMore() {
   }
 }
 
-function handleView(flux) {
-  emit('viewFlux', flux)
+function handleView(flux: Flux) {
+  fluxStore.setActiveFlux(flux, false)
 }
 
-function handleBoost(flux) {
-  emit('boostFlux', flux)
+function handleReply(flux: Flux) {
+  fluxStore.setActiveFlux(flux, true)
 }
 
-function handleReply(flux) {
-  emit('replyToFlux', flux)
+async function handleBoost(flux: Flux) {
+  if (!fluxStore.hasProfile) {
+    console.warn('Unknown user -- not able to boost')
+    return
+  }
+  try {
+    const boostedFlux = await useFluxService().boostFlux(flux.id)
+    if (boostedFlux) {
+      fluxStore.updateFlux(boostedFlux as Flux)
+    }
+  } catch (error) {
+    console.error('Error boosting flux:', error)
+  }
 }
 
-function handleViewProfile(handle) {
-  emit('viewProfile', handle)
+function handleViewProfile(handle: string) {
+  navigateTo(`/profile/${handle}`)
 }
 </script>
 

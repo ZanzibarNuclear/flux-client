@@ -6,6 +6,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
   const profile = ref<FluxProfile | null>(null)
   const timeline = ref<Flux[]>([])  // shows relevant fluxes for user
   const activeFlux = ref<Flux | null>(null)
+  const isReply = ref(false)
   const reactions = ref<Flux[]>([]) // shows replies to activeFlux
 
   const hasProfile = computed(() => !!profile.value)
@@ -18,12 +19,13 @@ export const useFluxStore = defineStore('fluxStore', () => {
     profile.value = null
   }
 
-  function setActiveFlux(flux: Flux) {
+  function setActiveFlux(flux: Flux, reply: boolean = false) {
     if (flux === activeFlux.value) {
       return
     }
     activeFlux.value = flux
     reactions.value = []
+    isReply.value = reply
   }
 
   function updateFlux(flux: Flux) {
@@ -39,6 +41,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
 
   function clearActiveFlux() {
     activeFlux.value = null
+    isReply.value = false
   }
 
   const timelineEmpty = computed(() => !timeline.value || timeline.value.length === 0)
