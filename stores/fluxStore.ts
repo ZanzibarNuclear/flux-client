@@ -28,6 +28,10 @@ export const useFluxStore = defineStore('fluxStore', () => {
     isReply.value = reply
   }
 
+  function cancelReply() {
+    isReply.value = false
+  }
+
   function updateFlux(flux: Flux) {
     let index = timeline.value.findIndex(item => item.id === flux.id)
     if (index !== -1) {
@@ -92,6 +96,8 @@ export const useFluxStore = defineStore('fluxStore', () => {
     appendToTimeline,
     clearTimeline,
     activeFlux,
+    isReply,
+    cancelReply,
     setActiveFlux,
     updateFlux,
     timelineEmpty,

@@ -2,17 +2,15 @@
   <div>
     <UButton icon="i-ph-arrow-left" label="Return to timeline" color="blue" variant="ghost" @click="returnToTimeline" />
     <div class="flux-view">
-      <FluxItem :flux="flux" @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-flux="handleView"
-        @view-profile="handleViewProfile" />
+      <FluxItem :flux="flux" @view-flux="handleView" @reply-to-flux="handleReply" />
       <div class="flux-reactions">
         <h3>Reactions</h3>
         <div v-if="error">Error: {{ error }}</div>
         <div v-else-if="loading">Loading...</div>
         <div v-else-if="fluxStore.reactions.length === 0">Be the first to react!</div>
         <div v-else class="flux-reaction-chain">
-          <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction"
-            @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-flux="handleView"
-            @view-profile="handleViewProfile" />
+          <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction" @view-flux="handleView"
+            @reply-to-flux="handleReply" />
           <div v-if="currentContext.hasMore" class="load-more">
             <UButton @click="handleLoadMore">Load more</UButton>
           </div>
@@ -23,7 +21,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Flux } from '@/utils/types'
+
 const fluxStore = useFluxStore()
 const { loading, error, fetchReactions, currentContext } = useFluxService()
 
@@ -34,9 +34,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['replyToFlux', 'viewFlux', 'boostFlux', 'viewProfile'])
-
-const load = async (fluxId) => {
+const load = async (fluxId: number) => {
   console.log('loading reactions to flux:', fluxId)
   await fetchReactions(fluxId, true)
 }
@@ -57,24 +55,17 @@ function handleLoadMore() {
   fetchReactions(props.flux.id, false)
 }
 
-function handleView(flux) {
-  emit('viewFlux', flux)
+function handleView(flux: Flux) {
+  console.log('viewing flux without composer', flux.id)
 }
 
-function handleBoost(flux) {
-  emit('boostFlux', flux)
-}
-
-function handleReply(flux) {
-  emit('replyToFlux', flux)
-}
-
-function handleViewProfile(handle) {
-  emit('viewProfile', handle)
+function handleReply(flux: Flux) {
+  console.log('viewing flux with composer', flux.id)
 }
 
 const returnToTimeline = () => {
   fluxStore.clearActiveFlux()
+  navigateTo('/')
 }
 </script>
 

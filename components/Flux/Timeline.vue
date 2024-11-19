@@ -5,7 +5,7 @@
     <div v-else-if="error" class="error">Error loading fluxes. Please try again.</div>
     <template v-else>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
-        @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
+        @reply-to-flux="handleReply" />
       <div v-if="fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
       <div v-if="currentContext.hasMore" class="load-more">
         <UButton @click="loadMore">Load more</UButton>
@@ -36,8 +36,10 @@ const forProfile = computed(() => props.profile !== null)
 
 onMounted(() => {
   if (forProfile.value) {
+    console.log('fetching author fluxes for', props.profile.id)
     fetchAuthorFluxes(props.profile.id, true)
   } else {
+    console.log('fetching timeline')
     fetchTimeline(true)
   }
 })
@@ -51,30 +53,11 @@ function loadMore() {
 }
 
 function handleView(flux: Flux) {
-  fluxStore.setActiveFlux(flux, false)
+  console.log('timeline is viewing flux without composer', flux.id)
 }
 
 function handleReply(flux: Flux) {
-  fluxStore.setActiveFlux(flux, true)
-}
-
-async function handleBoost(flux: Flux) {
-  if (!fluxStore.hasProfile) {
-    console.warn('Unknown user -- not able to boost')
-    return
-  }
-  try {
-    const boostedFlux = await useFluxService().boostFlux(flux.id)
-    if (boostedFlux) {
-      fluxStore.updateFlux(boostedFlux as Flux)
-    }
-  } catch (error) {
-    console.error('Error boosting flux:', error)
-  }
-}
-
-function handleViewProfile(handle: string) {
-  navigateTo(`/profile/${handle}`)
+  console.log('timeline is viewing flux with composer', flux.id)
 }
 </script>
 

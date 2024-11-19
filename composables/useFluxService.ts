@@ -137,12 +137,18 @@ export function useFluxService() {
   }
 
   const boostFlux = async (fluxId: number) => {
-    if (!userStore.isSignedIn) {
-      console.warn('User not signed in -- cannot boost flux')
+    if (!fluxStore.hasProfile) {
+      console.warn('Only Flux participants can boost')
       return
     }
-    const data = await api.post(`/api/fluxes/${fluxId}/boost`, {})
-    return data
+    try {
+      const boostedFlux = await api.post(`/api/fluxes/${fluxId}/boost`, {})
+      if (boostedFlux) {
+        fluxStore.updateFlux(boostedFlux as Flux)
+      }
+    } catch (error) {
+      console.error('Error boosting flux:', error)
+    }
   }
 
   const deboostFlux = async (fluxId: number) => {
