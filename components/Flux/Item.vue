@@ -5,11 +5,8 @@
         :alt="flux.author?.display_name || '?? User'" />
       <div class="flex-1">
         <div class="flex items-center gap-2">
-          <span @click="() => handleViewProfile(flux.author.handle)" class="font-bold">{{ flux.author?.display_name ||
-            'Unknown'
-            }}</span>
-          <span @click="() => handleViewProfile(flux.author.handle)" class="text-gray-500">@{{ flux.author.handle
-            }}</span>
+          <span @click="handleViewProfile" class="font-bold">{{ flux.author?.display_name }}</span>
+          <span @click="handleViewProfile" class="text-gray-500">@{{ flux.author?.handle }}</span>
           <span class="text-gray-500">· {{ formatTimeAgo(flux.created_at) }}</span>
           <UButton class="ml-auto" @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="React"
             color="blue" variant="ghost" />
@@ -47,13 +44,13 @@ const emit = defineEmits(['viewFlux', 'replyToFlux'])
 
 function handleView() {
   console.log('viewing', props.flux.id)
-  useFluxStore().setActiveFlux(props.flux.id)
+  useFluxStore().setActiveFlux(props.flux as Flux)
   emit('viewFlux', props.flux)
 }
 
 function handleReply() {
   console.log('replying to', props.flux.id)
-  useFluxStore().setActiveFlux(props.flux.id, true)
+  useFluxStore().setActiveFlux(props.flux as Flux, true)
   emit('replyToFlux', props.flux)
 }
 
@@ -62,8 +59,12 @@ const handleBoost = async () => {
   await useFluxService().boostFlux(props.flux.id)
 }
 
-function handleViewProfile(handle: string) {
-  console.log('viewing profile', handle)
+function handleViewProfile() {
+  const handle = props.flux.author?.handle
+  if (!handle) {
+    console.error('no handle to view profile')
+    return
+  }
   navigateTo(`/profile/${handle}`)
 }
 </script>
