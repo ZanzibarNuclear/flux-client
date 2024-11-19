@@ -6,19 +6,21 @@
 
     <form @submit.prevent="onCreateFluxProfile">
       <div class="mb-4">
-        <label for="handle" class="block mb-2">Handle</label>
-        <input v-model="handle" id="handle" type="text" required :class="[
+        <label for="handle" class="block mb-2 font-bold">Handle</label>
+        <UInput v-model="handle" id="handle" type="text" required maxlength="21" :class="[
           'w-full px-3 py-2 border rounded',
-          handleValidation.isValid ? '' : 'border-red-500'
-        ]" @input="errorMsg = ''">
+          handleValidation.isValid ? '' : 'border-red-500',
+        ]" @input="errorMsg = ''" />
         <p v-if="!handleValidation.isValid" class="text-red-500 text-sm mt-1">
           {{ handleValidation.message }}
         </p>
-        <p class="text-gray-600 text-sm mt-1">Only letters, numbers, hyphens and underscores allowed</p>
+        <p class="text-gray-600 text-sm mt-1 pl-4">Only letters, numbers, hyphens and underscores allowed</p>
       </div>
       <div class="mb-4">
-        <label for="displayName" class="block mb-2">Display Name</label>
-        <input v-model="displayName" id="displayName" type="text" required class="w-full px-3 py-2 border rounded">
+        <label for="displayName" class="block mb-2 font-bold">Display Name</label>
+        <UInput v-model="displayName" id="displayName" type="text" required maxlength="25"
+          class="w-full px-3 py-2 border rounded" />
+        <p class="text-gray-600 text-sm mt-1 pl-4">Anything you want, up to 25 characters.</p>
       </div>
       <button type="submit" class="bg-nuclear-blue-400 text-white px-4 py-2 rounded">
         Create Profile
@@ -55,7 +57,11 @@ const handleValidation = computed(() => {
 })
 
 const onCreateFluxProfile = async () => {
-  const isHandleAvailable = await fluxService.checkFluxHandleAvailability(handle.value)
+  if (!handleValidation.value.isValid) {
+    errorMsg.value = 'Please choose a handle that follows the rules.'
+    return
+  }
+  const isHandleAvailable = await fluxService.isHandleAvailable(handle.value)
   if (!isHandleAvailable) {
     errorMsg.value = 'Handle is already taken. Please try another one.'
     return

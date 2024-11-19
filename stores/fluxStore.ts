@@ -6,6 +6,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
   const profile = ref<FluxProfile | null>(null)
   const timeline = ref<Flux[]>([])  // shows relevant fluxes for user
   const activeFlux = ref<Flux | null>(null)
+  const isReply = ref(false)
   const reactions = ref<Flux[]>([]) // shows replies to activeFlux
 
   const hasProfile = computed(() => !!profile.value)
@@ -18,12 +19,17 @@ export const useFluxStore = defineStore('fluxStore', () => {
     profile.value = null
   }
 
-  function setActiveFlux(flux: Flux) {
+  function setActiveFlux(flux: Flux, reply: boolean = false) {
     if (flux === activeFlux.value) {
       return
     }
     activeFlux.value = flux
     reactions.value = []
+    isReply.value = reply
+  }
+
+  function cancelReply() {
+    isReply.value = false
   }
 
   function updateFlux(flux: Flux) {
@@ -39,6 +45,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
 
   function clearActiveFlux() {
     activeFlux.value = null
+    isReply.value = false
   }
 
   const timelineEmpty = computed(() => !timeline.value || timeline.value.length === 0)
@@ -51,12 +58,24 @@ export const useFluxStore = defineStore('fluxStore', () => {
     timeline.value.unshift(flux)
   }
 
+  function appendToTimeline(fluxes: Flux[]) {
+    if (fluxes && fluxes.length > 0) {
+      timeline.value.push(...fluxes)
+    }
+  }
+
   function clearTimeline() {
     timeline.value = []
   }
 
   function setReactions(fluxes: Flux[]) {
     reactions.value = fluxes
+  }
+
+  function appendToReactions(fluxes: Flux[]) {
+    if (fluxes && fluxes.length > 0) {
+      reactions.value.push(...fluxes)
+    }
   }
 
   function addReply(flux: Flux) {
@@ -74,8 +93,11 @@ export const useFluxStore = defineStore('fluxStore', () => {
     hasProfile,
     timeline,
     setTimeline,
+    appendToTimeline,
     clearTimeline,
     activeFlux,
+    isReply,
+    cancelReply,
     setActiveFlux,
     updateFlux,
     timelineEmpty,
@@ -83,6 +105,7 @@ export const useFluxStore = defineStore('fluxStore', () => {
     clearActiveFlux,
     reactions,
     setReactions,
+    appendToReactions,
     addReply,
     clearReactions,
   }

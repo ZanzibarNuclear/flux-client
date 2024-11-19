@@ -15,22 +15,22 @@ const widgetLabel = computed(() => userStore.alias || 'You Know Who')
 const widgetIcon = computed(() => 'i-ph-user-duotone')
 
 const items = computed(() => {
-  return [
-    [
-      {
-        label: 'Profile',
-        icon: 'i-ph-user-circle-duotone',
-        to: `/profile/${userStore.alias}`,
-      },
-      {
-        label: 'Sign Out',
-        icon: 'i-ph-sign-out',
-        click: async () => {
-          await authService.signOut()
-          fluxStore.clearProfile()
-        },
-      },
-    ]
-  ]
+  const menuItems = []
+  if (fluxStore.profile) {
+    menuItems.push({
+      label: 'Profile',
+      icon: 'i-ph-user-circle-duotone',
+      to: `/profile/${fluxStore.profile.handle}`,
+    })
+  }
+  menuItems.push({
+    label: 'Sign Out',
+    icon: 'i-ph-sign-out',
+    click: async () => {
+      await authService.signOut()
+      fluxStore.clearProfile()
+    },
+  })
+  return [menuItems]
 })
 </script>

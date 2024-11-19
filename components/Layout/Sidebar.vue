@@ -26,8 +26,6 @@
 </template>
 
 <script setup>
-import { useFluxStore } from '@/stores/flux'
-
 const fluxStore = useFluxStore()
 
 const refreshFluxlines = () => {

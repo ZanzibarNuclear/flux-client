@@ -49,7 +49,7 @@ const website = computed(() => props.fluxUser?.website)
 const joinDate = computed(() => formatDate(props.fluxUser?.created_at))
 
 const isOwnProfile = computed(() => {
-  return (fluxStore.profile.handle === handle.value)
+  return (fluxStore.profile?.handle === handle.value)
 })
 const isEditing = ref(false);
 

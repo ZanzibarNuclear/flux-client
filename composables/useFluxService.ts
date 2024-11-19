@@ -1,46 +1,115 @@
+export interface FetchFluxOptions {
+  order?: string
+  authorId?: number
+  fluxId?: number
+  limit?: number
+  offset?: number
+}
+
+export type FluxListType = 'timeline' | 'reactions' | 'author'
+
+interface FluxListContext {
+  type: FluxListType
+  options: FetchFluxOptions
+  total?: number
+  hasMore: boolean
+  offset: number
+}
+
 export function useFluxService() {
   const fluxStore = useFluxStore()
   const userStore = useUserStore()
   const api = useApi()
+
   const loading = ref(false)
   const error = ref(null)
 
-  interface FetchFluxOptions {
-    filter?: string
-    author?: string | null
-  }
+  const currentContext = ref<FluxListContext>({
+    type: 'timeline',
+    options: {},
+    total: undefined,
+    hasMore: true,
+    offset: 0
+  })
 
-  const fetchFluxes = async (options: FetchFluxOptions = {}) => {
-    const { filter = 'recent', author = null } = options
+  const fetchFluxes = async (type: FluxListType, options: FetchFluxOptions = {}, reset = false) => {
     loading.value = true
     error.value = null
 
     try {
+      // Reset context if type changes or reset requested
+      if (reset || type !== currentContext.value.type) {
+        currentContext.value = {
+          type,
+          options,
+          offset: 0,
+          hasMore: true
+        }
+      }
+
+      if (!currentContext.value.hasMore) {
+        console.log('no more fluxes to fetch')
+        return []
+      }
+
+      console.log(`fetching ${type} starting after: ${currentContext.value.offset}`)
+
       const query = new URLSearchParams()
-      if (filter) query.append('filter', filter)
-      if (author) query.append('author', author)
-      const data = await api.get(`/api/fluxes?${query.toString()}`)
-      fluxStore.setTimeline(data as Flux[])
-    } catch (err) {
+      const { order, authorId, fluxId, limit = 4 } = options
+
+      if (order) query.append('order', order)
+      if (authorId) query.append('authorId', authorId.toString())
+      if (fluxId) query.append('fluxId', fluxId.toString())
+      query.append('limit', limit.toString())
+      query.append('offset', currentContext.value.offset.toString())
+
+      const response = await api.get(`/api/fluxes?${query.toString()}`)
+      const { items, total, hasMore } = response as { items: Flux[], total: number, hasMore: boolean }
+
+      currentContext.value.hasMore = hasMore
+      currentContext.value.total = total
+      currentContext.value.offset += total
+
+      return items
+    } catch (err: any) {
       console.error('Error fetching fluxes:', err)
+      error.value = err
+      return []
     } finally {
       loading.value = false
     }
   }
 
-  const fetchReactions = async (fluxId: string) => {
-    loading.value = true
-    error.value = null
-    try {
-      const data = await api.get(`/api/fluxes/${fluxId}/replies`)
-      fluxStore.setReactions(data as Flux[])
-    } catch (err) {
-      console.error('Error fetching reactions:', err)
-    } finally {
-      loading.value = false
+  // Simplified public methods for each use case
+  const fetchTimeline = async (reset = false) => {
+    const items = await fetchFluxes('timeline', {}, reset)
+    if (reset) {
+      fluxStore.setTimeline(items)
+    } else {
+      fluxStore.appendToTimeline(items)
     }
+    return items
   }
 
+  const fetchReactions = async (fluxId: number, reset = false) => {
+    const items = await fetchFluxes('reactions', { fluxId }, reset)
+    if (reset) {
+      fluxStore.setReactions(items)
+    } else {
+      fluxStore.appendToReactions(items)
+    }
+    return items
+  }
+
+  const fetchAuthorFluxes = async (authorId: number, reset = false) => {
+    const items = await fetchFluxes('author', { authorId }, reset)
+    if (reset) {
+      fluxStore.setTimeline(items)
+    } else {
+      fluxStore.appendToTimeline(items)
+    }
+    return items
+  }
 
   /**
    * Fetch any Flux user profile by their handle
@@ -68,12 +137,18 @@ export function useFluxService() {
   }
 
   const boostFlux = async (fluxId: number) => {
-    if (!userStore.isSignedIn) {
-      console.warn('User not signed in -- cannot boost flux')
+    if (!fluxStore.hasProfile) {
+      console.warn('Only Flux participants can boost')
       return
     }
-    const data = await api.post(`/api/fluxes/${fluxId}/boost`, {})
-    return data
+    try {
+      const boostedFlux = await api.post(`/api/fluxes/${fluxId}/boost`, {})
+      if (boostedFlux) {
+        fluxStore.updateFlux(boostedFlux as Flux)
+      }
+    } catch (error) {
+      console.error('Error boosting flux:', error)
+    }
   }
 
   const deboostFlux = async (fluxId: number) => {
@@ -144,13 +219,16 @@ export function useFluxService() {
   return {
     loading,
     error,
-    fetchFluxes,
+    fetchTimeline,
     fetchReactions,
+    fetchAuthorFluxes,
+    currentContext: readonly(currentContext),
     createFlux,
+    boostFlux,
+    deboostFlux,
     fetchFluxProfile,
-    checkFluxHandleAvailability: isHandleAvailable,
+    isHandleAvailable,
     createMyFluxProfile,
     fetchMyFluxProfile,
-    boostFlux
   }
 }
