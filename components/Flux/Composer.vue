@@ -16,7 +16,6 @@
 </template>
 
 <script setup>
-import { useFluxStore } from '@/stores/flux'
 const props = defineProps({
   replyingTo: {
     type: Object,

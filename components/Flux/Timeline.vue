@@ -5,19 +5,22 @@
     <div v-else-if="error" class="error">Error loading fluxes. Please try again.</div>
     <template v-else>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
-        @reply-to-flux="handleReply" @boost-flux="handleBoost" @view-profile="handleViewProfile" />
+        @reply-to-flux="handleReply" />
       <div v-if="fluxStore.timelineEmpty" class="no-fluxes">No fluxes to display.</div>
+      <div v-if="currentContext.hasMore" class="load-more">
+        <UButton @click="loadMore">Load more</UButton>
+      </div>
+      <div v-else>You have reached the end.</div>
     </template>
   </div>
 </template>
 
-<script setup>
-import { useFluxService } from '~/composables/useFluxService'
-import { useFluxStore } from '~/stores/flux'
+<script lang="ts" setup>
+import type { Flux } from '@/utils/types'
 
 const props = defineProps({
-  userHandle: {
-    type: String,
+  profile: {
+    type: Object,
     default: null
   },
   trendy: {
@@ -25,57 +28,42 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['select-flux', 'boost'])
 
-const { loading, error, fetchFluxes } = useFluxService()
+const { loading, error, fetchTimeline, fetchAuthorFluxes, currentContext } = useFluxService()
 const fluxStore = useFluxStore()
 const listTitle = ref('Fluxlines')
+const forProfile = computed(() => props.profile !== null)
 
 onMounted(() => {
-  const options = {}
-  if (props.userHandle) {
-    options.author = props.userHandle
-  }
-  if (props.trendy) {
-    options.filter = 'trendy'
+  if (forProfile.value) {
+    console.log('fetching author fluxes for', props.profile.id)
+    fetchAuthorFluxes(props.profile.id, true)
   } else {
-    options.filter = 'recent'
+    console.log('fetching timeline')
+    fetchTimeline(true)
   }
-  fetchFluxes(options)
 })
 
-watch(() => props.userHandle, (newUserHandle) => {
-  if (newUserHandle) {
-    listTitle.value = `${newUserHandle}'s Fluxes`
+function loadMore() {
+  if (forProfile.value) {
+    fetchAuthorFluxes(props.profile.id, false)
   } else {
-    listTitle.value = 'The Latest Flux'
+    fetchTimeline(false)
   }
-  const options = {}
-  if (props.userHandle) {
-    options.author = props.userHandle
+}
+
+function handleView(flux: Flux) {
+  console.log('timeline is viewing flux without composer', flux.id)
+  if (props.profile) {
+    navigateTo('/')
   }
-  fetchFluxes(options)
-})
-
-function handleView(flux) {
-  emit('viewFlux', flux)
 }
 
-function handleBoost(flux) {
-  emit('boostFlux', flux)
-}
-
-function handleReply(flux) {
-  emit('replyToFlux', flux)
-}
-
-function handleViewProfile(handle) {
-  emit('viewProfile', handle)
-}
-
-
-function handleProfile(fluxId) {
-  console.log('profile', fluxId)
+function handleReply(flux: Flux) {
+  console.log('timeline is viewing flux with composer', flux.id)
+  if (props.profile) {
+    navigateTo('/')
+  }
 }
 </script>
 

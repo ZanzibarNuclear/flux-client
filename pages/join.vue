@@ -7,36 +7,38 @@
     </section>
 
     <section class="explanation mt-8">
-      <p class="text-xl">
-        Join Flux! Be part of the conversation about nuclear energy.
-        Share your thoughts. Connect with others, and learn from each other. Together, we can advance the way the world
-        thinks about nuclear energy.
+      <p class="text-lg mb-4">
+        Flux is social media for the World of Nuclear.
+      </p>
+      <p class="text-md mb-4">
+        When you join Flux, you'll be part of the conversation about nuclear energy. Share your thoughts, connect with
+        others, and learn from each other.
       </p>
     </section>
 
     <section v-if="isStep1" class="auth-options mt-8 mb-16">
-      <h2 class="text-2xl font-semibold mb-4">Step 1: Sign up or Sign in</h2>
+      <h2 class="text-2xl font-semibold mb-4">Step 1: Sign up or sign in.</h2>
       <AuthMagicLink />
       <AuthIdentityProviders />
     </section>
 
     <section v-if="isStep2" class="join-form mt-8 mb-16">
-      <h2 class="text-2xl font-semibold mb-4">Step 2: Create Your Flux Profile</h2>
+      <h2 class="text-2xl font-semibold mb-4">Step 2: Create your Flux profile.</h2>
       <FluxUserProfileSetup />
     </section>
 
     <section v-if="isStep3" class="congratulations mt-8 mb-16">
       <h2 class="text-2xl font-semibold mb-4">Step 3: Congratulations!</h2>
-      <p>Welcome to Flux! Here are some tips to get started:</p>
-      <ul class="list-disc list-inside mt-2">
+      <p class="text-lg mb-4">You are ready to Flux (flex?) your power!</p>
+      <p class="text-md mb-4">Here is how to get started:</p>
+      <ol class="list-decimal list-inside mt-2">
         <li>
-          <NuxtLink to="/">Absorb some flux (read what others have shared)</NuxtLink>
+          <NuxtLink to="/">Start sharing your thoughts</NuxtLink>
         </li>
         <li>
           <NuxtLink :to="`/profile/${fluxStore.profile?.handle}`">Complete your profile</NuxtLink>
         </li>
-        <li>Start a conversation</li>
-      </ul>
+      </ol>
       <div class="mt-4">
       </div>
     </section>

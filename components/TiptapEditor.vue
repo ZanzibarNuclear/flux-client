@@ -85,7 +85,9 @@ const handleCancelFlux = () => {
 }
 
 onBeforeUnmount(() => {
-  unref(editor).destroy();
+  if (editor.value) {
+    editor.value.destroy()
+  }
 });
 </script>
 
