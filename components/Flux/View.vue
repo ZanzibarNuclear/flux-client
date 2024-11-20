@@ -9,8 +9,7 @@
         <div v-else-if="loading">Loading...</div>
         <div v-else-if="fluxStore.reactions.length === 0">Be the first to react!</div>
         <div v-else class="flux-reaction-chain">
-          <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction" @view-flux="handleView"
-            @reply-to-flux="handleReply" />
+          <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction" />
           <div v-if="currentContext.hasMore" class="load-more">
             <UButton @click="handleLoadMore">Load more</UButton>
           </div>
@@ -53,14 +52,6 @@ watch(() => props.flux, (newFlux) => {
 
 function handleLoadMore() {
   fetchReactions(props.flux.id, false)
-}
-
-function handleView(flux: Flux) {
-  console.log('viewing flux without composer', flux.id)
-}
-
-function handleReply(flux: Flux) {
-  console.log('viewing flux with composer', flux.id)
 }
 
 const returnToTimeline = () => {

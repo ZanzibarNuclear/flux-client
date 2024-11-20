@@ -21,6 +21,9 @@ export const useFluxStore = defineStore('fluxStore', () => {
 
   function setActiveFlux(flux: Flux, reply: boolean = false) {
     if (flux === activeFlux.value) {
+      if (reply) {
+        isReply.value = true
+      }
       return
     }
     activeFlux.value = flux

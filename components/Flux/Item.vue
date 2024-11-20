@@ -8,8 +8,8 @@
           <span @click="handleViewProfile" class="font-bold">{{ flux.author?.display_name }}</span>
           <span @click="handleViewProfile" class="text-gray-500">@{{ flux.author?.handle }}</span>
           <span class="text-gray-500">· {{ formatTimeAgo(flux.created_at) }}</span>
-          <UButton class="ml-auto" @click="handleReply" icon="i-ph-arrow-bend-up-left-duotone" label="React"
-            color="blue" variant="ghost" />
+          <UButton class="ml-auto" @click="handleReply" :disabled="isReactingTo" icon="i-ph-arrow-bend-up-left-duotone"
+            label="React" color="blue" variant="ghost" />
         </div>
         <div @click="handleView" class="mt-1">
           <div class="rich-text" v-html="flux.content" />
@@ -42,24 +42,28 @@ const props = defineProps({
 })
 const emit = defineEmits(['viewFlux', 'replyToFlux'])
 
-function handleView() {
-  console.log('viewing', props.flux.id)
+const fluxStore = useFluxStore()
+const isReactingTo = computed(() => {
+  return fluxStore.isReply && fluxStore.activeFlux?.id === props.flux.id
+})
+
+const handleView = async () => {
+  await useFluxService().viewFlux(props.flux.id)
   useFluxStore().setActiveFlux(props.flux as Flux)
   emit('viewFlux', props.flux)
 }
 
-function handleReply() {
-  console.log('replying to', props.flux.id)
+const handleReply = async () => {
+  await useFluxService().viewFlux(props.flux.id)
   useFluxStore().setActiveFlux(props.flux as Flux, true)
   emit('replyToFlux', props.flux)
 }
 
 const handleBoost = async () => {
-  console.log('boosting', props.flux.id)
   await useFluxService().boostFlux(props.flux.id)
 }
 
-function handleViewProfile() {
+const handleViewProfile = () => {
   const handle = props.flux.author?.handle
   if (!handle) {
     console.error('no handle to view profile')

@@ -136,6 +136,17 @@ export function useFluxService() {
     return data
   }
 
+  const viewFlux = async (fluxId: number) => {
+    try {
+      const viewedFlux = await api.post(`/api/fluxes/${fluxId}/view`, {})
+      if (viewedFlux) {
+        fluxStore.updateFlux(viewedFlux as Flux)
+      }
+    } catch (error) {
+      console.error('Error recording view event:', error)
+    }
+  }
+
   const boostFlux = async (fluxId: number) => {
     if (!fluxStore.hasProfile) {
       console.warn('Only Flux participants can boost')
@@ -223,6 +234,7 @@ export function useFluxService() {
     fetchReactions,
     fetchAuthorFluxes,
     currentContext: readonly(currentContext),
+    viewFlux,
     createFlux,
     boostFlux,
     deboostFlux,
