@@ -98,7 +98,7 @@ export function useFluxService() {
   }
 
   const fetchReactions = async (fluxId: number, reset = false) => {
-    const items = await fetchFluxes('reactions', { fluxId, limit: 2 }, reset)
+    const items = await fetchFluxes('reactions', { fluxId, limit: 3 }, reset)
     console.log(`got ${items.length} reactions for you`)
     if (reset) {
       fluxStore.setReactions(items)
@@ -109,7 +109,7 @@ export function useFluxService() {
   }
 
   const fetchAuthorFluxes = async (authorId: number, reset = false) => {
-    const items = await fetchFluxes('author', { authorId }, reset)
+    const items = await fetchFluxes('author', { authorId, limit: 3 }, reset)
     if (reset) {
       fluxStore.setTimeline(items)
     } else {

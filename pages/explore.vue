@@ -11,6 +11,10 @@
       <FluxTimeline :fluxes="fluxes" trendy />
     </template>
   </div>
+
+  <!-- use this for searching by author -->
+  <!-- <FluxByAuthorScroller v-if="fluxProfile" :author="fluxProfile" /> -->
+
 </template>
 
 <script setup>

@@ -1,16 +1,14 @@
 <template>
-  <div class="user-profile-page">
+  <div class="user-profile-page pt-8">
     <FluxUserProfile v-if="fluxProfile" :flux-user="fluxProfile" />
-    <FluxTimeline v-if="fluxProfile" :profile="fluxProfile" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import type { FluxProfile, Flux } from '@/utils/types'
+import type { FluxProfile } from '@/utils/types'
 
 const fluxService = useFluxService()
-const fluxStore = useFluxStore()
 const route = useRoute()
 const handle = ref(route.params.handle)
 
