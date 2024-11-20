@@ -3,8 +3,8 @@
     <div ref="contentWrapper">
       <slot name="items" />
 
-      <div v-if="isLoading" class="py-4 text-center">
-        <UIcon name="i-heroicons-arrow-path" class="animate-spin" />
+      <div v-if="loadingInProgress" class="py-4 text-center">
+        <UIcon name="i-ph-fan-duotone" class="animate-spin" />
         Loading more...
       </div>
 
@@ -30,8 +30,7 @@ const emit = defineEmits<{
 
 const scrollContainer = ref<HTMLElement | null>(null)
 const contentWrapper = ref<HTMLElement | null>(null)
-const isLoading = ref(false)
-const noMoreItems = computed(() => !props.hasMore && !isLoading.value)
+const noMoreItems = computed(() => !props.hasMore && !props.loadingInProgress)
 
 // Check if we need to load more content
 function checkContentHeight() {
@@ -41,14 +40,14 @@ function checkContentHeight() {
   const contentHeight = contentWrapper.value.clientHeight
 
   // If content doesn't fill the container and we have more items to load
-  if (contentHeight < containerHeight && props.hasMore && !isLoading.value) {
+  if (contentHeight < containerHeight && props.hasMore && !props.loadingInProgress) {
     loadMore()
   }
 }
 
 // Debounced scroll handler
 const handleScroll = useDebounceFn((event: Event) => {
-  if (!scrollContainer.value || isLoading.value || !props.hasMore) return
+  if (!scrollContainer.value || props.loadingInProgress || !props.hasMore) return
 
   const container = scrollContainer.value
   const scrollBottom = container.scrollHeight - container.scrollTop - container.clientHeight
@@ -60,20 +59,9 @@ const handleScroll = useDebounceFn((event: Event) => {
 }, 100)
 
 async function loadMore() {
-  console.log(`I say isLoading=${isLoading.value} and prop saysloadingInProgress=${props.loadingInProgress}`)
-  if (isLoading.value) return
+  if (props.loadingInProgress) return
 
-  isLoading.value = true
   emit('load-more')
-
-  // Reset loading after a short delay
-  // In real usage, you'd want to have the parent component signal when loading is complete
-  setTimeout(() => {
-    isLoading.value = false
-    nextTick(() => {
-      checkContentHeight()
-    })
-  }, 1000)
 }
 
 onMounted(() => {
@@ -84,6 +72,15 @@ watch(() => props.hasMore, () => {
   nextTick(() => {
     checkContentHeight()
   })
+})
+
+watch(() => props.loadingInProgress, (newValue) => {
+  if (!newValue) {
+    // Check if we need more content after loading completes
+    nextTick(() => {
+      checkContentHeight()
+    })
+  }
 })
 </script>
 

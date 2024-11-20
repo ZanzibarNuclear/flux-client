@@ -33,6 +33,11 @@ export function useFluxService() {
   })
 
   const fetchFluxes = async (type: FluxListType, options: FetchFluxOptions = {}, reset = false) => {
+    if (loading.value) {
+      console.log('Already loading fluxes, skipping request')
+      return []
+    }
+
     loading.value = true
     error.value = null
 
@@ -71,7 +76,7 @@ export function useFluxService() {
 
       currentContext.value.hasMore = hasMore
       currentContext.value.total = total
-      currentContext.value.offset += total  // FIXME: total or items.length? fix fetching more reactions (check that reply count is correct)
+      currentContext.value.offset += items.length
 
       console.log(`ending offset: ${currentContext.value.offset}`)
 
