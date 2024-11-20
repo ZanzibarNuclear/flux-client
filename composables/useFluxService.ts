@@ -82,7 +82,7 @@ export function useFluxService() {
 
   // Simplified public methods for each use case
   const fetchTimeline = async (reset = false) => {
-    const items = await fetchFluxes('timeline', {}, reset)
+    const items = await fetchFluxes('timeline', { limit: 3 }, reset)
     if (reset) {
       fluxStore.setTimeline(items)
     } else {

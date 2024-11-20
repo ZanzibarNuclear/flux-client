@@ -1,13 +1,16 @@
 <template>
-  <div ref="scrollContainer" class="h-[calc(100vh-4rem)] overflow-y-auto" @scroll="handleScroll">
-    <slot name="items" />
-    <div v-if="isLoading" class="py-4 text-center">
-      <UIcon name="i-heroicons-arrow-path" class="animate-spin" />
-      Loading more...
-    </div>
+  <div ref="scrollContainer" class="scroller overflow-y-auto" @scroll="handleScroll">
+    <div ref="contentWrapper">
+      <slot name="items" />
 
-    <div v-else-if="noMoreItems" class="py-4 text-center text-gray-500">
-      No more items to load
+      <div v-if="isLoading" class="py-4 text-center">
+        <UIcon name="i-heroicons-arrow-path" class="animate-spin" />
+        Loading more...
+      </div>
+
+      <div v-else-if="noMoreItems" class="py-4 text-center text-gray-500">
+        The End
+      </div>
     </div>
   </div>
 </template>
@@ -16,8 +19,8 @@
 import { useDebounceFn } from '@vueuse/core'
 
 const props = defineProps<{
-  // If true, indicates there are more items that can be loaded
   hasMore: boolean
+  loadingInProgress: boolean
 }>()
 
 const emit = defineEmits<{
@@ -25,8 +28,22 @@ const emit = defineEmits<{
 }>()
 
 const scrollContainer = ref<HTMLElement | null>(null)
+const contentWrapper = ref<HTMLElement | null>(null)
 const isLoading = ref(false)
 const noMoreItems = computed(() => !props.hasMore && !isLoading.value)
+
+// Check if we need to load more content
+function checkContentHeight() {
+  if (!scrollContainer.value || !contentWrapper.value) return
+
+  const containerHeight = scrollContainer.value.clientHeight
+  const contentHeight = contentWrapper.value.clientHeight
+
+  // If content doesn't fill the container and we have more items to load
+  if (contentHeight < containerHeight && props.hasMore && !isLoading.value) {
+    loadMore()
+  }
+}
 
 // Debounced scroll handler
 const handleScroll = useDebounceFn((event: Event) => {
@@ -42,6 +59,7 @@ const handleScroll = useDebounceFn((event: Event) => {
 }, 100)
 
 async function loadMore() {
+  console.log(`I say isLoading=${isLoading.value} and prop saysloadingInProgress=${props.loadingInProgress}`)
   if (isLoading.value) return
 
   isLoading.value = true
@@ -51,8 +69,28 @@ async function loadMore() {
   // In real usage, you'd want to have the parent component signal when loading is complete
   setTimeout(() => {
     isLoading.value = false
+    nextTick(() => {
+      checkContentHeight()
+    })
   }, 1000)
 }
+
+onMounted(() => {
+  checkContentHeight()
+})
+
+watch(() => props.hasMore, () => {
+  nextTick(() => {
+    checkContentHeight()
+  })
+})
 </script>
 
-<style scoped></style>
+<style scoped>
+.scroller {
+  /* This will position the scroller between header and footer */
+  height: calc(90vh - var(--header-height, 4rem) - var(--footer-height, 4rem) - var(--page-title-height, 3rem));
+  /* Remove fixed positioning, let the parent control layout */
+  width: 100%;
+}
+</style>

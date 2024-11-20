@@ -1,6 +1,6 @@
 <template>
-  <h2>Timeline Scroller</h2>
-  <Scroller :has-more="currentContext.hasMore" @load-more="loadMoreFluxes">
+  <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" height-class="h-[calc(100vh-4rem)]"
+    @load-more="loadMoreFluxes">
     <template #items>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" />
     </template>
@@ -9,13 +9,14 @@
 
 <script lang="ts" setup>
 const fluxStore = useFluxStore()
-
-const { fetchTimeline, currentContext } = useFluxService()
+const { fetchTimeline, currentContext, loading } = useFluxService()
 
 onMounted(async () => {
-  console.log('timeline scroller mounted')
   await fetchTimeline(true)
-  console.log('we got some fluxes', fluxStore.timeline.length)
+})
+
+watch(loading, (newVal) => {
+  console.log('FluxService says isLoading=', newVal)
 })
 
 const loadMoreFluxes = async () => {
