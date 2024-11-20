@@ -2,6 +2,7 @@
   <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" height-class="h-[calc(100vh-4rem)]"
     @load-more="loadMoreFluxes">
     <template #items>
+      <h3 class="text-center">Fluxlines</h3>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
         @reply-to-flux="handleReply" />
     </template>
@@ -14,10 +15,6 @@ const { fetchTimeline, currentContext, loading } = useFluxService()
 
 onMounted(async () => {
   await fetchTimeline(true)
-})
-
-watch(loading, (newVal) => {
-  console.log('FluxService says isLoading=', newVal)
 })
 
 const loadMoreFluxes = async () => {

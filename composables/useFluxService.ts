@@ -66,9 +66,15 @@ export function useFluxService() {
       const response = await api.get(`/api/fluxes?${query.toString()}`)
       const { items, total, hasMore } = response as { items: Flux[], total: number, hasMore: boolean }
 
+      console.log(`got ${items.length} fluxes, total=${total}, hasMore=${hasMore}`)
+      console.log(currentContext.value.options)
+
       currentContext.value.hasMore = hasMore
       currentContext.value.total = total
-      currentContext.value.offset += total
+      currentContext.value.offset += total  // FIXME: total or items.length? fix fetching more reactions (check that reply count is correct)
+
+      console.log(`ending offset: ${currentContext.value.offset}`)
+
 
       return items
     } catch (err: any) {
@@ -92,7 +98,8 @@ export function useFluxService() {
   }
 
   const fetchReactions = async (fluxId: number, reset = false) => {
-    const items = await fetchFluxes('reactions', { fluxId }, reset)
+    const items = await fetchFluxes('reactions', { fluxId, limit: 2 }, reset)
+    console.log(`got ${items.length} reactions for you`)
     if (reset) {
       fluxStore.setReactions(items)
     } else {

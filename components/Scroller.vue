@@ -9,7 +9,7 @@
       </div>
 
       <div v-else-if="noMoreItems" class="py-4 text-center text-gray-500">
-        The End
+        {{ noMoreMessage || 'The End' }}
       </div>
     </div>
   </div>
@@ -21,6 +21,7 @@ import { useDebounceFn } from '@vueuse/core'
 const props = defineProps<{
   hasMore: boolean
   loadingInProgress: boolean
+  noMoreMessage?: string
 }>()
 
 const emit = defineEmits<{
