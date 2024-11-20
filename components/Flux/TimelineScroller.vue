@@ -2,7 +2,8 @@
   <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" height-class="h-[calc(100vh-4rem)]"
     @load-more="loadMoreFluxes">
     <template #items>
-      <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" />
+      <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
+        @reply-to-flux="handleReply" />
     </template>
   </Scroller>
 </template>
@@ -22,4 +23,13 @@ watch(loading, (newVal) => {
 const loadMoreFluxes = async () => {
   await fetchTimeline()
 }
+
+function handleView(flux: Flux) {
+  navigateTo('/')
+}
+
+function handleReply(flux: Flux) {
+  navigateTo('/')
+}
+
 </script>
