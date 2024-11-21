@@ -1,6 +1,6 @@
 <template>
   <div class="explore-page">
-    <h1>Find Favorites Fluxes</h1>
+    <h2>See popular fluxes</h2>
     <FluxSearch @search="performSearch" />
     <div v-if="loading" class="loading">Searching for Fluxes...</div>
     <div v-else-if="searchPerformed && fluxes.length === 0" class="no-results">
@@ -8,13 +8,9 @@
     </div>
     <template v-else>
       <h2>{{ searchPerformed ? 'Search Results' : 'Trending Fluxes' }}</h2>
-      <FluxTimeline :fluxes="fluxes" trendy />
+      <FluxTimelineScroller trendy />
     </template>
   </div>
-
-  <!-- use this for searching by author -->
-  <!-- <FluxByAuthorScroller v-if="fluxProfile" :author="fluxProfile" /> -->
-
 </template>
 
 <script setup>

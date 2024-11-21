@@ -1,6 +1,12 @@
 <template>
   <div class="user-profile-page pt-8">
-    <FluxUserProfile v-if="fluxProfile" :flux-user="fluxProfile" />
+    <div v-if="fluxProfile">
+      <FluxUserProfile :flux-user="fluxProfile" />
+      <FluxByAuthorScroller :author="fluxProfile" class="mt-8" />
+    </div>
+    <div v-else>
+      <h2>No profile found for {{ handle }}</h2>
+    </div>
   </div>
 </template>
 

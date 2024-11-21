@@ -57,8 +57,6 @@ export function useFluxService() {
         return []
       }
 
-      console.log(`fetching ${type} starting after: ${currentContext.value.offset}`)
-
       const query = new URLSearchParams()
       const { order, authorId, fluxId, limit = 4 } = options
 
@@ -71,15 +69,9 @@ export function useFluxService() {
       const response = await api.get(`/api/fluxes?${query.toString()}`)
       const { items, total, hasMore } = response as { items: Flux[], total: number, hasMore: boolean }
 
-      console.log(`got ${items.length} fluxes, total=${total}, hasMore=${hasMore}`)
-      console.log(currentContext.value.options)
-
       currentContext.value.hasMore = hasMore
       currentContext.value.total = total
       currentContext.value.offset += items.length
-
-      console.log(`ending offset: ${currentContext.value.offset}`)
-
 
       return items
     } catch (err: any) {
@@ -102,9 +94,19 @@ export function useFluxService() {
     return items
   }
 
+  // Simplified public methods for each use case
+  const fetchTrending = async (reset = false) => {
+    const items = await fetchFluxes('timeline', { order: 'trending', limit: 3 }, reset)
+    if (reset) {
+      fluxStore.setTimeline(items)
+    } else {
+      fluxStore.appendToTimeline(items)
+    }
+    return items
+  }
+
   const fetchReactions = async (fluxId: number, reset = false) => {
     const items = await fetchFluxes('reactions', { fluxId, limit: 3 }, reset)
-    console.log(`got ${items.length} reactions for you`)
     if (reset) {
       fluxStore.setReactions(items)
     } else {
@@ -243,6 +245,7 @@ export function useFluxService() {
     loading,
     error,
     fetchTimeline,
+    fetchTrending,
     fetchReactions,
     fetchAuthorFluxes,
     currentContext: readonly(currentContext),

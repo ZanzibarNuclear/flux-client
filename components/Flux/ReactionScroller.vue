@@ -1,6 +1,6 @@
 <template>
-  <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" height-class="h-[calc(100vh-4rem)]"
-    @load-more="loadMoreFluxes" no-more-message="What's your reaction?">
+  <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" @load-more="loadMoreFluxes"
+    no-more-message="What's your reaction?">
     <template #items>
       <h3 class="text-center">Reactions</h3>
       <FluxItem v-for="flux in fluxStore.reactions" :key="flux.id" :flux="flux" @view-flux="handleView"

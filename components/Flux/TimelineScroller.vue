@@ -1,6 +1,5 @@
 <template>
-  <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" height-class="h-[calc(100vh-4rem)]"
-    @load-more="loadMoreFluxes">
+  <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" @load-more="loadMoreFluxes">
     <template #items>
       <h3 class="text-center">Fluxlines</h3>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
@@ -11,14 +10,25 @@
 
 <script lang="ts" setup>
 const fluxStore = useFluxStore()
-const { fetchTimeline, currentContext, loading } = useFluxService()
+const { fetchTimeline, fetchTrending, currentContext, loading } = useFluxService()
+const props = defineProps<{
+  trendy?: boolean
+}>()
 
 onMounted(async () => {
-  await fetchTimeline(true)
+  if (props.trendy) {
+    await fetchTrending(true)
+  } else {
+    await fetchTimeline(true)
+  }
 })
 
 const loadMoreFluxes = async () => {
-  await fetchTimeline()
+  if (props.trendy) {
+    await fetchTrending()
+  } else {
+    await fetchTimeline()
+  }
 }
 
 function handleView(flux: Flux) {

@@ -1,6 +1,5 @@
 <template>
-  <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" height-class="h-[calc(100vh-4rem)]"
-    @load-more="loadMoreFluxes">
+  <Scroller :has-more="currentContext.hasMore" :loading-in-progress="loading" @load-more="loadMoreFluxes">
     <template #items>
       <h3 class="text-center">Fluxes by {{ props.author.displayName }}</h3>
       <FluxItem v-for="flux in fluxStore.timeline" :key="flux.id" :flux="flux" @view-flux="handleView"
