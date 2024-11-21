@@ -3,68 +3,31 @@
     <UButton icon="i-ph-arrow-left" label="Return to timeline" color="blue" variant="ghost" @click="returnToTimeline" />
     <div class="flux-view">
       <FluxItem :flux="flux" @view-flux="handleView" @reply-to-flux="handleReply" />
-      <div class="flux-reactions">
-        <h3>Reactions</h3>
-        <div v-if="error">Error: {{ error }}</div>
-        <div v-else-if="loading">Loading...</div>
-        <div v-else-if="fluxStore.reactions.length === 0">Be the first to react!</div>
-        <div v-else class="flux-reaction-chain">
-          <FluxItem v-for="reaction in fluxStore.reactions" :key="reaction.id" :flux="reaction" @view-flux="handleView"
-            @reply-to-flux="handleReply" />
-          <div v-if="currentContext.hasMore" class="load-more">
-            <UButton @click="handleLoadMore">Load more</UButton>
-          </div>
-          <div v-else>You have reached the end.</div>
-        </div>
-      </div>
+      <FluxReactionScroller />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Flux } from '@/utils/types'
-
 const fluxStore = useFluxStore()
-const { loading, error, fetchReactions, currentContext } = useFluxService()
 
-const props = defineProps({
+defineProps({
   flux: {
     type: Object,
     required: true
   },
 })
 
-const load = async (fluxId: number) => {
-  console.log('loading reactions to flux:', fluxId)
-  await fetchReactions(fluxId, true)
-}
-
-onMounted(() => {
-  console.log('FluxView.onMounted', props.flux)
-  if (props.flux.id) {
-    load(props.flux.id)
-  }
-})
-
-watch(() => props.flux, (newFlux) => {
-  console.log('flux changed:', newFlux)
-  load(newFlux.id)
-})
-
-function handleLoadMore() {
-  fetchReactions(props.flux.id, false)
-}
-
-function handleView(flux: Flux) {
-  console.log('viewing flux without composer', flux.id)
-}
-
-function handleReply(flux: Flux) {
-  console.log('viewing flux with composer', flux.id)
-}
-
 const returnToTimeline = () => {
   fluxStore.clearActiveFlux()
+  navigateTo('/')
+}
+
+const handleView = () => {
+  navigateTo('/')
+}
+
+const handleReply = () => {
   navigateTo('/')
 }
 </script>

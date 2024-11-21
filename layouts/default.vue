@@ -3,7 +3,6 @@
     <LayoutCompactHeader />
     <div class="mt-[75px] mb-16">
       <slot />
-      <div class="text-center pb-24">desktop ❤️</div>
     </div>
     <LayoutCompactFooter />
   </div>

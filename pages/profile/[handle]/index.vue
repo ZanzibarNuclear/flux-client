@@ -1,16 +1,20 @@
 <template>
-  <div class="user-profile-page">
-    <FluxUserProfile v-if="fluxProfile" :flux-user="fluxProfile" />
-    <FluxTimeline v-if="fluxProfile" :profile="fluxProfile" />
+  <div class="user-profile-page pt-8">
+    <div v-if="fluxProfile">
+      <FluxUserProfile :flux-user="fluxProfile" />
+      <FluxByAuthorScroller :author="fluxProfile" class="mt-8" />
+    </div>
+    <div v-else>
+      <h2>No profile found for {{ handle }}</h2>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import type { FluxProfile, Flux } from '@/utils/types'
+import type { FluxProfile } from '@/utils/types'
 
 const fluxService = useFluxService()
-const fluxStore = useFluxStore()
 const route = useRoute()
 const handle = ref(route.params.handle)
 
