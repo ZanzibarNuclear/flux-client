@@ -1,13 +1,12 @@
 <template>
   <div class="explore-page">
-    <h2>See popular fluxes</h2>
-    <FluxSearch @search="performSearch" />
+    <FluxSearch @search="performSearch" class="py-6" />
     <div v-if="loading" class="loading">Searching for Fluxes...</div>
     <div v-else-if="searchPerformed && fluxes.length === 0" class="no-results">
       No Fluxes found for "{{ lastSearchQuery }}".
     </div>
     <template v-else>
-      <h2>{{ searchPerformed ? 'Search Results' : 'Trending Fluxes' }}</h2>
+      <h3 class="text-center">{{ searchPerformed ? 'Search Results' : 'Trending Fluxes' }}</h3>
       <FluxTimelineScroller trendy />
     </template>
   </div>
@@ -30,21 +29,6 @@ async function performSearch(query) {
 
   // Simulating an API call
   await new Promise(resolve => setTimeout(resolve, 1000))
-
-  // Mock search results
-  fluxes.value = Array.from({ length: 5 }, (_, i) => ({
-    id: Date.now() + i,
-    author: `User ${i + 1}`,
-    authorUsername: `user${i + 1}`,
-    authorAvatar: `https://api.dicebear.com/6.x/initials/svg?seed=User${i + 1}`,
-    content: `This is a sample flux containing "${query}". #Flux #${query.replace(/\s+/g, '')}`,
-    timestamp: new Date(Date.now() - i * 60000).toISOString(),
-    replyCount: Math.floor(Math.random() * 10),
-    amplifyCount: Math.floor(Math.random() * 50),
-    energizeCount: Math.floor(Math.random() * 100),
-    amplified: Math.random() > 0.5,
-    energized: Math.random() > 0.5
-  }))
 
   loading.value = false
 }
