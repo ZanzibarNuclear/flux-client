@@ -33,6 +33,11 @@ export function useFluxService() {
   })
 
   const fetchFluxes = async (type: FluxListType, options: FetchFluxOptions = {}, reset = false) => {
+    if (loading.value) {
+      console.log('Already loading fluxes, skipping request')
+      return []
+    }
+
     loading.value = true
     error.value = null
 
@@ -52,8 +57,6 @@ export function useFluxService() {
         return []
       }
 
-      console.log(`fetching ${type} starting after: ${currentContext.value.offset}`)
-
       const query = new URLSearchParams()
       const { order, authorId, fluxId, limit = 4 } = options
 
@@ -68,7 +71,7 @@ export function useFluxService() {
 
       currentContext.value.hasMore = hasMore
       currentContext.value.total = total
-      currentContext.value.offset += total
+      currentContext.value.offset += items.length
 
       return items
     } catch (err: any) {
@@ -82,7 +85,18 @@ export function useFluxService() {
 
   // Simplified public methods for each use case
   const fetchTimeline = async (reset = false) => {
-    const items = await fetchFluxes('timeline', {}, reset)
+    const items = await fetchFluxes('timeline', { limit: 3 }, reset)
+    if (reset) {
+      fluxStore.setTimeline(items)
+    } else {
+      fluxStore.appendToTimeline(items)
+    }
+    return items
+  }
+
+  // Simplified public methods for each use case
+  const fetchTrending = async (reset = false) => {
+    const items = await fetchFluxes('timeline', { order: 'trending', limit: 3 }, reset)
     if (reset) {
       fluxStore.setTimeline(items)
     } else {
@@ -92,7 +106,7 @@ export function useFluxService() {
   }
 
   const fetchReactions = async (fluxId: number, reset = false) => {
-    const items = await fetchFluxes('reactions', { fluxId }, reset)
+    const items = await fetchFluxes('reactions', { fluxId, limit: 3 }, reset)
     if (reset) {
       fluxStore.setReactions(items)
     } else {
@@ -102,7 +116,7 @@ export function useFluxService() {
   }
 
   const fetchAuthorFluxes = async (authorId: number, reset = false) => {
-    const items = await fetchFluxes('author', { authorId }, reset)
+    const items = await fetchFluxes('author', { authorId, limit: 3 }, reset)
     if (reset) {
       fluxStore.setTimeline(items)
     } else {
@@ -134,6 +148,17 @@ export function useFluxService() {
     })
     console.log('returned new flux:', data)
     return data
+  }
+
+  const viewFlux = async (fluxId: number) => {
+    try {
+      const viewedFlux = await api.post(`/api/fluxes/${fluxId}/view`, {})
+      if (viewedFlux) {
+        fluxStore.updateFlux(viewedFlux as Flux)
+      }
+    } catch (error) {
+      console.error('Error recording view event:', error)
+    }
   }
 
   const boostFlux = async (fluxId: number) => {
@@ -220,9 +245,11 @@ export function useFluxService() {
     loading,
     error,
     fetchTimeline,
+    fetchTrending,
     fetchReactions,
     fetchAuthorFluxes,
     currentContext: readonly(currentContext),
+    viewFlux,
     createFlux,
     boostFlux,
     deboostFlux,

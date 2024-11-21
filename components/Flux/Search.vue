@@ -1,6 +1,7 @@
 <template>
   <div class="search-container">
-    <input v-model="searchQuery" @input="handleSearch" type="text" placeholder="Search Fluxes..." class="search-input">
+    <input v-model="searchQuery" @input="handleSearch" type="text" placeholder="Search Fluxes...is not working yet"
+      class="search-input">
     <button @click="handleSearch" class="search-button">Search</button>
   </div>
 </template>

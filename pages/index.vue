@@ -13,7 +13,7 @@
         </div>
         <hr />
       </div>
-      <FluxTimeline />
+      <FluxTimelineScroller />
     </template>
   </div>
 </template>
