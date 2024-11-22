@@ -3,28 +3,24 @@
     <div class="profile-header">
       <img :src="userCover" alt="Cover" class="cover-image">
     </div>
-    <div class="profile-actions">
-      <button v-if="!isOwnProfile" @click="toggleEditMode" class="edit-profile-btn">
-        {{ isEditing ? 'Cancel' : 'Edit Profile' }}
-      </button>
-    </div>
-    <div v-if="isEditing" class="profile-edit">
-      <FluxUserProfileEditForm :userData="userData" @save="handleSaveProfile" @cancel="toggleEditMode" />
-    </div>
-    <div v-else class="profile-info">
-      <UAvatar :src="userAvatar" class="mr-4" />
-      <div>
-        <h2 class="user-name">{{ displayName }}</h2>
-        <p class="user-handle">@{{ handle }}</p>
-        <p class="user-bio">{{ userBio }}</p>
-        <div class="user-meta">
-          <span class="location" v-if="location">📍 {{ location }}</span>
-          <span class="website" v-if="website">
-            🔗 <a :href="website" target="_blank" rel="noopener noreferrer">{{ websiteDomain }}</a>
-          </span>
-          <span class="join-date">🗓️ Joined {{ joinDate }}</span>
+    <div class="flex p-6 justify-between">
+      <div class="flex">
+        <UAvatar :src="userAvatar" class="mr-4" />
+        <div>
+          <h2 class="user-name">{{ displayName }}</h2>
+          <p class="user-handle">@{{ handle }}</p>
+          <p class="user-bio">{{ userBio }}</p>
+          <div class="user-meta">
+            <span class="location" v-if="location">📍 {{ location }}</span>
+            <span class="website" v-if="website">
+              🔗 <a :href="website" target="_blank" rel="noopener noreferrer">{{ websiteDomain }}</a>
+            </span>
+            <span class="join-date">🗓️ Joined {{ joinDate }}</span>
+          </div>
         </div>
-        <p v-if="isOwnProfile">This is you!</p>
+      </div>
+      <div v-if="isOwnProfile">
+        <UButton @click="() => navigateTo(`/profile/${handle}/me`)">See your full profile</UButton>
       </div>
     </div>
   </div>
@@ -51,19 +47,6 @@ const joinDate = computed(() => formatDate(props.fluxUser?.created_at))
 const isOwnProfile = computed(() => {
   return (fluxStore.profile?.handle === handle.value)
 })
-const isEditing = ref(false);
-
-function toggleEditMode() {
-  if (isOwnProfile.value) {
-    isEditing.value = !isEditing.value;
-  } else {
-    console.warn('Not your profile')
-  }
-}
-
-function handleSaveProfile(updatedData) {
-  console.log('Profile updated:', updatedData.value);
-}
 </script>
 
 <style scoped>
@@ -93,42 +76,6 @@ function handleSaveProfile(updatedData) {
   height: 120px;
   border-radius: 50%;
   border: 4px solid #fff;
-}
-
-.profile-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px 20px;
-}
-
-.profile-edit {
-  padding: 20px;
-}
-
-.edit-profile-btn,
-.tune-in-btn {
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.edit-profile-btn {
-  background-color: #fff;
-  color: #1da1f2;
-  border: 1px solid #1da1f2;
-}
-
-.tune-in-btn {
-  background-color: #1da1f2;
-  color: #fff;
-  border: none;
-}
-
-.tune-in-btn.tuned-in {
-  background-color: #fff;
-  color: #1da1f2;
-  border: 1px solid #1da1f2;
 }
 
 .profile-info {
