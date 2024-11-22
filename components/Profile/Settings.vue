@@ -1,5 +1,5 @@
 <template>
-  <div class="settings">
+  <div class="settings w-4/5 mx-auto">
     <div class="mb-4">
       <h3 class="text-lg font-semibold text-center mb-4">Preferences</h3>
       <div v-if="!isEditMode">
@@ -42,7 +42,10 @@
 
       <UCard v-else class="mb-6">
         <template #header>
-          <div class="text-md font-semibold">Change Preferences</div>
+          <div class="flex justify-between items-center">
+            <div>Change Preferences</div>
+            <UButton label="Done" size="xs" icon="i-ph-check-circle" @click="isEditMode = false" />
+          </div>
         </template>
 
         <table class="table-auto w-full text-left">
@@ -94,31 +97,33 @@
         </UCard>
       </UModal>
     </div>
-  </div>
 
-  <div class="flex-col">
-    <div class="danger-zone mt-28">
-      <h3 class="text-lg font-semibold text-red-600 mb-4">Danger Zone</h3>
-      <div class="text-md mb-4 text-red-500">While we wish you would stay, you are free to leave at any time.</div>
-      <UButton color="red" variant="soft" label="Delete Account" icon="i-ph-trash" @click="isDeleteModalOpen = true" />
+    <div>
+      <div class="danger-zone mt-28">
+        <UDivider icon="i-ph-skull-duotone"
+          :ui="{ border: { base: 'border-red-600' }, icon: { base: 'text-red-600' } }" />
+        <h3 class="text-lg font-semibold text-red-600 mb-4">Danger Zone</h3>
+        <div class="text-md mb-4 text-red-500">While we wish you would stay, you are free to leave at any time.</div>
+        <UButton color="red" variant="soft" label="Delete Account" icon="i-ph-trash"
+          @click="isDeleteModalOpen = true" />
+      </div>
+      <UModal v-model="isDeleteModalOpen">
+        <UCard>
+          <template #header>
+            <div class="text-md font-semibold">Are you sure?</div>
+          </template>
+          <div class="text-md mb-4">No worries. We are just making sure this is intentional. If you continue, your
+            account
+            will be deactivated. We will remove your personal data shortly thereafter.</div>
+          <div class="flex justify-end gap-2">
+            <UButton color="red" variant="soft" label="Yes, delete my account." icon="i-ph-trash"
+              @click="confirmDelete" />
+            <UButton label="Oops. Do not delete." @click="cancelDelete" color="blue" variant="solid"
+              icon="i-ph-x-circle" />
+          </div>
+        </UCard>
+      </UModal>
     </div>
-
-    <UModal v-model="isDeleteModalOpen">
-      <UCard>
-        <template #header>
-          <div class="text-md font-semibold">Are you sure?</div>
-        </template>
-        <div class="text-md mb-4">No worries. We are just making sure this is intentional. If you continue, your
-          account
-          will be deactivated. We will remove your personal data shortly thereafter.</div>
-        <div class="flex justify-end gap-2">
-          <UButton color="red" variant="soft" label="Yes, delete my account." icon="i-ph-trash"
-            @click="confirmDelete" />
-          <UButton label="Oops. Do not delete." @click="cancelDelete" color="blue" variant="solid"
-            icon="i-ph-x-circle" />
-        </div>
-      </UCard>
-    </UModal>
   </div>
 </template>
 

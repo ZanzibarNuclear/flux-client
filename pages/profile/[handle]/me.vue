@@ -10,7 +10,7 @@
           <ProfileFluxInfo v-if="item.id === 'flux'" :handle="handle as string" :stats="mockFluxStats"
             :achievements="mockFluxAchievements" />
 
-          <!-- Activity -->
+          <!-- Settings -->
           <ProfileSettings v-if="item.id === 'settings'" />
         </div>
       </template>
