@@ -4,11 +4,14 @@
       <template #item="{ item }">
         <div class="p-4">
           <!-- Account Information -->
-          <ProfileForFlux v-if="item.id === 'flux'" :user-profile="userProfile" :flux-profile="fluxProfile" />
+          <ProfileAccountInfo v-if="item.id === 'account'" :user-profile="userProfile" />
 
           <!-- Flux Information -->
-          <ProfileFluxStats v-if="item.id === 'activity'" :handle="handle as string" :stats="mockFluxStats"
+          <ProfileFluxStats v-if="item.id === 'flux'" :handle="handle as string" :stats="mockFluxStats"
             :achievements="mockFluxAchievements" />
+
+          <!-- Settings -->
+          <ProfileSettings v-if="item.id === 'settings'" />
         </div>
       </template>
     </UTabs>
@@ -24,14 +27,19 @@ const handle = ref(route.params.handle)
 
 const tabs = [
   {
-    id: 'flux',
+    id: 'account',
     label: 'Account Info',
     icon: 'i-ph-user-circle-duotone'
   },
   {
-    id: 'activity',
+    id: 'flux',
     label: 'Flux Activity',
     icon: 'i-ph-lightning-duotone'
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: 'i-ph-gear-six-duotone'
   }
 ]
 
