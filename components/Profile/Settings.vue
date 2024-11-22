@@ -40,8 +40,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { UserPreferences } from '@/utils/types'
-
 const userStore = useUserStore()
 const preferences = ref<UserPreferences>({
   theme: 'system',

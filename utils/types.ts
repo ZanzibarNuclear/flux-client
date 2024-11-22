@@ -1,17 +1,3 @@
-export interface Flux {
-  id: number
-  author: string
-  authorUsername: string
-  authorAvatar: string
-  replyTo: number | null
-  content: string
-  timestamp: string
-  viewCount: number
-  replyCount: number
-  boostCount: number
-  boosted: boolean
-}
-
 export interface Achievement {
   id: string
   name: string
@@ -20,26 +6,24 @@ export interface Achievement {
   awardedAt: string
 }
 
-export interface FluxProfile {
-  id: string
-  userId: string
-  handle: string
-  displayName: string
+export interface FluxUserStats {
   fluxCount: number
   reactionCount: number
   boostCount: number
   followerCount: number
   followingCount: number
-  createdAt: string
-  updatedAt: string
-  achievements: Achievement[]
+  karmaScore: number
 }
 
-export interface UserPreferences {
-  theme: 'light' | 'dark' | 'system'
+export interface FluxProfile {
+  id: string
+  handle: string
+  displayName: string
+  joinedFluxAt: string
   emailNotifications: boolean
+  textNotifications: boolean
   digestFrequency: 'daily' | 'weekly' | 'never'
-  showOnlineStatus: boolean
+  stats: FluxUserStats | null
 }
 
 export interface UserProfile {
@@ -55,7 +39,27 @@ export interface UserProfile {
   website: string
   email: string
   karmaScore: number
-  preferences: UserPreferences
-  createdAt: string
+  joinedAt: string
   updatedAt: string
+  fluxProfile: FluxProfile | null
+  achievements: Achievement[] | null
+}
+
+export interface UserPreferences {
+  theme: 'system' | 'light' | 'dark'
+  emailNotifications: boolean
+  digestFrequency: 'daily' | 'weekly' | 'never'
+  showOnlineStatus: boolean
+}
+
+export interface Flux {
+  id: number
+  author: FluxProfile
+  replyTo: number | null
+  content: string
+  timestamp: string
+  viewCount: number
+  replyCount: number
+  boostCount: number
+  boosted: boolean
 }

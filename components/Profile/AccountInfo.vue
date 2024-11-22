@@ -2,7 +2,7 @@
   <div class="account-info">
     <div class="flex items-start gap-6">
       <div class="avatar-section flex flex-col items-center">
-        <UAvatar :src="user?.avatarUrl" size="xl" />
+        <UAvatar :src="userProfile.avatarUrl" size="xl" />
         <UButton v-if="isEdit" icon="i-ph-pencil" size="xs" class="mt-2" @click="editAvatar">
           Change Avatar
         </UButton>
@@ -10,44 +10,76 @@
 
       <div class="flex-1">
         <div class="mb-4">
-          <h2 class="text-2xl font-bold">{{ user?.alias }}</h2>
-          <p class="text-gray-600">{{ user?.fullName }}</p>
-          <p class="text-gray-600">{{ user?.email }}</p>
-          <p v-if="!isEdit" class="text-sm text-gray-500">Joined {{ formatDate(user?.createdAt) }}</p>
-          <p v-if="!isEdit" class="text-sm text-gray-500">Updated {{ formatDate(user?.updatedAt) }}</p>
-          <p class="text-sm text-gray-500">{{ user?.id }}</p>
+          <h2>{{ userProfile.alias }}</h2>
+          <h3 class="text-lg font-semibold">Account Details</h3>
+          <div class="text-gray-600 mb-2">Your World of Nuclear account.</div>
+          <table class="table-auto w-full text-left">
+            <tbody>
+              <tr>
+                <th class="font-bold">Alias:</th>
+                <td class="text-gray-600">{{ userProfile.alias }}</td>
+              </tr>
+              <tr>
+                <th class="font-bold">Name:</th>
+                <td class="text-gray-600">{{ userProfile.fullName }}</td>
+              </tr>
+              <tr>
+                <th class="font-bold">Email:</th>
+                <td class="text-gray-600">{{ userProfile.email }}</td>
+              </tr>
+              <tr v-if="!isEdit">
+                <th class="font-bold">Joined on:</th>
+                <td class="text-sm text-gray-500">{{ formatDate(userProfile.joinedAt) }}</td>
+              </tr>
+              <tr>
+                <th class="font-bold">User ID:</th>
+                <td class="text-sm text-gray-500">{{ userProfile.id }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="bio-section mb-4">
-          <h3 class="font-semibold mb-2">About</h3>
+        <div v-if="hasFluxProfile" class="profile-section my-8">
+          <h3 class="text-lg font-semibold">Flux Profile</h3>
+          <div class="text-gray-600 mb-2">How other Flux users see you.</div>
+          <table class="table-auto w-full text-left">
+            <tbody>
+              <tr>
+                <th class="font-bold">Handle:</th>
+                <td class="text-gray-600">{{ userProfile.fluxProfile?.handle }}</td>
+              </tr>
+              <tr>
+                <th class="font-bold">Display name:</th>
+                <td class="text-gray-600">{{ userProfile.fluxProfile?.displayName }}</td>
+              </tr>
+              <tr>
+                <th class="font-bold">Joined Flux:</th>
+                <td class="text-gray-600">{{ formatDate(userProfile.fluxProfile?.joinedFluxAt) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bio-section my-8">
+          <h3 class="text-lg font-semibold">About</h3>
           <dl>
             <div class="mb-4">
               <dt class="font-bold">Mini biography:</dt>
-              <dd>{{ user?.bio || 'No bio yet' }}</dd>
+              <dd>{{ userProfile.bio || 'No bio yet' }}</dd>
             </div>
             <div class="mb-4">
               <dt class="font-bold">Location:</dt>
-              <dd>{{ user?.location || 'Not specified' }}</dd>
+              <dd>{{ userProfile.location || 'Not specified' }}</dd>
             </div>
             <div class="mb-4">
               <dt class="font-bold">Nuclear Energy Interests:</dt>
-              <dd>{{ user?.nuclearLikes || 'Not specified' }}</dd>
+              <dd>{{ userProfile.nuclearLikes || 'Not specified' }}</dd>
             </div>
             <div class="mb-4">
               <dt class="font-bold">Reason for Joining:</dt>
-              <dd>{{ user?.joinReason || 'Not specified' }}</dd>
+              <dd>{{ userProfile.joinReason || 'Not specified' }}</dd>
             </div>
           </dl>
-        </div>
-
-        <div class="karma-score">
-          <h3 class="font-semibold mb-2">Karma Score</h3>
-          <UBadge color="green" size="lg">{{ user.karmaScore }}</UBadge>
-          <div class="karma-history-link mt-4">
-            <UButton :to="`/profile/${handle}/karma-history`" variant="ghost">
-              View Karma History
-            </UButton>
-          </div>
         </div>
       </div>
     </div>
@@ -58,11 +90,11 @@
 import { formatDate } from '@/utils/dateUtils'
 import type { UserProfile } from '@/utils/types'
 
-defineProps<{
-  user: UserProfile
-  handle: string
+const props = defineProps<{
+  userProfile: UserProfile
 }>()
 
+const hasFluxProfile = computed(() => props.userProfile.fluxProfile !== null)
 const isEdit = ref(false)
 
 const editAvatar = () => {
