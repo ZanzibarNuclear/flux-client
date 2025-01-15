@@ -40,7 +40,7 @@
               </tbody>
             </table>
           </div>
-          <div class="profile-section my-8">
+          <!-- <div class="profile-section my-8">
             <h3 class="text-lg font-semibold">Preferences</h3>
             <div class="text-gray-600 mb-2">Control your experience.</div>
             <table class="table-auto w-full text-left">
@@ -59,8 +59,7 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-
+          </div> -->
         </div>
       </div>
     </div>

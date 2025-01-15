@@ -26,6 +26,12 @@ export interface FluxProfile {
   stats: FluxUserStats | null
 }
 
+export interface UserCredentials {
+  id: string
+  alias: string
+  roles: string[]
+}
+
 export interface UserProfile {
   id: string
   alias: string

@@ -4,7 +4,8 @@
       <template #item="{ item }">
         <div class="p-4">
           <!-- Account Information -->
-          <ProfileForFlux v-if="item.id === 'flux'" :user-profile="userProfile" :flux-profile="fluxProfile" />
+          <ProfileForFlux v-if="item.id === 'flux' && userStore.profile && fluxStore.profile"
+            :user-profile="userStore.profile" :flux-profile="fluxStore.profile" />
 
           <!-- Flux Information -->
           <ProfileFluxStats v-if="item.id === 'activity'" :handle="handle as string" :stats="mockFluxStats"
@@ -21,6 +22,10 @@ import type { Achievement, FluxProfile, FluxUserStats, UserProfile } from '@/uti
 
 const route = useRoute()
 const handle = ref(route.params.handle)
+
+const userStore = useUserStore()
+const fluxStore = useFluxStore()
+
 
 const tabs = [
   {
@@ -111,13 +116,4 @@ const mockUser: UserProfile = {
   fluxProfile: mockFluxProfile,
   achievements: mockFluxAchievements
 }
-
-const fluxProfile = ref<FluxProfile>(mockFluxProfile)
-const userProfile = ref<UserProfile>(mockUser)
-
-onMounted(async () => {
-  if (handle.value) {
-    fluxProfile.value = mockFluxProfile
-  }
-})
 </script>

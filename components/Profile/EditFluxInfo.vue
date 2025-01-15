@@ -16,7 +16,7 @@
         <UInput v-model="formData.displayName" id="displayName" type="text" required maxlength="25"
           class="w-full px-3 py-2 border rounded" />
       </UFormGroup>
-      <UFormGroup class="my-4" label="Email Notifications" size="sm"
+      <!-- <UFormGroup class="my-4" label="Email Notifications" size="sm"
         hint="Control whether you receive email notifications." :ui="{ label: { base: 'text-lg font-bold' } }">
         <UToggle v-model="formData.emailNotifications" />
       </UFormGroup>
@@ -28,28 +28,27 @@
       <UFormGroup v-if="formData.emailNotifications" class="my-4" label="Digest Frequency" size="sm"
         hint="Choose how frequently you want to receive email digests." :ui="{ label: { base: 'text-lg font-bold' } }">
         <USelect v-model="formData.digestFrequency" :options="digestOptions" />
-      </UFormGroup>
+      </UFormGroup> -->
       <div class="flex justify-end space-x-2">
         <UButton type="cancel" color="orange" icon="i-ph-x-circle">Cancel</UButton>
         <UButton type="submit" color="primary">Save Changes</UButton>
       </div>
     </form>
 
-    <UModal v-model="isEmailModalOpen">
+    <!-- <UModal v-model="isEmailModalOpen">
       <UCard>
         <template #header>
           <div class="text-md font-semibold">Change Email</div>
         </template>
-        <div class="text-md mb-4">Enter your new email address. We will verify the change by sending a magic link. We
-          will only make the change after you click the link.</div>
-        <div class="flex justify-end gap-2">
-          <UInput v-model="formData.emailAddress" label="New Email" />
-          <UButton label="Send Magic Link" @click="sendVerification" color="blue" variant="solid"
-            icon="i-ph-x-circle" />
-          <UButton label="Cancel" @click="cancelVerification" color="blue" variant="solid" icon="i-ph-x-circle" />
-        </div>
-      </UCard>
-    </UModal>
+<div class="text-md mb-4">Enter your new email address. We will verify the change by sending a magic link. We
+  will only make the change after you click the link.</div>
+<div class="flex justify-end gap-2">
+  <UInput v-model="formData.emailAddress" label="New Email" />
+  <UButton label="Send Magic Link" @click="sendVerification" color="blue" variant="solid" icon="i-ph-x-circle" />
+  <UButton label="Cancel" @click="cancelVerification" color="blue" variant="solid" icon="i-ph-x-circle" />
+</div>
+</UCard>
+</UModal> -->
   </div>
 </template>
 
@@ -59,24 +58,24 @@ const fluxService = useFluxService()
 
 const props = defineProps<{
   profile: FluxProfile
-  email: string
+  // email: string
 }>()
 
 const formData = reactive({
   ...props.profile,
-  emailAddress: props.email,
+  // emailAddress: props.email,
 })
 
 const errorMsg = ref('')
 const hasError = computed(() => errorMsg.value !== '')
 
-const isEmailModalOpen = ref(false)
+// const isEmailModalOpen = ref(false)
 
-const digestOptions = [
-  { label: 'Daily', value: 'daily' },
-  { label: 'Weekly', value: 'weekly' },
-  { label: 'Never', value: 'never' }
-]
+// const digestOptions = [
+//   { label: 'Daily', value: 'daily' },
+//   { label: 'Weekly', value: 'weekly' },
+//   { label: 'Never', value: 'never' }
+// ]
 
 const handleValidation = computed(() => {
   if (!formData.handle) {
@@ -117,15 +116,15 @@ const onUpdateFluxProfile = async () => {
   }
 }
 
-const sendVerification = () => {
-  // TODO: Implement email verification
-  console.log('== Oi! Implement email verification ==')
-  isEmailModalOpen.value = false
-}
+// const sendVerification = () => {
+//   // TODO: Implement email verification
+//   console.log('== Oi! Implement email verification ==')
+//   isEmailModalOpen.value = false
+// }
 
-const cancelVerification = () => {
-  isEmailModalOpen.value = false
-}
+// const cancelVerification = () => {
+//   isEmailModalOpen.value = false
+// }
 </script>
 
 <style></style>
