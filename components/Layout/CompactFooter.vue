@@ -34,7 +34,7 @@
           variant="ghost"
           color="blue"
           class="flex-1 align-middle"
-          label="W-o-N"
+          label="WoN"
         />
         <DarkToggle />
       </div>
