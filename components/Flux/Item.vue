@@ -1,28 +1,56 @@
 <template>
   <article class="p-4 bg-white">
     <div class="flex gap-3">
-      <UAvatar @click="handleViewProfile" class="w-10 h-10 flex-shrink-0" :src="flux.author?.avatar"
+      <UAvatar
+        @click="handleViewProfile"
+        class="w-10 h-10 flex-shrink-0"
+        :src="flux.author?.avatar"
         :alt="flux.author?.display_name || '?? User'" />
       <div class="flex-1">
         <div class="flex items-center gap-2">
-          <span @click="handleViewProfile" class="font-bold">{{ flux.author?.display_name }}</span>
-          <span @click="handleViewProfile" class="text-gray-500">@{{ flux.author?.handle }}</span>
-          <span class="text-gray-500">· {{ formatTimeAgo(flux.created_at) }}</span>
-          <UButton class="ml-auto" @click="handleReply" :disabled="isReactingTo" icon="i-ph-arrow-bend-up-left-duotone"
-            label="React" color="blue" variant="ghost" />
+          <span @click="handleViewProfile" class="font-bold">{{
+            flux.author?.display_name
+          }}</span>
+          <span @click="handleViewProfile" class="text-gray-500"
+            >@{{ flux.author?.handle }}</span
+          >
+          <span class="text-gray-500"
+            >· {{ formatTimeAgo(flux.created_at) }}</span
+          >
+          <UButton
+            class="ml-auto"
+            @click="handleReply"
+            :disabled="isReactingTo"
+            icon="i-ph-arrow-bend-up-left-duotone"
+            label="React"
+            color="blue"
+            variant="ghost" />
         </div>
         <div @click="handleView" class="mt-1">
           <div class="rich-text" v-html="flux.content" />
         </div>
         <div class="flex justify-between mt-3 text-gray-500 flux-actions">
-          <UButton @click="handleReply" icon="i-ph-chat-circle-text" color="gray" variant="ghost">
+          <UButton
+            @click="handleReply"
+            icon="i-ph-chat-circle-text"
+            color="gray"
+            variant="ghost">
             {{ flux.reply_count }} Reactions
             <Icon v-if="flux.replied" name="i-ph-star" />
           </UButton>
-          <UButton @click="handleBoost" icon="i-ph-lightning" color="blue" :variant="flux.boosted ? 'solid' : 'ghost'">
+          <UButton
+            @click="handleBoost"
+            icon="i-ph-lightning"
+            color="blue"
+            :variant="flux.boosted ? 'solid' : 'ghost'">
             {{ flux.boost_count }} Boosts
           </UButton>
-          <UButton @click="handleView" icon="i-ph-eye" label="View" color="gray" variant="ghost">
+          <UButton
+            @click="handleView"
+            icon="i-ph-eye"
+            label="View"
+            color="gray"
+            variant="ghost">
             {{ flux.view_count }} Views
           </UButton>
         </div>
@@ -32,51 +60,51 @@
 </template>
 
 <script lang="ts" setup>
-import { formatTimeAgo } from '@/utils/dateUtils';
+import { formatTimeAgo } from "@/utils/dateUtils";
 
 const props = defineProps({
   flux: {
     type: Object,
-    required: true
-  }
-})
-const emit = defineEmits(['viewFlux', 'replyToFlux'])
+    required: true,
+  },
+});
+const emit = defineEmits(["viewFlux", "replyToFlux"]);
 
-const fluxStore = useFluxStore()
+const fluxStore = useFluxStore();
 const isReactingTo = computed(() => {
-  return fluxStore.isReply && fluxStore.activeFlux?.id === props.flux.id
-})
+  return fluxStore.isReply && fluxStore.activeFlux?.id === props.flux.id;
+});
 
 const handleView = async () => {
-  await useFluxService().viewFlux(props.flux.id)
-  useFluxStore().setActiveFlux(props.flux as Flux)
-  emit('viewFlux', props.flux)
-}
+  await useFluxService().viewFlux(props.flux.id);
+  useFluxStore().setActiveFlux(props.flux as Flux);
+  emit("viewFlux", props.flux);
+};
 
 const handleReply = async () => {
-  await useFluxService().viewFlux(props.flux.id)
-  useFluxStore().setActiveFlux(props.flux as Flux, true)
-  emit('replyToFlux', props.flux)
-}
+  await useFluxService().viewFlux(props.flux.id);
+  useFluxStore().setActiveFlux(props.flux as Flux, true);
+  emit("replyToFlux", props.flux);
+};
 
 const handleBoost = async () => {
-  await useFluxService().boostFlux(props.flux.id)
-}
+  await useFluxService().boostFlux(props.flux.id);
+};
 
 const handleViewProfile = () => {
-  const handle = props.flux.author?.handle
+  const handle = props.flux.author?.handle;
   if (!handle) {
-    console.error('no handle to view profile')
-    return
+    console.error("no handle to view profile");
+    return;
   }
-  navigateTo(`/profile/${handle}`)
-}
+  navigateTo(`/profile/${handle}`);
+};
 </script>
 
 <style scoped>
 .flux-actions {
-  background-color: theme('colors[nuclear-blue]50');
-  border: 1px solid theme('colors[nuclear-blue]300');
+  background-color: theme("colors[nuclear]50");
+  border: 1px solid theme("colors[nuclear]300");
 }
 
 .clickable {
