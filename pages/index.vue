@@ -4,11 +4,14 @@
       <FluxComposer
         v-if="fluxStore.isReply"
         :replying-to="fluxStore.activeFlux"
-        @cancel-reply="handleCancelReply" />
+        @cancel-reply="handleCancelReply"
+      />
       <FluxView
         :flux="fluxStore.activeFlux"
         @reply-to-flux="handleReply"
-        @view-flux="handleViewFlux" />
+        @view-flux="handleViewFlux"
+        class="text-heroic-graphite dark:text-heroic-lightgray bg-heroic-uranium dark:bg-heroic-graphite"
+      />
     </template>
     <template v-else>
       <div class="py-8">
@@ -27,21 +30,21 @@
 </template>
 
 <script setup lang="ts">
-import type { Flux } from "@/utils/types";
+import type { Flux } from '@/utils/types'
 
-const fluxStore = useFluxStore();
+const fluxStore = useFluxStore()
 
 const handleCancelReply = () => {
-  fluxStore.cancelReply();
-};
+  fluxStore.cancelReply()
+}
 
 const handleViewFlux = (flux: Flux) => {
-  fluxStore.setActiveFlux(flux);
-};
+  fluxStore.setActiveFlux(flux)
+}
 
 const handleReply = (flux: Flux) => {
-  fluxStore.setActiveFlux(flux, true);
-};
+  fluxStore.setActiveFlux(flux, true)
+}
 </script>
 
 <style scoped></style>
