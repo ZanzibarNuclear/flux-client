@@ -1,15 +1,24 @@
 <template>
-  <div class="p-4 border-b border-gray-200 bg-white">
+  <div class="border-b pb-6 border-gray-200">
+    <h3>What's on your mind?</h3>
     <div v-if="fluxStore.hasProfile" class="flex gap-4">
-      <UAvatar src="" :alt="fluxStore.profile.handle" class="w-10 h-10" />
-      <TiptapEditor rows="1" class="flex-1" auto-size @post-flux-message="handlePostFlux" @cancel-flux="cancelReply"
-        :initial-content="initialContent" placeholder="What do you want to tell the world?"
-        :save-button-label="saveButtonLabel" />
+      <TiptapEditor
+        rows="1"
+        class="flex-1"
+        auto-size
+        @post-flux-message="handlePostFlux"
+        @cancel-flux="cancelReply"
+        :initial-content="initialContent"
+        placeholder="What do you want to tell the world?"
+        :save-button-label="saveButtonLabel"
+      />
     </div>
     <div v-else>
       <h2>Want to share your thoughts?</h2>
       <p>
-        <NuxtLink to="/join" class="block text-center text-lg text-[nuclear-blue]">Sign in to participate.</NuxtLink>
+        <NuxtLink to="/join" class="block text-center text-lg text-[nuclear]"
+          >Sign in to participate.</NuxtLink
+        >
       </p>
     </div>
   </div>
@@ -19,8 +28,8 @@
 const props = defineProps({
   replyingTo: {
     type: Object,
-    default: null
-  }
+    default: null,
+  },
 })
 const emit = defineEmits(['cancelReply'])
 
@@ -29,12 +38,11 @@ const { createFlux } = useFluxService()
 
 const initialContent = ref('')
 const placeholder = computed(() =>
-  props.replyingTo ? "Write your reaction..." : "What's nu(-clear)?"
+  props.replyingTo ? 'Write your reaction...' : "What's nu(-clear)?",
 )
-const saveButtonLabel = computed(() => props.replyingTo ? 'React' : 'Flux it')
+const saveButtonLabel = computed(() => (props.replyingTo ? 'React' : 'Flux it'))
 
 async function handlePostFlux(contentToPost) {
-
   if (!contentToPost || contentToPost.length === 0) {
     alert('You have to write something to flux it.')
     return
@@ -53,14 +61,6 @@ function cancelReply() {
 </script>
 
 <style scoped>
-textarea {
-  width: 100%;
-  height: 100px;
-  padding: 10px;
-  border: 1px solid #e1e8ed;
-  border-radius: 5px;
-}
-
 button {
   margin-top: 10px;
   padding: 10px 20px;

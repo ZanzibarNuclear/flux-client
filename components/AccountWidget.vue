@@ -1,8 +1,20 @@
 <template>
-  <UButton v-if="!userStore.isSignedIn" icon="i-ph-sign-in" label="Sign In" to="/join" color="gray" variant="solid" />
+  <UButton
+    v-if="!userStore.isSignedIn"
+    icon="i-ph-sign-in-duotone"
+    label="Sign In"
+    to="/join"
+    color="gray"
+    variant="solid"
+  />
   <UDropdown v-else :popper="{ placement: 'bottom-start' }" :items="items">
-    <UButton color="primary" variant="solid" :icon="widgetIcon" :label="widgetLabel"
-      trailing-icon="i-ph-caret-double-down" />
+    <UButton
+      color="primary"
+      variant="solid"
+      size="sm"
+      :icon="widgetIcon"
+      trailing-icon="i-ph-caret-double-down"
+    />
   </UDropdown>
 </template>
 
@@ -16,16 +28,20 @@ const widgetIcon = computed(() => 'i-ph-user-duotone')
 
 const items = computed(() => {
   const menuItems = []
+  menuItems.push({
+    label: widgetLabel,
+    labelClass: 'screen-name',
+  })
   if (fluxStore.profile) {
     menuItems.push({
       label: 'Profile',
-      icon: 'i-ph-user-circle-duotone',
+      icon: 'i-ph-smiley-wink-duotone',
       to: `/profile/${fluxStore.profile.handle}`,
     })
   }
   menuItems.push({
     label: 'Sign Out',
-    icon: 'i-ph-sign-out',
+    icon: 'i-ph-sign-out-duotone',
     click: async () => {
       await authService.signOut()
       fluxStore.clearProfile()
@@ -34,3 +50,10 @@ const items = computed(() => {
   return [menuItems]
 })
 </script>
+
+<style>
+.screen-name {
+  margin: 0 auto;
+  @apply text-heroic-cherenkov;
+}
+</style>

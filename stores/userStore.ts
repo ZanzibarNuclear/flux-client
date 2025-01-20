@@ -1,29 +1,42 @@
 import { defineStore } from 'pinia'
+import type { UserProfile } from '@/utils/types'
 
 export const useUserStore = defineStore('userStore', () => {
-  const id = ref<string | null>(null)
-  const alias = ref<string | null>(null)
-  const roles = ref<string[] | null>(null)
+  const creds = ref<UserCredentials | null>()
+  const profile = ref<UserProfile | null>()
+  const id = computed(() => creds.value?.id)
+  const alias = computed(() => creds.value?.alias)
+  const isSignedIn = computed(() => !!id.value)
+  const hasRole = (role: string) => computed(() => creds.value?.roles.includes(role))
 
-  function setCurrentUser(userInfo: { id: string, alias: string, roles: string[] }) {
-    id.value = userInfo.id
-    alias.value = userInfo.alias
-    roles.value = userInfo.roles
+  function setActiveUser(userInfo: UserCredentials) {
+    creds.value = { ...userInfo }
+    // profile must be for active user
+    if (profile.value && profile.value.id !== userInfo.id) {
+      profile.value = null
+    }
   }
 
-  const isSignedIn = computed(() => !!id.value)
+  function setUserProfile(userProfile: UserProfile) {
+    if (userProfile.id !== id.value) {
+      console.warn('User profile ID does not match active user ID. Ignoring.')
+    }
+    profile.value = { ...userProfile }
+  }
 
-  function clearCurrentUser() {
-    id.value = null
-    alias.value = null
-    roles.value = null
+  function clearActiveUser() {
+    creds.value = null
+    profile.value = null
   }
 
   return {
     id,
     alias,
-    setCurrentUser,
-    clearCurrentUser,
-    isSignedIn
+    isSignedIn,
+    hasRole,
+    setActiveUser,
+    clearActiveUser,
+    profile,
+    setUserProfile
   }
 })

@@ -2,67 +2,88 @@
   <div>
     <div v-if="!userStore.isSignedIn">
       <div>
-        <UButton label="Join" variant="solid" color="amber" icon="i-ph-arrow-bend-down-right-duotone" class="mr-2 mb-1"
+        <UButton
+          label="Join"
+          variant="solid"
+          color="amber"
+          icon="i-ph-arrow-bend-down-right-duotone"
+          class="mr-2 mb-1"
           @click="openJoin" />
       </div>
       <div>
-        <UButton label="Sign In" variant="solid" color="primary" icon="i-ph-sign-in" @click="openJoin" />
+        <UButton
+          label="Sign In"
+          variant="solid"
+          color="primary"
+          icon="i-ph-sign-in"
+          @click="openJoin" />
       </div>
     </div>
-    <UDropdown v-if="userStore.isSignedIn" :items="items" :popper="{ placement: 'bottom-start' }" class="text-primary">
-      <UButton color="primary" variant="solid" icon="i-ph-person" :label="screenName"
+    <UDropdown
+      v-if="userStore.isSignedIn"
+      :items="items"
+      :popper="{ placement: 'bottom-start' }"
+      class="text-primary">
+      <UButton
+        color="primary"
+        variant="solid"
+        icon="i-ph-person"
+        :label="screenName"
         trailing-icon="i-ph-caret-double-down" />
     </UDropdown>
   </div>
 </template>
 
 <script setup lang="ts">
-const fluxStore = useFluxStore()
-const userStore = useUserStore()
+const fluxStore = useFluxStore();
+const userStore = useUserStore();
 
-const profileUrl = ref('/join')
+const profileUrl = ref("/join");
 
 onMounted(() => {
   if (fluxStore.hasProfile) {
-    profileUrl.value = `/profile/${fluxStore.profile?.handle}`
+    profileUrl.value = `/profile/${fluxStore.profile?.handle}`;
   }
-})
+});
 
-watch(() => fluxStore.hasProfile, (newProfile) => {
-  if (newProfile) {
-    profileUrl.value = `/profile/${fluxStore.profile?.handle}`
+watch(
+  () => fluxStore.hasProfile,
+  (newProfile) => {
+    if (newProfile) {
+      profileUrl.value = `/profile/${fluxStore.profile?.handle}`;
+    }
   }
-})
+);
 
 const screenName = computed(() => {
   if (userStore.isSignedIn) {
-    return userStore.alias || 'Mystery Guest'
+    return userStore.alias || "Mystery Guest";
   } else {
-    return 'anonymouns'
+    return "anonymouns";
   }
-})
+});
 
 const openJoin = () => {
-  navigateTo('/join')
-}
+  navigateTo("/join");
+};
 
 const items = [
   [
     {
-      label: 'Profile',
-      icon: 'i-ph-identification-card',
+      label: "Profile",
+      icon: "i-ph-identification-card",
       to: profileUrl.value,
     },
     {
-      label: 'Sign Out',
-      icon: 'i-ph-sign-out',
+      label: "Sign Out",
+      icon: "i-ph-sign-out",
       click: async () => {
-        userStore.clearCurrentUser()
-        navigateTo('/')
+        // userStore.clearCurrentUser()
+        navigateTo("/");
       },
     },
   ],
-]
+];
 </script>
 
 <style scoped>

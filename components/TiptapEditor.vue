@@ -1,26 +1,55 @@
 <template>
   <div>
-    <TiptapEditorContent :editor="editor" class="editor-frame" />
+    <TiptapEditorContent :editor="editor" class="editor-frame shadow-cherenkov" />
     <div v-if="editor" class="mt-2 flex justify-between">
       <div class="flex space-x-1">
-        <UButton @click="editor.chain().focus().toggleBold().run()" color="gray"
-          :disabled="!editor.can().chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }"
-          icon="ph:text-bolder-bold" />
-        <UButton @click="editor.chain().focus().toggleItalic().run()" color="gray"
+        <UButton
+          @click="editor.chain().focus().toggleBold().run()"
+          color="gray"
+          :disabled="!editor.can().chain().focus().toggleBold().run()"
+          :class="{ 'is-active': editor.isActive('bold') }"
+          icon="ph:text-bolder-bold"
+        />
+        <UButton
+          @click="editor.chain().focus().toggleItalic().run()"
+          color="gray"
           :disabled="!editor.can().chain().focus().toggleItalic().run()"
-          :class="{ 'is-active': editor.isActive('italic') }" icon="ph:text-italic" />
-        <UButton @click="editor.chain().focus().toggleBulletList().run()" color="gray"
-          :class="{ 'is-active': editor.isActive('bulletList') }" icon="ph:list-bullets" />
-        <UButton @click="editor.chain().focus().toggleOrderedList().run()" color="gray"
-          :class="{ 'is-active': editor.isActive('orderedList') }" icon="ph:list-numbers" />
-        <UButton @click="editor.chain().focus().toggleBlockquote().run()" color="gray"
-          :class="{ 'is-active': editor.isActive('blockquote') }" icon="ph:quotes" />
-        <UButton @click="editor.chain().focus().setParagraph().run()" color="gray"
-          :class="{ 'is-active': editor.isActive('paragraph') }" icon="ph:paragraph" />
+          :class="{ 'is-active': editor.isActive('italic') }"
+          icon="ph:text-italic"
+        />
+        <UButton
+          @click="editor.chain().focus().toggleBulletList().run()"
+          color="gray"
+          :class="{ 'is-active': editor.isActive('bulletList') }"
+          icon="ph:list-bullets"
+        />
+        <UButton
+          @click="editor.chain().focus().toggleOrderedList().run()"
+          color="gray"
+          :class="{ 'is-active': editor.isActive('orderedList') }"
+          icon="ph:list-numbers"
+        />
+        <UButton
+          @click="editor.chain().focus().toggleBlockquote().run()"
+          color="gray"
+          :class="{ 'is-active': editor.isActive('blockquote') }"
+          icon="ph:quotes"
+        />
+        <UButton
+          @click="editor.chain().focus().setParagraph().run()"
+          color="gray"
+          :class="{ 'is-active': editor.isActive('paragraph') }"
+          icon="ph:paragraph"
+        />
       </div>
       <div class="ml-auto flex space-x-2">
-        <UButton @click="() => confirmCancel = true" color="orange" icon="ph:x-circle" />
-        <UButton @click="handlePostFlux" color="blue" :label="saveButtonLabel" icon="ph:lightning-duotone" />
+        <UButton @click="() => (confirmCancel = true)" color="orange" icon="ph:x-circle" />
+        <UButton
+          @click="handlePostFlux"
+          color="blue"
+          :label="saveButtonLabel"
+          icon="ph:lightning-duotone"
+        />
       </div>
     </div>
     <UModal v-model="confirmCancel">
@@ -70,7 +99,7 @@ const editor = useEditor({
         'border-2 bg-white text-slate-700 max-w-none prose prose-stone prose-sm m-0 prose-p:p-1 prose-li:m-0 prose-li:p-0 focus:outline-none',
     },
   },
-});
+})
 
 const confirmCancel = ref(false)
 const handlePostFlux = () => {
@@ -88,13 +117,14 @@ onBeforeUnmount(() => {
   if (editor.value) {
     editor.value.destroy()
   }
-});
+})
 </script>
 
 <style>
 .editor-frame {
   overflow-y: scroll;
   max-height: 50vh;
+  @apply text-heroic-graphite dark:text-heroic-lightgray bg-heroic-lightgray dark:bg-heroic-graphite;
 }
 
 .tiptap {

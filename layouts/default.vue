@@ -1,10 +1,14 @@
 <template>
-  <div class="mx-auto w-3/4 min-w-[600px]">
-    <LayoutCompactHeader />
-    <div class="mt-[75px] mb-16">
-      <slot />
+  <div
+    class="bg-heroic-uranium dark:bg-heroic-graphite text-heroic-graphite dark:text-heroic-lightgray"
+  >
+    <div class="mx-auto w-5/6 min-w-80">
+      <LayoutCompactHeader />
+      <div class="mt-12 mb-16">
+        <slot />
+      </div>
+      <LayoutCompactFooter />
     </div>
-    <LayoutCompactFooter />
   </div>
 </template>
 

@@ -33,7 +33,7 @@ export function useAuthService() {
       const userData = await api.get('/api/me')
       console.log('found current user:', userData)
 
-      userStore.setCurrentUser(userData as { id: string, alias: string, roles: string[] })
+      userStore.setActiveUser(userData as { id: string, alias: string, roles: string[] })
       return userData
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -59,7 +59,7 @@ export function useAuthService() {
   const signOut = async () => {
     try {
       await useApi().delete('/login')
-      userStore.clearCurrentUser()
+      userStore.clearActiveUser()
     } catch (err) {
       console.error('Error signing out', err)
     }

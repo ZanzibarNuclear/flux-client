@@ -1,29 +1,40 @@
-export interface Flux {
-  id: number
-  author: string
-  authorUsername: string
-  authorAvatar: string
-  replyTo: number | null
-  content: string
-  timestamp: string
-  viewCount: number
-  replyCount: number
+export interface Achievement {
+  id: string
+  name: string
+  description: string
+  karmaAwarded: number
+  awardedAt: string
+}
+
+export interface FluxUserStats {
+  fluxCount: number
+  reactionCount: number
   boostCount: number
-  boosted: boolean
+  followerCount: number
+  followingCount: number
+  karmaScore: number
 }
 
 export interface FluxProfile {
   id: string
-  userId: string
   handle: string
   displayName: string
-  createdAt: string
-  updatedAt: string
+  joinedFluxAt: string
+  emailNotifications: boolean
+  textNotifications: boolean
+  digestFrequency: 'daily' | 'weekly' | 'never'
+  stats: FluxUserStats | null
+}
+
+export interface UserCredentials {
+  id: string
+  alias: string
+  roles: string[]
 }
 
 export interface UserProfile {
   id: string
-  screenName: string
+  alias: string
   fullName: string
   avatarUrl: string
   bio: string
@@ -32,6 +43,29 @@ export interface UserProfile {
   nuclearLikes: string
   xUsername: string
   website: string
-  createdAt: string
+  email: string
+  karmaScore: number
+  joinedAt: string
   updatedAt: string
+  fluxProfile: FluxProfile | null
+  achievements: Achievement[] | null
+}
+
+export interface UserPreferences {
+  theme: 'system' | 'light' | 'dark'
+  emailNotifications: boolean
+  digestFrequency: 'daily' | 'weekly' | 'never'
+  showOnlineStatus: boolean
+}
+
+export interface Flux {
+  id: number
+  author: FluxProfile
+  replyTo: number | null
+  content: string
+  timestamp: string
+  viewCount: number
+  replyCount: number
+  boostCount: number
+  boosted: boolean
 }

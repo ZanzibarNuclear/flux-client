@@ -1,15 +1,26 @@
 <template>
   <div class="pb-28">
     <template v-if="fluxStore.activeFlux">
-      <FluxComposer v-if="fluxStore.isReply" :replying-to="fluxStore.activeFlux" @cancel-reply="handleCancelReply" />
-      <FluxView :flux="fluxStore.activeFlux" @reply-to-flux="handleReply" @view-flux="handleViewFlux" />
+      <FluxComposer
+        v-if="fluxStore.isReply"
+        :replying-to="fluxStore.activeFlux"
+        @cancel-reply="handleCancelReply"
+      />
+      <FluxView
+        :flux="fluxStore.activeFlux"
+        @reply-to-flux="handleReply"
+        @view-flux="handleViewFlux"
+        class="text-heroic-graphite dark:text-heroic-lightgray bg-heroic-uranium dark:bg-heroic-graphite"
+      />
     </template>
     <template v-else>
       <div class="py-8">
         <FluxComposer v-if="fluxStore.hasProfile" />
         <div v-else>
           <NuxtImg src="/images/flux-theme-v1.jpg" class="mx-auto" />
-          <NuxtLink to="/join" class="block text-center text-lg text-[nuclear-blue]">Sign in to participate.</NuxtLink>
+          <NuxtLink to="/join" class="block text-center text-lg text-[nuclear]"
+            >Sign in to participate.</NuxtLink
+          >
         </div>
         <hr />
       </div>
