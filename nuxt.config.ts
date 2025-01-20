@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     '@nuxtjs/device',
     '@nuxtjs/turnstile',
   ],
-  css: ['~/assets/css/tailwind.css'],
+  css: ['@/assets/css/font.css', '@/assets/css/tailwind.css'],
   colorMode: {
     preference: 'light',
     fallback: 'light',

@@ -1,17 +1,42 @@
 <template>
-  <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+  <footer
+    class="fixed bottom-0 left-0 right-0 bg-heroic-uranium text-heroic-graphite dark:bg-heroic-graphite dark:text-heroic-lightgray border-t border-gray-200"
+  >
     <nav>
       <div class="max-w-xl mx-auto px-4 py-3 flex justify-around">
-        <UButton @click="refreshMainPage" icon="i-ph-arrow-bend-left-up-duotone" variant="ghost" color="blue"
-          class="flex-1 align-middle" label="Latest" />
-        <UButton @click="() => goTo('/explore')" icon="i-ph-magnifying-glass-duotone" variant="ghost" color="blue"
-          class="flex-1 align-middle" label="Explore" />
-        <UButton @click="goToProfileOrSignIn" icon="i-ph-user-circle-duotone" variant="ghost" color="blue"
-          class="flex-1 align-middle" label="Profile" />
-        <UButton @click="aboutModalOpen = true" icon="i-ph-info-duotone" variant="ghost" color="blue"
-          class="flex-1 align-middle" label="About" />
-        <UButton @click="goToWoN" icon="i-ph-globe-simple-duotone" variant="ghost" color="blue"
-          class="flex-1 align-middle" label="W-o-N" />
+        <UButton
+          @click="refreshMainPage"
+          icon="i-ph-arrow-bend-left-up-duotone"
+          variant="ghost"
+          color="blue"
+          class="flex-1 align-middle"
+          label="Latest"
+        />
+        <UButton
+          @click="() => goTo('/explore')"
+          icon="i-ph-magnifying-glass-duotone"
+          variant="ghost"
+          color="blue"
+          class="flex-1 align-middle"
+          label="Explore"
+        />
+        <UButton
+          @click="aboutModalOpen = true"
+          icon="i-ph-info-duotone"
+          variant="ghost"
+          color="blue"
+          class="flex-1 align-middle"
+          label="About"
+        />
+        <UButton
+          @click="goToWoN"
+          icon="i-ph-globe-simple-duotone"
+          variant="ghost"
+          color="blue"
+          class="flex-1 align-middle"
+          label="WoN"
+        />
+        <DarkToggle />
       </div>
     </nav>
     <UModal v-model="aboutModalOpen">

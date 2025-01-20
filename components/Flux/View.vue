@@ -1,41 +1,49 @@
 <template>
   <div>
-    <UButton icon="i-ph-arrow-left" label="Return to timeline" color="blue" variant="ghost" @click="returnToTimeline" />
+    <UButton
+      icon="i-ph-arrow-left"
+      label="Return to timeline"
+      color="blue"
+      variant="ghost"
+      @click="returnToTimeline" />
     <div class="flux-view">
-      <FluxItem :flux="flux" @view-flux="handleView" @reply-to-flux="handleReply" />
+      <FluxItem
+        :flux="flux"
+        @view-flux="handleView"
+        @reply-to-flux="handleReply" />
       <FluxReactionScroller />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const fluxStore = useFluxStore()
+const fluxStore = useFluxStore();
 
 defineProps({
   flux: {
     type: Object,
-    required: true
+    required: true,
   },
-})
+});
 
 const returnToTimeline = () => {
-  fluxStore.clearActiveFlux()
-  navigateTo('/')
-}
+  fluxStore.clearActiveFlux();
+  navigateTo("/");
+};
 
 const handleView = () => {
-  navigateTo('/')
-}
+  navigateTo("/");
+};
 
 const handleReply = () => {
-  navigateTo('/')
-}
+  navigateTo("/");
+};
 </script>
 
 <style scoped>
 .flux-view {
   padding: 1rem;
-  border: 1px solid theme('colors[nuclear-blue]300');
+  border: 1px solid theme("colors[nuclear]300");
   border-radius: 8px;
   margin-bottom: 1rem;
 }
@@ -65,7 +73,7 @@ const handleReply = () => {
 
 .flux-reactions {
   margin-top: 1rem;
-  border-top: 5px solid theme('colors[nuclear-blue]300');
+  border-top: 5px solid theme("colors[nuclear]300");
   padding-top: 1rem;
 }
 </style>
