@@ -1,54 +1,32 @@
 <template>
-  <article
-    class="py-6 pr-2 text-heroic-graphite dark:text-heroic-lightgray bg-heroic-uranium dark:bg-heroic-graphite"
-  >
+  <article class="py-6 pr-2 text-heroic-graphite dark:text-heroic-lightgray bg-heroic-uranium dark:bg-heroic-graphite">
     <div class="flex gap-3">
-      <UAvatar
-        @click="handleViewProfile"
-        class="w-10 h-10 flex-shrink-0 bg-uranium-ore-darker dark:bg-uranium-ore-bright"
-        :src="flux.author?.avatar"
-        :alt="flux.author?.displayName || '?? User'"
-      />
+      <UAvatar @click="handleViewProfile"
+        class="w-10 h-10 flex-shrink-0 bg-uranium-ore-darker dark:bg-uranium-ore-bright" :src="flux.author?.avatar"
+        :alt="flux.author?.displayName || '?? User'" />
       <div class="flex-1">
         <div class="flex items-center gap-2">
           <span @click="handleViewProfile" class="font-bold">{{ flux.author?.displayName }}</span>
           <span @click="handleViewProfile" class="">@{{ flux.author?.handle }}</span>
           <span class="">· {{ formatTimeAgo(flux.createdAt) }}</span>
-          <UButton
-            class="ml-auto"
-            @click="handleReply"
-            :disabled="isReactingTo"
-            icon="i-ph-arrow-bend-up-left-duotone"
-            label="React"
-            color="primary"
-            variant="ghost"
-          />
+          <UButton class="ml-auto" @click="handleReply" :disabled="isReactingTo" icon="i-ph-arrow-bend-up-left-duotone"
+            label="React" color="primary" variant="ghost" />
         </div>
         <div @click="handleView" class="mt-1">
           <div class="rich-text" v-html="flux.content" />
         </div>
         <div
-          class="flex justify-between mt-3 bg-heroic-uranium dark:bg-heroic-graphite border-heroic-cherenkov border border-solid"
-        >
-          <UButton
-            @click="handleReply"
-            icon="i-ph-chat-circle-text"
-            color="primary"
-            variant="ghost"
-          >
-            {{ flux.reply_count }} Reactions
+          class="flex justify-between mt-3 bg-heroic-uranium dark:bg-heroic-graphite border-heroic-cherenkov border border-solid">
+          <UButton @click="handleReply" icon="i-ph-chat-circle-text" color="primary" variant="ghost">
+            {{ flux.replyCount }} Reactions
             <Icon v-if="flux.replied" name="i-ph-star" />
           </UButton>
-          <UButton
-            @click="handleBoost"
-            icon="i-ph-lightning"
-            color="primary"
-            :variant="flux.boosted ? 'solid' : 'ghost'"
-          >
-            {{ flux.boost_count }} Boosts
+          <UButton @click="handleBoost" icon="i-ph-lightning" color="primary"
+            :variant="flux.boosted ? 'solid' : 'ghost'">
+            {{ flux.boostCount }} Boosts
           </UButton>
           <UButton @click="handleView" icon="i-ph-eye" label="View" color="primary" variant="ghost">
-            {{ flux.view_count }} Views
+            {{ flux.viewCount }} Views
           </UButton>
         </div>
       </div>
