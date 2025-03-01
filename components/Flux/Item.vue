@@ -7,13 +7,13 @@
         @click="handleViewProfile"
         class="w-10 h-10 flex-shrink-0 bg-uranium-ore-darker dark:bg-uranium-ore-bright"
         :src="flux.author?.avatar"
-        :alt="flux.author?.display_name || '?? User'"
+        :alt="flux.author?.displayName || '?? User'"
       />
       <div class="flex-1">
         <div class="flex items-center gap-2">
-          <span @click="handleViewProfile" class="font-bold">{{ flux.author?.display_name }}</span>
+          <span @click="handleViewProfile" class="font-bold">{{ flux.author?.displayName }}</span>
           <span @click="handleViewProfile" class="">@{{ flux.author?.handle }}</span>
-          <span class="">· {{ formatTimeAgo(flux.created_at) }}</span>
+          <span class="">· {{ formatTimeAgo(flux.createdAt) }}</span>
           <UButton
             class="ml-auto"
             @click="handleReply"
